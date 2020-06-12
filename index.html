@@ -4,67 +4,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta http-equiv="content-type" content="text/html;charset=utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>txt</title>
+<title>ChitChat-login</title>
 
 <link rel="stylesheet" type="text/css" href="css/style.css">
-
+<script type="text/javascript" src="js/cookie.js"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/vector.js"></script>
-<style>
-			body{text-align:center} 
-			
-			#app{ 
-				margin-top: 6.25rem;
-				display:inline-block;
-			    vertical-align: middle;
-				
-				}
-			.login-wrap{text-align:center;}
-		    input{display:block; width:250px; height:40px; line-height:40px; margin:0 auto; margin-bottom: 10px; outline:none; border:1px solid #888; padding:10px; box-sizing:border-box;}
-		    p{color:red;}
-		    button{
-				display:block; width:250px; height:40px; line-height: 40px; margin:0 auto; border:none; background-color:#41b883; color:#fff; font-size:16px; margin-bottom:5px;
-				line-height:20px;
-				}
-		   
-			.toSign{
-				font-family:"century gothic", sans-serif;
-				font-size: 1rem;
-				font-weight: bold;
-			}
-			.toSignAim{
-				font-family:"century gothic", sans-serif;
-				font-size: 1rem;
-				color:#0055ff;
-				font-weight: bold;
-			}
-			.tip{
-				font-family:"century gothic", sans-serif;
-				font-size: 1.1rem;
-				margin:1.0rem  0 0 0;
-				color:#860043;
-				font-weight: bold;
-			}
-			#headline{
-				font-size: 4rem;
-				font-family:"century gothic", sans-serif;
-				font-weight: bold;
-			}
-			.welcome{
-				font-size: 1.5rem;
-				font-family:"century gothic", sans-serif;
-				font-weight: bold;
-			}
-			.input{
-				font-size: 1rem;
-				font-family:"century gothic", sans-serif;
-				font-style: italic;
-			}
-		</style>
+<style> @import url("css/log.css"); </style>
 </head>
 <body>
-
-
 	<div id="app">
 		<div id="container">
 			<div id="output">
@@ -75,11 +23,11 @@
 						<span class="welcome"> 登录开启畅聊生活</span>
 						<p class="tip" v-show="showtip">{{tip}}</p>
 						<form class="form" id="entry_form">
-							<input  class="input" type="text" placeholder="请输入用户名" id="entry_name" v-model="username" >
-							<input class="input"  type="password" placeholder="请输入密码" id="entry_password" v-model="password" @keyup.enter="login">
-							<button type="button" v-on:click="login" id="entry_btn">登录</button>
-							<span class="toSign"> 没有账号？</span>
-							<span class="toSignAim"  v-on:click="ToRegister">马上注册！</span>
+							<input  class="input" v-show="ifrelog" type="text" placeholder="请输入用户名" id="entry_name" v-model="username" >
+							<input class="input" v-show="ifrelog" type="password" placeholder="请输入密码" id="entry_password" v-model="password" @keyup.enter="login">
+							<button type="button" v-show="ifrelog" v-on:click="login" id="entry_btn">登录</button>
+							<span class="toSign" v-show="ifrelog"> 没有账号？</span>
+							<span class="toSignAim" v-show="ifrelog" v-on:click="ToRegister">马上注册！</span>
 							<div id="prompt" class="prompt"></div>
 						</form>
 					</div>
@@ -117,6 +65,7 @@
 			showLogin: true,
 			showRegister: false,
 			showtip: false,
+			ifrelog:true,
 			tip: '',
 			username: '',
 			password: '',
@@ -124,6 +73,21 @@
 			sign_password1:"",
 			sign_password2:""
 		},
+		 mounted(){
+		  /*判断cookie*/
+		  //cookie 保存7天
+		  //delCookie();
+		  console.log("mounted");
+		  var cooki=document.cookie;
+		  console.log(cooki)
+		    if(cooki!=''){
+				this.tip = "已验证 正在登录中"
+				this.showtip = true
+				this.ifrelog = false
+		       setTimeout(this.switchHtml, 2000);
+		    }
+		  },
+		  
 		methods: {
 			ToRegister: function() {
 				this.showLogin=false;
@@ -175,8 +139,8 @@
 					} else if (res.data == 1) {
 						this.tip = "登录成功"
 						this.showtip = true
+						setCookie('username', this.username, 7)
 						setTimeout(this.switchHtml, 1400); 
-						//setCookie('username', this.username, 1000 * 60)
 						//setTimeout(function() {
 						//	this.$router.push('/home')
 						//}.bind(this), 1000)
@@ -220,16 +184,13 @@
 						this.tip = "注册成功 转入登录界面"
 						this.showtip = true
 						setTimeout(this.switchToLog, 1400); 
-						//setCookie('username', this.username, 1000 * 60)
-						//setTimeout(function() {
-						//	this.$router.push('/home')
-						//}.bind(this), 1000)
+						setCookie('username', this.username, 7);
+						setTimeout(this.switchToLog, 1400); 
 					}
 				}
 			}
 		}
 	})
 </script>
-
 </body>
 </html>
