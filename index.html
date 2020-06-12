@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta http-equiv="content-type" content="text/html;charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>txt</title>
+
+<link rel="stylesheet" type="text/css" href="css/style.css">
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/vector.js"></script>
+<style>
+			body{text-align:center} 
+			
+			#app{ 
+				margin-top: 6.25rem;
+				display:inline-block;
+			    vertical-align: middle;
+				
+				}
+			.login-wrap{text-align:center;}
+		    input{display:block; width:250px; height:40px; line-height:40px; margin:0 auto; margin-bottom: 10px; outline:none; border:1px solid #888; padding:10px; box-sizing:border-box;}
+		    p{color:red;}
+		    button{
+				display:block; width:250px; height:40px; line-height: 40px; margin:0 auto; border:none; background-color:#41b883; color:#fff; font-size:16px; margin-bottom:5px;
+				line-height:20px;
+				}
+		   
+			.toSign{
+				font-family:"century gothic", sans-serif;
+				font-size: 1rem;
+				font-weight: bold;
+			}
+			.toSignAim{
+				font-family:"century gothic", sans-serif;
+				font-size: 1rem;
+				color:#0055ff;
+				font-weight: bold;
+			}
+			.tip{
+				font-family:"century gothic", sans-serif;
+				font-size: 1.1rem;
+				margin:1.0rem  0 0 0;
+				color:#860043;
+				font-weight: bold;
+			}
+			#headline{
+				font-size: 4rem;
+				font-family:"century gothic", sans-serif;
+				font-weight: bold;
+			}
+			.welcome{
+				font-size: 1.5rem;
+				font-family:"century gothic", sans-serif;
+				font-weight: bold;
+			}
+			.input{
+				font-size: 1rem;
+				font-family:"century gothic", sans-serif;
+				font-style: italic;
+			}
+		</style>
+</head>
+<body>
+
+
+	<div id="app">
+		<div id="container">
+			<div id="output">
+				<div class="containerT">
+					<h1 id="headline">ChitChat</h1>
+					<!-- 登录 -->
+					<div class="log" v-show="showLogin">
+						<span class="welcome"> 登录开启畅聊生活</span>
+						<p class="tip" v-show="showtip">{{tip}}</p>
+						<form class="form" id="entry_form">
+							<input  class="input" type="text" placeholder="请输入用户名" id="entry_name" v-model="username" >
+							<input class="input"  type="password" placeholder="请输入密码" id="entry_password" v-model="password" @keyup.enter="login">
+							<button type="button" v-on:click="login" id="entry_btn">登录</button>
+							<span class="toSign"> 没有账号？</span>
+							<span class="toSignAim"  v-on:click="ToRegister">马上注册！</span>
+							<div id="prompt" class="prompt"></div>
+						</form>
+					</div>
+					<!-- 注册 -->
+					<div class="sign" v-show="showRegister">
+						<span class="welcome"> 注册开启新世界</span>
+						<p class="tip" v-show="showtip">{{tip}}</p>
+						<form class="form" id="sign_form">
+							<input  class="input" type="text" placeholder="请输入用户名"  v-model="sign_username">
+							<input class="input"  type="password" placeholder="请输入密码"  v-model="sign_password1">
+							<input class="input"  type="password" placeholder="请再次输入密码"  v-model="sign_password2" @keyup.enter="sign">
+							<button type="button" v-on:click="sign" >注册</button>
+							<button type="button" v-on:click="switchToLog" >返回登录</button>
+						</form>
+					</div>
+				</div>
+			</div>
+	</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script type="text/javascript">
+    $(function(){
+        Victor("container", "output");   //登陆背景函数
+        $("#entry_name").focus();
+        $(document).keydown(function(event){
+            if(event.keyCode==13){
+                $("#entry_btn").click();
+            }
+        });
+    });
+	var app = new Vue({
+		el: "#app",
+		data: {
+			num: 1,
+			showLogin: true,
+			showRegister: false,
+			showtip: false,
+			tip: '',
+			username: '',
+			password: '',
+			sign_username:"",
+			sign_password1:"",
+			sign_password2:""
+		},
+		methods: {
+			ToRegister: function() {
+				this.showLogin=false;
+				this.showtip=false;
+				this.showRegister=true;
+				this.sign_username="";
+				this.sign_password1="";
+				this.sign_password2="";
+			},
+			switchHtml:function(){
+				window.location.href='main.html';
+			},
+			switchToLog:function(){
+				this.showtip= false;
+				this.showRegister=false;
+				this.showLogin=true;
+				this.username=this.sign_username;
+				this.password="";
+			},
+			login: function() {
+				if (this.username == "" || this.password == "") {
+					this.tip = "请输入用户名和密码"
+					this.showtip = true
+				} else {
+					let data = {
+						'username': this.username,
+						'password': this.password
+					}
+					/*后端接口：查询是否存在该用户*/
+					//this.$http.post('http://blabla',data).then((res)=>{})
+					/*接口的传值是(-1,该用户不存在),(0,密码错误) (1 用户存在)*/
+					/*本地模拟*/
+					var res = {
+						data: -2
+					}
+					if (this.username == "admin") {
+						if (this.password == "12345") {
+							res.data = 1
+						} else res.data = 0
+					} else res.data = -1
+					/*本地模拟*/
+					//console.log(res.data)
+					if (res.data == -1) {
+						this.tip = "该用户不存在"
+						this.showtip = true
+					} else if (res.data == 0) {
+						this.tip = "密码输入错误"
+						this.showtip = true
+					} else if (res.data == 1) {
+						this.tip = "登录成功"
+						this.showtip = true
+						setTimeout(this.switchHtml, 1400); 
+						//setCookie('username', this.username, 1000 * 60)
+						//setTimeout(function() {
+						//	this.$router.push('/home')
+						//}.bind(this), 1000)
+					}
+				}
+			},
+			sign:function(){
+				if (this.sign_username == "" || this.sign_password1 == ""|| this.sign_password2 == "") {
+					this.tip = "用户名和密码不能为空"
+					this.showtip = true
+				} else if(this.sign_password1 != this.sign_password2 ){
+					this.tip = "两次密码输入不一致"
+					this.showtip = true
+				}else{
+					let data = {
+						'username': this.sign_username,
+						'password': this.sign_password1
+					}
+					/*后端接口：申请注册 查询合法性并返回结果*/
+					//this.$http.post('http://blabla',data).then((res)=>{})
+					/*接口的传值是(-1,该用户已存在)(0 网络及未知错误)(1 注册成功)*/
+					/*本地模拟*/
+					var res = {
+						data: 0
+					}
+					if (this.sign_username == "testsign") {
+						res.data = 1
+					}
+					if (this.sign_username == "admin") {
+						res.data = -1
+					}
+					/*本地模拟*/
+					
+					if (res.data == -1) {
+						this.tip = "该用户已存在"
+						this.showtip = true
+					} else if (res.data == 0) {
+						this.tip = "网络错误"
+						this.showtip = true
+					} else if (res.data == 1) {
+						this.tip = "注册成功 转入登录界面"
+						this.showtip = true
+						setTimeout(this.switchToLog, 1400); 
+						//setCookie('username', this.username, 1000 * 60)
+						//setTimeout(function() {
+						//	this.$router.push('/home')
+						//}.bind(this), 1000)
+					}
+				}
+			}
+		}
+	})
+</script>
+
+</body>
+</html>
