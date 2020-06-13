@@ -80,11 +80,12 @@
 		  //delCookie();
 		  console.log("mounted");
 		  var cooki=document.cookie;
+		  console.log(cooki)
 		    if(cooki!=''){
 				this.tip = "已验证 正在登录中"
 				this.showtip = true
 				this.ifrelog = false
-		       setTimeout(this.switchHtml, 2000);
+		        setTimeout(this.switchHtml, 2000);
 		    }
 		  },
 		  

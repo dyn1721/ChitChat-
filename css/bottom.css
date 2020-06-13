@@ -30,15 +30,10 @@
 				margin: 0 0 0 0;
 				
 			}
-			.bottom_bar_words{
-				position: relative;
-				bottom:13%;
-				font-family:"century gothic", sans-serif;
-				font-size: 0.8rem;
-			}
+			
 			.bottom_icon{
 				position: relative;
-				bottom:-0.325rem;
+				bottom:-0.825rem;
 				width: 2rem;
 				height: 2rem;
 			}
