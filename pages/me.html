@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<title>mainpage</title>
+		<style> @import url("../css/bottom.css"); </style>
+		
+	</head>
+	<body>
+	<div id="app">
+		
+		
+		<div class="bottom_bar">
+			<div class="bottom_bar1" v-bind:class="{whiten:ifBottom1}" @click="isBottomShow1">
+				<img class="bottom_icon" src="../img/icon/message.png">
+				<p class="bottom_bar_words">消息</p>
+			</div>
+			<div class="bottom_bar2" v-bind:class="{whiten:ifBottom2}" @click="isBottomShow2" >
+				<img class="bottom_icon" src="../img/icon/mailList.png">
+				<p class="bottom_bar_words">通讯录</p>
+			</div>
+			<div class="bottom_bar3" v-bind:class="{whiten:ifBottom3}" @click="isBottomShow3" >
+				<img class="bottom_icon" src="../img/icon/mine.png">
+				<p class="bottom_bar_words">我的</p>
+			</div>
+		</div>
+	</div>	
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script type="text/javascript">
+		var app = new Vue({
+			el: "#app",
+			data: {
+				ifBottom1:false,
+				ifBottom2:false,
+				ifBottom3:true,
+			},
+			methods:{
+				isBottomShow1:function(){
+					window.location.href='./message.html';
+				},
+				isBottomShow2:function(){
+					window.location.href='./list.html';
+				},
+				isBottomShow3:function(){
+					this.ifBottom1=false;
+					this.ifBottom2=false;
+					this.ifBottom3=true;
+				}
+			}
+		})
+		</script>
+	
+	</body>
+</html>
