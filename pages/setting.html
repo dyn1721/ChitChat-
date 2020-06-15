@@ -3,20 +3,23 @@
     <head>
 		
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Page-Enter" content="RevealTrans(duration=3,Transitionv=11)">
  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
  <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
  <style>
-	 body{background: url("../img/bg/bg_setting.png") no-repeat center 0} 
-	 .a{
-		 height: 16.25rem;
-	 }
+	 .weui-form{
+		 background: url("../img/bg/setting.png") no-repeat;
+		 } 
 	 #headline{
 		 position: relative;
 		 left: -24%;
-		 font-size: 1.875rem;
+		 font-size: 1.775rem;
+		 color: #000000;
 	 }
 	 #return{
 		 color: black;
+		 bottom: 3.125rem;
+		  background: rgba(57, 143, 255, 0.45);  
 	 }
 	 #pic{
 		 width: 30%;
@@ -24,9 +27,11 @@
 		 position: relative;
 		 left: -6%;
 	 }
+	 .weui-cell.weui-cell_active{
+	 }
  </style>
 </head>
-<body >
+<body  >
 	<div id="app" >
 			<div class="page">
 			  <div class="weui-form">
@@ -45,31 +50,31 @@
 			            </div>
 						<img id="pic" v-bind:src="portraitSrc" />
 			          </div>
-			          <div class="weui-cell weui-cell_active">
+			          <div class="weui-cell weui-cell_active" style=" height: 0.625rem;">
 			            <div class="weui-cell__hd"><label class="weui-label">昵称</label></div>
 			            <div class="weui-cell__bd">
 			                <input id="js_input2" class="weui-input"  v-bind:placeholder="nickname" v-model:value="nickname"/>
 			            </div>
 			          </div>
-			          <div class="weui-cell weui-cell_active">
+			          <div class="weui-cell weui-cell_active" style=" height: 0.625rem;">
 			            <div class="weui-cell__hd"><label class="weui-label">签名</label></div>
 			            <div class="weui-cell__bd">
 			                <input id="js_input3" class="weui-input" v-bind:placeholder="sign" v-model:value="sign" />
 			            </div>
 			          </div>
-					  <div class="weui-cell weui-cell_active">
+					  <div class="weui-cell weui-cell_active" style=" height: 0.625rem;">
 					    <div class="weui-cell__hd"><label class="weui-label">性别</label></div>
 					    <div class="weui-cell__bd">
 					        <input id="js_input4" class="weui-input" v-bind:placeholder="sex"  v-model:value="sex"  />
 					    </div>
 					  </div>
-					  <div class="weui-cell weui-cell_active">
+					  <div class="weui-cell weui-cell_active" style=" height: 0.625rem;">
 					    <div class="weui-cell__hd"><label class="weui-label">年龄</label></div>
 					    <div class="weui-cell__bd">
 					        <input id="js_input5" class="weui-input" v-bind:placeholder="age"  v-model:value="age"  type="number" pattern="[0-9]*" />
 					    </div>
 					  </div>
-					  <div class="weui-cell weui-cell_active">
+					  <div class="weui-cell weui-cell_active" style=" height: 0.625rem;">
 					    <div class="weui-cell__hd"><label class="weui-label">邮箱</label></div>
 					    <div class="weui-cell__bd">
 					        <input id="js_input6" class="weui-input" v-bind:placeholder="email"  v-model:value="email"  />
@@ -83,7 +88,7 @@
 			      </p>
 			    </div>
 			    <div class="weui-form__opr-area">
-			      <a id="return" class="weui-btn weui-btn_primary weui-btn_disabled" href="javascript:" @click="switchMe">确定</a>
+			      <a id="return" class="weui-btn weui-btn_primary weui-btn_disabled"  href="javascript:" @click="switchMe">确定</a>
 			    </div>
 			  </div>
 			</div>
@@ -106,6 +111,7 @@
 				
 				},
 				mounted() {
+					document.body.style.overflow='hidden'; //禁用滑动条
 					this.nickname=localStorage.getItem("nickname");
 					this.sex=localStorage.getItem("sex");
 					this.uid=localStorage.getItem("uid");
