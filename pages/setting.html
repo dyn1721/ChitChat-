@@ -6,6 +6,7 @@
 <meta http-equiv="Page-Enter" content="RevealTrans(duration=3,Transitionv=11)">
  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
  <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+ <script type="text/javascript" src="../js/loadPic.js"></script>
  <style>
 	 .weui-form{
 		 background: url("../img/bg/setting.png") no-repeat;
@@ -21,6 +22,11 @@
 		 bottom: 3.125rem;
 		  background: rgba(57, 143, 255, 0.45);  
 	 }
+	 #return2{
+	 		 color: black;
+	 		 bottom: 6.325rem;
+	 		  background: rgba(57, 143, 255, 0.45);  
+	 }
 	 #pic{
 		 width: 30%;
 		 height: 30%;
@@ -31,7 +37,7 @@
 	 }
  </style>
 </head>
-<body  >
+<body >
 	<div id="app" >
 			<div class="page">
 			  <div class="weui-form">
@@ -88,8 +94,11 @@
 			      </p>
 			    </div>
 			    <div class="weui-form__opr-area">
-			      <a id="return" class="weui-btn weui-btn_primary weui-btn_disabled"  href="javascript:" @click="switchMe">确定</a>
+			      <a id="return" class="weui-btn weui-btn_primary weui-btn_disabled"  href="javascript:" @click="switchAtr">确定</a>
 			    </div>
+				<div class="weui-form__opr-area">
+				  <a id="return2" class="weui-btn weui-btn_primary weui-btn_disabled"  href="javascript:" @click="returnMe">返回</a>
+				</div>
 			  </div>
 			</div>
 	</div>
@@ -118,42 +127,60 @@
 					this.age=localStorage.getItem("age");
 					this.sign=localStorage.getItem("sign");
 					this.email=localStorage.getItem("email");
-					this.portraitSrc=localStorage.getItem("portrait");
+					var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
+					this.portraitSrc=picsrc
+					loadPortrait(this.uid,picsrc,"pic")
 				},
 				methods:{
-					switchMe:function(){
-						this.changeAtr();
+					switchHtml:function(){
 						window.location.href='./me.html';
+					},
+					//！异步问题
+					returnMe:function(){
+						 setTimeout(this.switchHtml, 1000);
+					},
+					
+					switchAtr:function(){
+						this.changeAtr().then(
+						 function(){
+							 console.log("ok")
+						 }
+						);
 					},
 					changePor:function(){
 						console.log(22)
 					},
 					changeAtr:function(){
 						if(this.nickname!=localStorage.getItem("nickname")){
+							console.log(1)
 							axios.get('http://129.211.62.153:8080/user/changeInfo/'
 							+this.uid+"/"+"6"+"/"+this.nickname).then((res)=>{
 							localStorage.setItem("nickname",this.nickname)
 							})
 						}
-						if(this.nickname!=localStorage.getItem("sign")){
+						if(this.sign!=localStorage.getItem("sign")){
+							console.log(2)
 							axios.get('http://129.211.62.153:8080/user/changeInfo/'
 							+this.uid+"/"+"7"+"/"+this.sign).then((res)=>{
 							localStorage.setItem("sign",this.sign)
 							})
 						}
-						if(this.nickname!=localStorage.getItem("sex")){
+						if(this.sex!=localStorage.getItem("sex")){
+							console.log(3)
 							axios.get('http://129.211.62.153:8080/user/changeInfo/'
 							+this.uid+"/"+"4"+"/"+this.sex).then((res)=>{
 							localStorage.setItem("sex",this.sex)
 							})
 						}
-						if(this.nickname!=localStorage.getItem("age")){
+						if(this.age!=localStorage.getItem("age")){
+							console.log(4)
 							axios.get('http://129.211.62.153:8080/user/changeInfo/'
 							+this.uid+"/"+"1"+"/"+this.age).then((res)=>{
 							localStorage.setItem("age",this.age)
 							})
 						}
-						if(this.nickname!=localStorage.getItem("email")){
+						if(this.email!=localStorage.getItem("email")){
+							console.log(5)
 							axios.get('http://129.211.62.153:8080/user/changeInfo/'
 							+this.uid+"/"+"8"+"/"+this.email).then((res)=>{
 							localStorage.setItem("email",this.email)
