@@ -61,7 +61,7 @@
 				    </div>
 				    <div class="weui-cell__ft"></div>
 				</a>
-				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchRobot" href="javascript:">
 				    <div class="weui-cell__hd"><img src="../img/icon/robot.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
 				    <div class="weui-cell__bd">
 				        <p>机器人</p>
@@ -145,7 +145,7 @@
 					this.uid=localStorage.getItem("uid");
 					this.age=localStorage.getItem("age");
 					this.sign=localStorage.getItem("sign");
-					this.sign=localStorage.getItem("email");
+					this.email=localStorage.getItem("email");
 					var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
 					console.log("path 2")
 					loadPortrait(this.uid,picsrc,"Portrait")
@@ -157,6 +157,9 @@
 				},
 				switchSetting:function(){
 					window.location.href='./setting.html';
+				},
+				switchRobot:function(){
+					window.location.href='./robot.html';
 				},
 				logOut:function(){
 					 localStorage.clear();

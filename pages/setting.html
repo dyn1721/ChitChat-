@@ -137,15 +137,12 @@
 					},
 					//！异步问题
 					returnMe:function(){
-						 setTimeout(this.switchHtml, 1000);
+						 setTimeout(this.switchHtml, 200);
 					},
 					
-					switchAtr:function(){
-						this.changeAtr().then(
-						 function(){
-							 console.log("ok")
-						 }
-						);
+				 switchAtr:function(){
+						this.changeAtr()
+						console.log("ok")
 					},
 					changePor:function(){
 						console.log(22)
