@@ -17,7 +17,7 @@
 		<div id="app">
 			<div class="top">
 				<div class="top_pic">
-					<img v-bind:src="portraitSrc" style="border-radius: 50%; width: 25px; height: 25px;">
+					<img v-bind:src="portraitSrc" style="border-radius: 50%; width: 30px; height: 30px;">
 				</div>
 				<div class="top_name">
 					<div style="display: table-cell; vertical-align: middle;">消 息</div>
@@ -79,6 +79,7 @@
 							var email = res.data.email;
 							if (sign == null)
 								sign = ''
+							console.log(sign)
 							if (email == null)
 								email = ''
 							localStorage.setItem("username", this.username);
@@ -86,8 +87,8 @@
 							localStorage.setItem("uid", res.data.uid);
 							localStorage.setItem("sex", res.data.sex);
 							localStorage.setItem("age", res.data.age);
-							localStorage.setItem("sign", res.data.sign);
-							localStorage.setItem("email", res.data.email);
+							localStorage.setItem("sign", sign);
+							localStorage.setItem("email", email);
 							//头像获取
 							var picsrc = "http://129.211.62.153:8080/image/" + res.data.uid + "/head.jpg";
 							localStorage.setItem("pic", picsrc);
