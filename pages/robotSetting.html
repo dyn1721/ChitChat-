@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta http-equiv="Page-Enter" content="RevealTrans(duration=3,Transitionv=11)">
+		 <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		 <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+		<title></title>
+		<style>
+			 [v-cloak] {
+			        display: none;  }
+			body::after {
+			  content: "";
+			  background: url("../img/icon/robot.png") no-repeat;
+			  opacity: 0.6;
+			  top: 0;
+			  left: 0;
+			  bottom: 0;
+			  right: 0;
+			  position: absolute;
+			  z-index: -1;   
+			}
+			#headline{
+					 position: relative;
+					 left: 7%;
+					 top: 3.25rem;
+					 font-size: 1.775rem;
+					 color: #000000;
+					 
+			}
+			.switch{
+				 position: relative;
+				 top: 8.75rem;
+			}
+			.weui-cell__bd{
+				font-size: 18px;
+			}
+			.weui-form__opr-area{
+				diaplay: none;
+			}
+			p{
+				width: 90%;
+				position: relative;
+				left: 5%;
+			}
+			#return{
+				position: relative;
+				bottom: -8.5rem;
+			}
+			.chatroom{
+				position: relative;
+				left: -3%;	
+			}
+				
+		</style>
+	</head>
+	<body >
+	<div id="app" v-cloak>
+		 <div id="headline" class="weui-cells__title">聊天机器人设置</div>
+		 <div class="switch">
+			  <div  class="weui-cell weui-cell_active weui-cell_switch">
+			                <div class="weui-cell__bd">开启聊天机器人功能</div>
+			                <div class="weui-cell__ft">
+			                    <input id="switch1" class="weui-switch" @click="switchRobutFunc" v-bind:checked="check1" type="checkbox" />
+			                </div>
+			            </div>
+			  <div v-show="robotOn" class="weui-cell weui-cell_active weui-cell_switch">
+			                <div class="weui-cell__bd">聊天风格自动更新</div>
+			                <div class="weui-cell__ft">
+			                    <input id="switch2" class="weui-switch" @click="switchRobutUpdate"  v-bind:checked="check2" type="checkbox" />
+			                </div>
+			            </div>
+			
+			<p v-show="robotOn">开启本选项后机器人将自动学习用户近期聊天记录，从而生成更适应本用户的聊天风格，从而提升用户体验。用户的聊天记录等隐私在此过程中也会得到充分保护。</p>
+			<a v-show="robotOn" @click="switchRobot" class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+			    <div class="weui-cell__hd"><img src="../img/icon/chatroom.png" style="width: 20px; margin-right: 16px; display: block;"></div>
+			    <div class="weui-cell__bd">
+			        <p class="chatroom">进入机器人聊天室</p>
+			    </div>
+			    <div class="weui-cell__ft"></div>
+			</a>
+			<div class="weui-form__opr-area" >
+			  <a id="return" @click="switchReturn" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
+			</div>
+		</div>
+	</div>
+		      
+		  
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script type="text/javascript">
+			var app = new Vue({
+				el: "#app",
+				data:{
+					robotOn:false,
+					robotUpdate: false,
+					check1:'',
+					check2:''
+					
+				},
+				created() {
+					if(localStorage.getItem("ifRobotOn")!=null){
+						if(localStorage.getItem("ifRobotOn")=="true")
+							this.robotOn=true
+						if(localStorage.getItem("ifRobotUpdate")=="true")
+							this.robotUpdate=true
+						console.log(this.robotOn)
+						console.log(this.robotUpdate)
+						if(this.robotOn==true){
+							this.check1="checked"
+							
+						}
+						if(this.robotUpdate==true){
+							this.check2="checked"
+						}
+						}
+					else{
+						console.log("else")
+						localStorage.setItem("ifRobotOn",this.robotOn)
+						localStorage.setItem("ifRobotUpdate",this.robotUpdate)
+					}
+				},
+				methods:{
+					switchRobot:function(){
+						window.location.href='./robot.html';
+					},
+					switchReturn:function(){
+						window.location.href='./me.html';
+					},
+					switchRobutFunc:function(){
+						this.robotOn=!this.robotOn
+						localStorage.setItem("ifRobotOn",this.robotOn)
+					},
+					switchRobutUpdate:function(){
+						this.robotUpdate=!this.robotUpdate
+						localStorage.setItem("ifRobotUpdate",this.robotUpdate)
+						//语言更新模块
+					},
+				}
+				})
+		</script>
+	</body>
+	
+</html>
