@@ -20,11 +20,11 @@
 		<div id="app">
 			<div id="container">
 				<div class="header">
-					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="" /> </div>
+					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" /> </div>
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> {{friendname}} </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/chat_show.png" alt="" style="" /> </div>
+					<div class="show" @click=""> <img src="../img/chat/chat_show.png" alt="" style="width: 80%;" /> </div>
 				</div>
 				<ul class="content">
 				</ul>
@@ -48,7 +48,7 @@
 				data: {
 					username: '',
 					friendname: '',
-					useruid; '',
+					useruid: '',
 					frienduid: '',
 					portraitSrc: '',
 					arrIcon: [],
@@ -62,14 +62,18 @@
 					span: '',
 				},
 				mounted() {
-					this.username = document.cookie.split('=')[1]
+					this.username = localStorage.getItem("username");
+					this.useruid = localStorage.getItem("uid");
 					this.text = document.getElementById('text');
 					this.content = document.getElementsByTagName('ul')[0];
 					this.img = this.content.getElementsByTagName('img');
 					this.span = this.content.getElementsByTagName('span');
 					this.num = 0;
 					this.iNow = -1;
-					this.arrIcon[0] = "../img/chat/chat_return.png"
+					var picsrc="http://129.211.62.153:8080/image/"+this.useruid+"/head.jpg";
+					this.arrIcon[0] = picsrc;
+					picsrc="http://129.211.62.153:8080/image/"+this.useruid+"/head.jpg";
+					this.arrIcon[0] = picsrc;
 				},
 				methods: {
 					switchHtml: function() {

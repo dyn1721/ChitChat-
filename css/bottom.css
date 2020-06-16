@@ -1,42 +1,98 @@
-.bottom_bar1{
-				width: 33%;
-				height: 10%;
-				position: fixed;
-				left: 0;
-				bottom: 0;
-				background: #e1e1e1;
-				text-align: center;
-				margin: 0 0 0 0;
-				}
-			.bottom_bar2{
-				width: 33%;
-				height: 10%;
-				position: fixed;
-				left: 33%;
-				bottom: 0;
-				background: #e1e1e1;
-				text-align: center;
-				margin: 0 0 0 0;
-				
-			}
-			.bottom_bar3{
-				width: 33.8%;
-				height: 10%;
-				position: fixed;
-				left: 66%;
-				bottom: 0;
-				background: #e1e1e1;
-				text-align: center;
-				margin: 0 0 0 0;
-				
-			}
-			
-			.bottom_icon{
-				position: relative;
-				bottom:-0.825rem;
-				width: 2rem;
-				height: 2rem;
-			}
-			.whiten{
-				background: white;
-			}
+.bottom_bar1 {
+	width: 33%;
+	height: 10%;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	background: #e1e1e1;
+	text-align: center;
+	margin: 0 0 0 0;
+}
+
+.bottom_bar2 {
+	width: 33%;
+	height: 10%;
+	position: fixed;
+	left: 33%;
+	bottom: 0;
+	background: #e1e1e1;
+	text-align: center;
+	margin: 0 0 0 0;
+
+}
+
+.bottom_bar3 {
+	width: 33.8%;
+	height: 10%;
+	position: fixed;
+	left: 66%;
+	bottom: 0;
+	background: #e1e1e1;
+	text-align: center;
+	margin: 0 0 0 0;
+
+}
+
+.bottom_icon {
+	position: relative;
+	bottom: -0.825rem;
+	width: 2rem;
+	height: 2rem;
+}
+
+.whiten {
+	background: white;
+}
+
+.top {
+	width: 100%;
+	height: 10%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	background: #e1e1e1;
+	margin: 0 0 0 0;
+}
+
+.top_name {
+	width: 70%;
+	height: 10%;
+	position: fixed;
+	left: 15%;
+	top: 0;
+	text-align: center;
+	color: #5e5e5e;
+	font-size: 20px;
+	display: table;
+}
+.top_pic {
+	width: 15%;
+	height: 10%;
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: flex;
+	justify-content: center; 
+	align-items: center;
+}
+.top_more {
+	width: 15%;
+	height: 10%;
+	position: fixed;
+	right: 0;
+	top: 0;
+	display: flex;
+	justify-content: center; 
+	align-items: center;
+}
+
+.middle {
+	width: 100%;
+	height: 80%;
+	position: fixed;
+	left: 0;
+	top: 10%;
+	background: #ffffff;
+	overflow: auto;
+	margin: 0 0 0 0;
+}

@@ -22,11 +22,11 @@
 		<div id="app">
 			<div id="container">
 				<div class="header">
-					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="" /> </div>
+					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" /> </div>
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> 无敌的机器人 </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/chat_show.png" alt="" style="" /> </div>
+					<div class="show" @click=""> <img src="../img/chat/chat_show.png" alt="" style="width: 80%;" /> </div>
 				</div>
 				<ul class="content">
 				</ul>
@@ -67,12 +67,13 @@
 					this.img = this.content.getElementsByTagName('img');
 					this.span = this.content.getElementsByTagName('span');
 					this.iNow = -1;
-					this.arrIcon[0] = "../img/chat/chat_return.png";
+					var picsrc="http://129.211.62.153:8080/image/"+this.useruid+"/head.jpg";
+					this.arrIcon[0] = picsrc;
 					this.arrIcon[1] = "../img/chat/robot.png"
 				},
 				methods: {
 					switchHtml: function() {
-						window.location.href = './message.html';
+						window.location.href = './me.html';
 					},
 					send: function() {
 						if (this.text.value == '') {
