@@ -4,12 +4,71 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-		<title>mainpage</title>
+		<title>ChitChat-BuddyList</title>
 		<style> @import url("../css/bottom.css"); </style>
-		
+		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+		<script type="text/javascript" src="../js/cookie.js"></script>
+		<script type="text/javascript" src="../js/loadPic.js"></script>
+		<style>
+			.weui-cells__title{
+				font-size: 1.35rem;
+			}
+			#portrait{
+				position: relative;
+				right: -80%;
+			}
+			.buttom{
+				position: fixed;
+				right: 5%;
+			}
+		</style>
 	</head>
 	<body>
 	<div id="app">
+		
+
+		<div class="weui-cells__title">
+			通讯录
+			<a href="javascript:" class="buttom" id="showIOSDialog2">+</a>
+		</div>
+		<div class="weui-cells__title">  </div>
+
+		<!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
+        <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+        </div>
+
+        <div class="weui-cells">
+
+            <a class="weui-cell  weui-cell_access weui-cell_example" @click="switchRobot" href="javascript:">
+                <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd">
+                    <p>Bot</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+                <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd">
+                    <p>联系人名称</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+		</div>
+		
+		
+
 		<div class="bottom_bar">
 			<div class="bottom_bar1" v-bind:class="{whiten:ifBottom1}" @click="isBottomShow1">
 				<img class="bottom_icon" src="../img/icon/message.png">
@@ -43,7 +102,18 @@
 				},
 				isBottomShow3:function(){
 					window.location.href='./me.html';
-				}
+				},
+				switchRobot:function(){
+					window.location.href='./robot.html';
+				},
+				toFriends: function(uid) {
+					localStorage.setItem("nf") = uid;
+					window.location.href = './friend.html';
+				},
+				toChatroom: function(uid) {
+					localStorage.setItem("nr") = uid;
+					window.location.href = './chatroom.html';
+				},
 			}
 		})
 		</script>
