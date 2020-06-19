@@ -16,12 +16,14 @@ function loadPortrait(uid, url, pic) {
 			var imgCanvas = document.createElement("canvas");
 			imgContext = imgCanvas.getContext("2d");
 			// 确保canvas尺寸和图片一致
-			imgCanvas.width = a.width;
-			imgCanvas.height = a.height;
+			imgCanvas.width =1000;
+			imgCanvas.height = 1000;
 			// 在canvas中绘制图片
-			imgContext.drawImage(a, 0, 0, a.width, a.height);
+			imgContext.drawImage(a, 0, 0);
+			//console.log(imgCanvas.toDataURL());
 			gsFiles.a = imgCanvas.toDataURL();
 			gsFiles.date = todaysDate;
+			//console.log(gsFiles.a)
 			// 将JSON保存到本地存储中
 			try {
 				localStorage.setItem(uid, JSON.stringify(gsFiles));
@@ -33,6 +35,7 @@ function loadPortrait(uid, url, pic) {
 		console.log("no net")
 		// Use image from localStorage
 		var a = document.getElementById(pic);
+		//console.log( gsFiles.a);
 		a.setAttribute("src", gsFiles.a);
 	}
 }

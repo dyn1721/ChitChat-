@@ -128,8 +128,8 @@
 					this.sign=localStorage.getItem("sign");
 					this.email=localStorage.getItem("email");
 					var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
-					this.portraitSrc=picsrc
 					loadPortrait(this.uid,picsrc,"pic")
+					var a = document.getElementById("pic");
 				},
 				methods:{
 					switchHtml:function(){
@@ -145,7 +145,7 @@
 						console.log("ok")
 					},
 					changePor:function(){
-						console.log(22)
+						window.location.href='./settingIcon.html';
 					},
 					changeAtr:function(){
 						if(this.nickname!=localStorage.getItem("nickname")){

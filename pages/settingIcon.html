@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Page-Enter" content="RevealTrans(duration=3,Transitionv=11)">
+ <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+ <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+ <script type="text/javascript" src="../js/loadPic.js"></script>
+<style type="text/css">
+			.con4 {
+				background: url(../img/icon/upload.png)  no-repeat;
+				width: 300px;
+				height: auto;
+				overflow: hidden;
+				margin: 20px auto;
+				color: #FFFFFF;
+				position: absolute;
+				bottom: 30%;
+				left: 10%;
+			}
+			
+			.con4 .btn {
+				width: 100%;
+				height: 40px;
+				line-height: 40px;
+				text-align: center;
+				background: #d8b49c;
+				display: block;
+				font-size: 16px;
+				border-radius: 5px;
+				
+			}
+			
+			
+			.upload_pic {
+				display: block;
+				width: 100%;
+				height: 40px;
+				position: absolute;
+				left: 0;
+				top: 0;
+				opacity: 0;
+				border-radius: 5px;
+			}
+			
+			#cvs {
+				border: 1px solid #000;
+				margin: 20px 0 20px 50px;
+			}
+			#upload{
+					 color: black;
+					  background: rgba(57, 143, 255, 0.45);  
+			}
+			#return{
+					 color: black;
+					  background: rgba(57, 143, 255, 0.45);  
+			}
+		</style>
+ <script type="text/javascript">
+ window.onload = function(){
+	// 选择图片
+	document.getElementById('img').onchange = function(){
+	var img = event.target.files[0];
+	// 判断是否图片
+	if(!img){
+	return ;
+	}
+	// 判断图片格式
+	var reader = new FileReader();
+	reader.readAsDataURL(img);
+	reader.onload = function(e){ 
+		//  上传图片
+		//
+		//
+		console.log(e)
+		console.log(e.target.result)
+		var image = new Image();
+		image.src = e.target.result;
+		// 绑定load事件处理器，加载完成后执行，避免同步问题
+		image.onload = function() {
+			var canvas = document.getElementById("cvs");
+			var ctx = canvas.getContext("2d");
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.drawImage(image, 0, 0, 200, 200);
+		};
+ 	}
+ 	}
+ }
+ </script>
+</head>
+
+<body>
+	<div id="app" >
+		 <div class="weui-form">
+			<div class="con4">
+				<canvas id="cvs" width="200" height="200"></canvas> 
+				<a id="upload" class="weui-btn weui-btn_primary" href="javascript:">上传头像<input type="file"  accept="image/*" capture="camera" class="upload_pic" id="img" /></a>
+				 <a id="return" @click="returnSetting" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
+			</div>
+			</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+			<script type="text/javascript">
+			var app = new Vue({
+				el: "#app",
+				data: {
+					},
+				mounted() {
+					
+				},
+				methods:{
+					returnSetting:function(){
+						window.location.href='./setting.html';
+					}
+				}
+				})
+				</script>
+</body>
+</html>
