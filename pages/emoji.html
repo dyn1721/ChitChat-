@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Page-Enter" content="RevealTrans(duration=3,Transitionv=11)">
+ <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+ <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+ <script type="text/javascript" src="../js/loadPic.js"></script>
+<style type="text/css">
+	body {
+		background: url(../img/icon/emoji2.png)  no-repeat;
+	}
+	.weui-form{
+		background: url(../img/icon/emoji2.png)  no-repeat;
+		}
+	
+	.upload_pic {
+		display: block;
+		width: 100%;
+		height: 40px;
+		position: absolute;
+		left: 0;
+		top: 0;
+		opacity: 0;
+		border-radius: 5px;
+	}
+	#gallery{
+		position: absolute;
+		top: 13.25rem;
+		
+	}
+	.weui-uploader__file{
+		length=20%
+	}
+	#upload{
+		float: left;
+		position: relative;
+		right: -24%;
+		top: 5.575rem;
+		color: black;
+		background: rgba(57, 143, 255, 0.45);  
+	}
+	#return{
+			 color: black;
+			  background: rgba(57, 143, 255, 0.45);  
+			  position:absolute;
+			  bottom: 3.25rem;
+			  left:25%;
+	}
+</style>
+		<script type="text/javascript">
+		window.onload = function(){
+			// 选择图片
+			document.getElementById('img').onchange = function(){
+			var img = event.target.files[0];
+			// 判断是否图片
+			if(!img){
+			return ;
+			}
+			// 判断图片格式
+			var reader = new FileReader();
+			reader.readAsDataURL(img);
+			reader.onload = function(e){ 
+				//  上传图片
+				//
+				//
+				console.log(e)
+				console.log(e.target.result)
+			}
+			}
+		}
+		</script>
+</head>
+
+<body>
+	<div id="app" >
+		 <div class="weui-form">
+				<a id="upload" class="weui-btn weui-btn_primary" href="javascript:">上传表情<input type="file"  accept="image/*" capture="camera" class="upload_pic" id="img" /></a>
+		</div>
+		<div id="gallery" class="weui-uploader__bd">
+		    <ul class="weui-uploader__files" id="uploaderFiles">
+		        <li class="weui-uploader__file" style="background-image: url(../img/icon/emoji2.png);background-size:60%;"></li>
+		        <li class="weui-uploader__file" style="background-image: url(../img/icon/emoji2.png);background-size:60%;"></li>
+		        <li class="weui-uploader__file" style="background-image: url(../img/icon/emoji2.png);background-size:60%;"></li>
+		        <li class="weui-uploader__file" style="background-image: url(../img/icon/emoji2.png);background-size:60%;"></li>
+		       
+		    </ul>
+		    <div class="weui-uploader__input-box">
+		        <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple/>
+		    </div>
+		</div>
+		<a id="return" @click="returnSetting" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+			<script type="text/javascript">
+			var app = new Vue({
+				el: "#app",
+				data: {
+					},
+				methods:{
+					returnSetting:function(){
+						window.location.href='./me.html';
+					}
+				}
+				})
+				</script>
+</body>
+</html>

@@ -54,7 +54,7 @@
 				    </div>
 				    <div class="weui-cell__ft" v-text="sign"></div>
 				</a>
-				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchEmoji" href="javascript:">
 				    <div class="weui-cell__hd"><img src="../img/icon/emoji.png" style="width: 20px; margin-right: 16px; display: block;"></div>
 				    <div class="weui-cell__bd">
 				        <p>表情</p>
@@ -160,6 +160,9 @@
 				},
 				switchRobot:function(){
 					window.location.href='./robotSetting.html';
+				},
+				switchEmoji:function(){
+					window.location.href='./emoji.html';
 				},
 				logOut:function(){
 					 localStorage.clear();
