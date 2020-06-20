@@ -17,7 +17,8 @@
 				position: relative;
 				right: -80%;
 			}
-			.buttom{
+			.button{
+				font-size: 1.35rem;
 				position: fixed;
 				right: 5%;
 			}
@@ -29,7 +30,7 @@
 
 		<div class="weui-cells__title">
 			通讯录
-			<a href="javascript:" class="buttom" id="showIOSDialog2">+</a>
+			<a href="javascript:" class="button" id="showIOSDialog2">+</a>
 		</div>
 		<div class="weui-cells__title">  </div>
 
@@ -50,7 +51,15 @@
         </div>
 
         <div class="weui-cells">
-
+			<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchNewFriend" href="javascript:">
+                <div class="weui-cell__hd" style="position: relative;">
+					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;">
+					<span class="weui-badge" style="position: absolute; top: -0.4em; right: 0.6em;">8</span>
+				</div>
+                <div class="weui-cell__bd">
+                    <p>新的朋友</p>
+                </div>
+            </a>
             <a class="weui-cell  weui-cell_access weui-cell_example" @click="switchRobot" href="javascript:">
                 <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
@@ -82,7 +91,6 @@
 		</div>
 	</div>	
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script type="text/javascript">
 		var app = new Vue({
 			el: "#app",
@@ -105,6 +113,9 @@
 				},
 				switchRobot:function(){
 					window.location.href='./robot.html';
+				},
+				switchNewFriend:function(){
+					window.location.href='./newfriend.html';
 				},
 				toFriends: function(uid) {
 					localStorage.setItem("nf") = uid;
