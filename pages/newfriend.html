@@ -35,13 +35,55 @@
 		<div class="weui-cells__title">  </div>
 
         <div class="weui-cells">
-            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
-                <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="showDialog2">
+                <div class="weui-cell__hd">
+					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
                     <p>联系人名称</p>
                 </div>
                 <div class="weui-cell__ft"></div>
             </a>
+		</div>
+	
+		<div id="dialogs">
+			<!--BEGIN dialog2-->
+			<div class="js_dialog" id="iosDialog2" v-show="Dialog2">
+				<div class="weui-mask" @click='close'></div>
+				<div id="js_dialog_2" class="weui-half-screen-dialog">
+					<div class="weui-half-screen-dialog__hd">
+					  <div class="weui-half-screen-dialog__hd__side">
+						<button style="display: none;" class="weui-icon-btn">返回<i class="weui-icon-back-arrow-thin"></i></button>
+						<button class="weui-icon-btn" @click='close'>关闭<i class="weui-icon-close-thin"></i></button>
+					  </div>
+					  <div class="weui-half-screen-dialog__hd__main">
+						<strong class="weui-half-screen-dialog__title">新的朋友</strong>
+					  </div>
+					</div>
+					<div class="weui-half-screen-dialog__bd">
+					  <p class="weui-half-screen-dialog__desc">
+						联系人名称：
+					  </p>
+					  <p class="weui-half-screen-dialog__tips">
+						这个人很懒，没有留下留言哦。
+					  </p>
+					</div>
+					<div class="weui-half-screen-dialog__ft">
+						<a href="javascript:" class="weui-btn weui-btn_default" @click="close">拒绝</a>
+						<a href="javascript:" class="weui-btn weui-btn_primary" @click="accept">同意</a>
+					</div>
+				</div>
+			</div>
+			<!--END dialog2-->
+
+			<!--BEGIN toast-->
+			<div id="toast" v-show="Toast">
+				<div class="weui-mask_transparent"></div>
+				<div class="weui-toast">
+					<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+					<p class="weui-toast__content">已完成</p>
+				</div>
+			</div>
+			<!--end toast-->
 		</div>
 		
 		
@@ -66,6 +108,8 @@
 				ifBottom1:false,
 				ifBottom2:true,
 				ifBottom3:false,
+				Dialog2:false,
+				Toast:false,
 			},
 			methods:{
 				isBottomShow1:function(){
@@ -96,9 +140,24 @@
 				cancel: function() {
 					window.location.href = './list.html';
 				},
+				showDialog2: function(){
+					this.Dialog2 = true;
+				},
+				close: function(){
+					this.Dialog2 = false;
+				},
+				accept: function(){
+					this.Dialog2 = false;
+					this.Toast = true;
+					let _this = this;
+					setTimeout(function () {
+                		_this.Toast = false;
+            		}, 1000);
+				}
 			}
-		})
+		});
 		</script>
+		
 	
 	</body>
 </html>
