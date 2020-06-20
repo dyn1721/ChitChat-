@@ -26,8 +26,6 @@
 	</head>
 	<body>
 	<div id="app">
-		
-
 		<div class="weui-cells__title">
 			个人资料卡
 			<a href="javascript:" class="button" @click="cancel">取消</a>
@@ -39,7 +37,7 @@
                 <div class="weui-cell__hd">
 					<img src="../img/chat/chat_show.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
-					<p style="font-size: 1.618rem;">联系人名称</p>
+					<p style="font-size: 1.3rem;">联系人名称</p>
 					<br>
 					<br>
                 </div>
@@ -68,23 +66,53 @@
 			</a>
 		</div>
 		<br>
-		<div class="button-sp-area cell">
+
+
+		<div class="button-sp-area cell" v-if="isFriend == true">
 			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary">ChitChat</a>
 			<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">删除好友</a>
+		</div>
+
+		<div class="button-sp-area cell" v-if="isFriend == false">
+			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="showDialog1">添加好友</a>
 		</div>
 		
 	
 		<div id="dialogs">
+			<!--BEGIN dialog3-->
+			<div class="js_dialog" v-show="Dialog1">
+				<div class="weui-mask" @click="close1"></div>
+				<div class="weui-dialog weui-skin_android">
+					<div class="weui-cell ">
+						<div class="weui-cells__group weui-cells__group_form">
+							<div class="weui-cells weui-cells_form">
+								<div class="weui-cell ">
+									<div class="weui-cell__bd">
+										<textarea class="weui-textarea" placeholder="请填写验证信息" rows="2"></textarea>
+									</div>
+								</div>
+							</div>
+						  </div>
+					</div>
+					<div class="weui-dialog__ft">
+						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close1">取消</a>
+						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" @click="addFriend">添加好友</a>
+					</div>
+				</div>
+			</div>
+			<!--END dialog3-->
+
+
 			<!--BEGIN dialog4-->
-			<div class="js_dialog" id="androidDialog2" v-show="Dialog2">
-				<div class="weui-mask"></div>
+			<div class="js_dialog" v-show="Dialog2">
+				<div class="weui-mask" @click="close2"></div>
 				<div class="weui-dialog weui-skin_android">
 					<div class="weui-dialog__bd">
 						将从好友列表中永远移除此人
 					</div>
 					<div class="weui-dialog__ft">
-						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close">取消</a>
-						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" @click="accept">删除好友</a>
+						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close2">取消</a>
+						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" style="color:crimson" @click="deleteFriend">删除好友</a>
 					</div>
 				</div>
 			</div>
@@ -107,6 +135,8 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
+				isFriend:true,									// TODO:这里做个判断
+				Dialog1:false,
 				Dialog2:false,
 				Toast:false,
 			},
@@ -114,13 +144,22 @@
 				cancel: function() {
 					window.location.href = './list.html';
 				},
+				showDialog1: function(){
+					this.Dialog1 = true;
+				},
 				showDialog2: function(){
 					this.Dialog2 = true;
 				},
-				close: function(){
+				close1: function(){
+					this.Dialog1 = false;
+				},
+				close2: function(){
 					this.Dialog2 = false;
 				},
-				accept: function(){
+				addFriend: function(){
+					this.Dialog1 = false;
+				},
+				deleteFriend: function(){
 					this.Dialog2 = false;
 					window.location.href = './list.html';
 					this.Toast = true;
