@@ -30,7 +30,7 @@
 
 		<div class="weui-cells__title">
 			通讯录
-			<a href="javascript:" class="button" id="showIOSDialog2" @click="turnToAddFriends">+</a>
+			<a href="javascript:" class="button" @click="switchSearchFriends">+</a>
 		</div>
 		<div class="weui-cells__title">  </div>
 
@@ -128,8 +128,8 @@
 					localStorage.setItem("nr") = uid;
 					window.location.href = './chatroom.html';
 				},
-				turnToAddFriends: function() {
-					
+				switchSearchFriends: function() {
+					window.location.href = './searchFriend.html';
 				}
 			}
 		})
