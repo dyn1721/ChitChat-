@@ -30,7 +30,7 @@
 
 		<div class="weui-cells__title">
 			通讯录
-			<a href="javascript:" class="button" id="showIOSDialog2">+</a>
+			<a href="javascript:" class="button" id="showIOSDialog2" @click="turnToAddFriends">+</a>
 		</div>
 		<div class="weui-cells__title">  </div>
 
@@ -67,7 +67,7 @@
                 </div>
                 <div class="weui-cell__ft"></div>
             </a>
-            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+            <a class="weui-cell  weui-cell_access weui-cell_example" @click="switchFriend" href="javascript:">
                 <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
                     <p>联系人名称</p>
@@ -114,6 +114,9 @@
 				switchRobot:function(){
 					window.location.href='./robot.html';
 				},
+				switchFriend:function(){
+					window.location.href='./idCard.html';
+				},
 				switchNewFriend:function(){
 					window.location.href='./newfriend.html';
 				},
@@ -125,6 +128,9 @@
 					localStorage.setItem("nr") = uid;
 					window.location.href = './chatroom.html';
 				},
+				turnToAddFriends: function() {
+					
+				}
 			}
 		})
 		</script>
