@@ -73,6 +73,13 @@
                     <p>联系人名称</p>
                 </div>
                 <div class="weui-cell__ft"></div>
+			</a>
+			<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchChatroom" href="javascript:">
+                <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd">
+                    <p>聊天室名称</p>
+                </div>
+                <div class="weui-cell__ft"></div>
             </a>
 		</div>
 		
@@ -116,6 +123,9 @@
 				},
 				switchFriend:function(){
 					window.location.href='./idCard.html';
+				},
+				switchChatroom:function(){
+					window.location.href='./chatroomCard.html';
 				},
 				switchNewFriend:function(){
 					window.location.href='./newfriend.html';
