@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-		<title>ChitChat-IdCard</title>
+		<title>ChitChat-ChatroomCard</title>
 		<style> @import url("../css/bottom.css"); </style>
 		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
 		<script type="text/javascript" src="../js/cookie.js"></script>
@@ -27,7 +27,7 @@
 	<body>
 	<div id="app">
 		<div class="weui-cells__title">
-			个人资料卡
+			Chatroom资料卡
 			<a href="javascript:" class="button" @click="cancel">取消</a>
 		</div>
 		<div class="weui-cells__title">  </div>
@@ -37,33 +37,47 @@
                 <div class="weui-cell__hd">
 					<img src="../img/chat/chat_show.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
-					<p style="font-size: 1.3rem;">联系人名称</p>
+					<p style="font-size: 1.3rem;">聊天室名称</p>
 					<br>
 					<br>
                 </div>
                 <div class="weui-cell__ft"></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+				<div class="weui-cell__hd"><img src="../img/icon/nickname.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+				<div class="weui-cell__bd">
+					<p>聊天室编号</p>
+				</div>
+				<div class="weui-cell__ft" v-text="nickname" ></div>
+			</a>
+			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p>用户名</p>
+					<p>聊天室成员</p>
 				</div>
 				<div class="weui-cell__ft" v-text="username"></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p>签名</p>
+					<p>聊天室公告</p>
 				</div>
 				<div class="weui-cell__ft" v-text="sign"></div>
-			</a>
+            </a>
+            <div class="switch">
+                <div  class="weui-cell weui-cell_active weui-cell_switch">
+                    <div class="weui-cell__bd">开启聊天室消息免打扰</div>
+                    <div class="weui-cell__ft">
+                    <input id="switch1" class="weui-switch" @click="switchRobutFunc" v-bind:checked="check1" type="checkbox" /></div>
+                </div>
+            </div>
 		</div>
 		<br>
 
 
 		<div class="button-sp-area cell" v-if="isFriend == true">
 			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary">ChitChat</a>
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">删除好友</a>
+			<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">退出聊天室</a>
 		</div>
 
 		<div class="button-sp-area cell" v-if="isFriend == false">
@@ -101,11 +115,11 @@
 				<div class="weui-mask" @click="close2"></div>
 				<div class="weui-dialog weui-skin_android">
 					<div class="weui-dialog__bd">
-						将从好友列表中永远移除此人
+						将从好友列表中永远移除此聊天室
 					</div>
 					<div class="weui-dialog__ft">
 						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close2">取消</a>
-						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" style="color:crimson" @click="deleteFriend">删除好友</a>
+						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" style="color:crimson" @click="deleteFriend">退出聊天室</a>
 					</div>
 				</div>
 			</div>
