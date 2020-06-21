@@ -28,10 +28,10 @@
 	 		  background: rgba(57, 143, 255, 0.45);  
 	 }
 	 #pic{
-		 width: 30%;
-		 height: 30%;
+		 width: 50%;
+		 height: 50%;
 		 position: relative;
-		 left: -6%;
+		 left: -30%;
 	 }
 	 .weui-cell.weui-cell_active{
 	 }
@@ -128,8 +128,8 @@
 					this.sign=localStorage.getItem("sign");
 					this.email=localStorage.getItem("email");
 					var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
-					loadPortrait(this.uid,picsrc,"pic")
-					var a = document.getElementById("pic");
+					this.portraitSrc=picsrc;
+					//loadPortrait(this.uid,picsrc,"pic")
 				},
 				methods:{
 					switchHtml:function(){

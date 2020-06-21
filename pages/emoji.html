@@ -7,6 +7,7 @@
  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
  <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
  <script type="text/javascript" src="../js/loadPic.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <style type="text/css">
 	body {
 		background: url(../img/icon/emoji2.png)  no-repeat;
@@ -14,7 +15,22 @@
 	.weui-form{
 		background: url(../img/icon/emoji2.png)  no-repeat;
 		}
-	
+	#title{
+		position: relative;
+		right: -30%;
+		top:5rem;
+		font-family:"century gothic", sans-serif;
+		font-size: 2rem;
+		font-style: italic;
+	}
+	#subtitle{
+		position: relative;
+		right: -46%;
+		top:5rem;
+		font-family:"century gothic", sans-serif;
+		font-size: 1.1rem;
+		font-style: italic;
+	}
 	.upload_pic {
 		display: block;
 		width: 100%;
@@ -49,46 +65,39 @@
 			  left:25%;
 	}
 </style>
-		<script type="text/javascript">
-		window.onload = function(){
-			// 选择图片
-			document.getElementById('img').onchange = function(){
-			var img = event.target.files[0];
-			// 判断是否图片
-			if(!img){
-			return ;
-			}
-			// 判断图片格式
-			var reader = new FileReader();
-			reader.readAsDataURL(img);
-			reader.onload = function(e){ 
-				//  上传图片
-				//
-				//
-				console.log(e)
-				console.log(e.target.result)
-			}
-			}
-		}
-		</script>
 </head>
 
 <body>
 	<div id="app" >
 		 <div class="weui-form">
-				<a id="upload" class="weui-btn weui-btn_primary" href="javascript:">上传表情<input type="file"  accept="image/*" capture="camera" class="upload_pic" id="img" /></a>
+			 <p id="title">管理你的表情库</p>
+			  <p id="subtitle">表情自动同步服务器</p>
 		</div>
+		
 		<div id="gallery" class="weui-uploader__bd">
-		    <ul class="weui-uploader__files" id="uploaderFiles">
-		        <li class="weui-uploader__file" style="background-image: url(../img/icon/emoji2.png);background-size:60%;"></li>
-		        <li class="weui-uploader__file" style="background-image: url(../img/icon/emoji2.png);background-size:60%;"></li>
-		        <li class="weui-uploader__file" style="background-image: url(../img/icon/emoji2.png);background-size:60%;"></li>
-		        <li class="weui-uploader__file" style="background-image: url(../img/icon/emoji2.png);background-size:60%;"></li>
-		       
+		    <ul   class="weui-uploader__files" id="uploaderFiles">
+				<li  style="width: 5rem;height: 5rem;"  class="weui-uploader__input-box">
+				    <input @click="upload" id="img" class="weui-uploader__input" type="file" accept="image/*" multiple/>
+				</li>
+		        <li class="weui-uploader__file" style="width: 5rem;height: 5rem; background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+		        <li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+		        <li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+		        <li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
 		    </ul>
-		    <div class="weui-uploader__input-box">
-		        <input id="uploaderInput" class="weui-uploader__input" type="file" accept="image/*" multiple/>
-		    </div>
 		</div>
 		<a id="return" @click="returnSetting" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
 	</div>
@@ -101,7 +110,34 @@
 				methods:{
 					returnSetting:function(){
 						window.location.href='./me.html';
+					},
+					upload:function(){
+						console.log("1")
+						document.getElementById('img').onchange = function(){
+						var img = event.target.files[0];
+						// 判断是否图片
+						if(!img){
+						return ;
+						}
+						// 判断图片格式
+						var reader = new FileReader();
+						reader.readAsDataURL(img);
+						reader.onload = function(e){ 
+							//  上传图片
+							axios.post('http://129.211.62.153:8080/upload/image/'
+											+localStorage.getItem("uid")+"/"+"2",{data:e.target.result}).then((res)=>{
+												console.log("ok!!")
+												console.log(res)
+											})
+							console.log(e)
+							console.log(e.target.result)
+							var image = new Image();
+							image.src = e.target.result;
+							// 绑定load事件处理器，加载完成后执行，避免同步问题
+						}
+						}
 					}
+					
 				}
 				})
 				</script>

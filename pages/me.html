@@ -17,6 +17,10 @@
 				position: relative;
 				right: -80%;
 			}
+			#Portrait{
+				width: 2rem;
+				height: 2rem;
+				}
 		</style>
 	</head>
 	<body>
@@ -27,9 +31,9 @@
 			<div class="weui-cells">
 			    <a class="weui-cell  weui-cell_access weui-cell_example" @click="switchSetting" href="javascript:">
 			        <div class="weui-cell__hd"><img src="../img/icon/icon.png" alt="" style="width: 20px; display: block;"></div>
-					 <div id="portrait" class="weui-cell__hd"><img id="Portrait" crossorigin="anonymous" v-bind:src="portraitSrc" alt="" style="width: 20px;  display: block;"></div>
+					 <div id="portrait" class="weui-cell__hd"><img id="Portrait" crossorigin="anonymous" v-bind:src="portraitSrc" alt="" style=" display: block;"></div>
 			        <div class="weui-cell__bd">
-			            <p style="position: relative;left: -1%;">头像</p>
+			            <p style="position: relative;left: -6%;">头像</p>
 			        </div>
 			        <div class="weui-cell__ft"></div>
 			    </a>
@@ -136,6 +140,7 @@
 						var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
 						this.portraitSrc=picsrc
 						loadPortrait(this.uid,picsrc,"Portrait")
+						this.portraitSrc=picsrc;
 						})
 				}
 				else{
@@ -148,7 +153,7 @@
 					this.email=localStorage.getItem("email");
 					var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
 					console.log("path 2")
-					loadPortrait(this.uid,picsrc,"Portrait")
+					this.portraitSrc=picsrc;
 				}
 			 },
 			methods:{
