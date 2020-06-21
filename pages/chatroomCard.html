@@ -68,7 +68,7 @@
                 <div  class="weui-cell weui-cell_active weui-cell_switch">
                     <div class="weui-cell__bd">开启聊天室消息免打扰</div>
                     <div class="weui-cell__ft">
-                    <input id="switch1" class="weui-switch" @click="switchRobutFunc" v-bind:checked="check1" type="checkbox" /></div>
+                    <input id="switch1" class="weui-switch" @click="switchDND" v-bind:checked="check1" type="checkbox" /></div>
                 </div>
             </div>
 		</div>
@@ -81,7 +81,7 @@
 		</div>
 
 		<div class="button-sp-area cell" v-if="isFriend == false">
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="showDialog1">添加好友</a>
+			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="showDialog1">加入聊天室</a>
 		</div>
 		
 	
@@ -146,6 +146,7 @@
 				Dialog1:false,
 				Dialog2:false,
 				Toast:false,
+                check1:'',
 			},
 			methods:{
 				cancel: function() {
@@ -174,7 +175,10 @@
 					setTimeout(function () {
                 		_this.Toast = false;
             		}, 1000);
-				}
+				},
+                switchDND:function(){
+                    // TODO
+                },
 			}
 		});
 		</script>
