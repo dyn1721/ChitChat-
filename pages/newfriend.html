@@ -9,7 +9,15 @@
 		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
 		<script type="text/javascript" src="../js/cookie.js"></script>
 		<script type="text/javascript" src="../js/loadPic.js"></script>
+		<!--  https://github.com/sockjs/sockjs-client  -->
+		<script src="../js/sockjs-client.js"></script>
+		<!--  https://github.com/jmesnil/stomp-websocket  -->
+		<script src="../js/stomp.js"></script>
+		<script src="../js/stompClient.js"></script>
 		<style>
+			[v-cloak] {
+			  display: none;
+			}
 			.weui-cells__title{
 				font-size: 1.35rem;
 			}
@@ -25,7 +33,7 @@
 		</style>
 	</head>
 	<body>
-	<div id="app">
+	<div id="app" v-cloak>
 		
 
 		<div class="weui-cells__title">

@@ -46,7 +46,7 @@
         <div class="weui-cells">
             <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
                 <div class="weui-cell__hd">
-					<img :src="portraitSrc" alt="../img/chat/chat_show.png" style="width: 100px; margin-right: 16px; display: block;"></div>
+					<img :src="portraitSrc" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd" >
 					<p style="font-size: 1.3rem;"> {{nickname}} </p>
 					<br>
@@ -57,16 +57,16 @@
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p> 用户名： {{uid}} </p>
+					<p> 性别：</p>
 				</div>
-				<div class="weui-cell__ft"></div>
+				<div class="weui-cell__ft" v-text="sex"></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p> 签名：{{sign}} </p>
+					<p> 签名：</p>
 				</div>
-				<div class="weui-cell__ft"></div>
+				<div class="weui-cell__ft" v-text="sign"></div>
 			</a>
 		</div>
 		<br>
@@ -162,9 +162,9 @@
 				this.username=document.cookie.split('=')[1]
 				console.log(localStorage.getItem("currentUID"))
 				this.currentUID = localStorage.getItem("currentUID")
-				if(localStorage.getItem("currentUID")==null){
+				if(localStorage.getItem("currentUID")!=null){
 					console.log(1)
-					axios.get('http://129.211.62.153:8080/user/searchByID/'+this.currentUID).then((res)=>{
+					axios.get('http://129.211.62.153:8080/user/'+this.currentUID).then((res)=>{
 						console.log(res)
 						this.nickname=res.data.nickname;
 						this.sex=res.data.sex;
@@ -176,31 +176,12 @@
 						this.sign=''
 						if(this.email==null)
 						this.email=''
-						localStorage.setItem("username",this.username );
-						localStorage.setItem("nickname",this.nickname );
-						localStorage.setItem("uid",this.uid );
-						localStorage.setItem("sex",this.sex );
-						localStorage.setItem("age",this.age );
-						localStorage.setItem("sign",this.sign );
-						localStorage.setItem("email",this.email );
 						//头像获取
-						var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
+						var picsrc="http://129.211.62.153:8080/image/"+this.currentUID+"/head.jpg";
 						this.portraitSrc=picsrc
 						loadPortrait(this.uid,picsrc,"Portrait")
 						this.portraitSrc=picsrc;
-						})
-				}
-				else{
-					console.log(2)
-					this.nickname=localStorage.getItem("nickname");
-					this.sex=localStorage.getItem("sex");
-					this.uid=localStorage.getItem("uid");
-					this.age=localStorage.getItem("age");
-					this.sign=localStorage.getItem("sign");
-					this.email=localStorage.getItem("email");
-					var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
-					console.log("path 2")
-					this.portraitSrc=picsrc;
+					})
 				}
 
 			},

@@ -10,6 +10,9 @@
 		<script type="text/javascript" src="../js/cookie.js"></script>
 		<script type="text/javascript" src="../js/loadPic.js"></script>
 		<style>
+            [v-cloak] {
+			  display: none;
+			}
 			.weui-cells__title{
 				font-size: 1.35rem;
 			}
@@ -25,7 +28,7 @@
 		</style>
 	</head>
 	<body>
-	<div id="app">
+	<div id="app" v-cloak>
 		
 
 		<div class="weui-cells__title">
@@ -49,47 +52,27 @@
             </form>
         </div>
         <div class="weui-cells searchbar-result" id="searchResult" v-show="searchResult_show">
-            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend">
-                <div class="weui-cell__hd">
-					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-                <div class="weui-cell__bd">
-                    <p>联系人名称</p>
-                </div>
-                <div class="weui-cell__ft"></div>
-            </a>
-            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend">
-                <div class="weui-cell__hd">
-					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-                <div class="weui-cell__bd">
-                    <p>联系人名称</p>
-                </div>
-                <div class="weui-cell__ft"></div>
-            </a>
-            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend">
-                <div class="weui-cell__hd">
-					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-                <div class="weui-cell__bd">
-                    <p>联系人名称</p>
-                </div>
-                <div class="weui-cell__ft"></div>
-            </a>
-            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend">
-                <div class="weui-cell__hd">
-					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-                <div class="weui-cell__bd">
-                    <p>联系人名称</p>
-                </div>
-                <div class="weui-cell__ft"></div>
-            </a>
+            <div v-for="(user, i) in searchResult">
+                <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
+                    <div class="weui-cell__hd">
+                        <img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                    <div class="weui-cell__bd">
+                        <p> {{user.nickname}} </p>
+                    </div>
+                    <div class="weui-cell__ft"></div>
+                </a>
+            </div>
         </div>
 	
 	</div>	
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
 		<script type="text/javascript">
 		var app = new Vue({
 			el: "#app",
 			data: {
                 searchInput:'',
+                searchResult:[],
                 searchResult_show:false,
                 searchText_show:true,
                 searchBarActive:false,
@@ -99,7 +82,8 @@
 				cancel: function() {
 					window.location.href = './list.html';
 				},
-                switchFriend: function() {
+                switchFriend: function(uid) {
+                    localStorage.setItem("currentUID", uid);
                     window.location.href = './idCard.html';
                 },
                 hideSearchResult: function() {
@@ -126,6 +110,14 @@
                 searchInput_input: function() {
                     console.log("Input");
                     if(this.searchInput.length) {
+                        // 更新搜索列表
+                        console.log(this.searchInput);
+                        axios.get('http://129.211.62.153:8080/user/search/2/'+this.searchInput)
+                        .then((res)=>{
+                            console.log(res);
+                            this.searchResult = res.data;
+                        })
+
                         this.searchResult_show = true;
                     } else {
                         this.searchResult_show = false;
@@ -145,6 +137,11 @@
                         this.$refs.searchInput.blur();
                     })
                 },
+                getImg(uid) {
+                    var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
+                    console.log(url);
+                    return url;
+                }
 
 			}
 		});
