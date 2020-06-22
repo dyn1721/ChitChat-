@@ -49,10 +49,13 @@
 				white-space:-o-pre-wrap;
 				word-wrap:break-word;
 			}
+			[v-cloak] {
+			    display: none;
+			}
 		</style>
 	</head>
 	<body>
-		<div id="app">
+		<div id="app" v-cloak>
 			<div id="container">
 				<div class="header">
 					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" />
@@ -87,25 +90,26 @@
 			var app = new Vue({
 				el: "#app",
 				data: {
-					username: '',
 					friendname: '',
 					useruid: '',
 					frienduid: '',
 					portraitSrc: '',
 					arrIcon: [],
 					messages: [],
-					mess: ['', '', ''],
 					num: '',
 					iNow: '',
 					text: '',
 					content: '',
 					img: '',
 					span: '',
+					time:''
 				},
 				mounted() {
-					this.username = localStorage.getItem("username");
 					this.useruid = localStorage.getItem("uid");
 					this.frienduid = localStorage.getItem("nf");
+					axios.get('http://129.211.62.153:8080/user/' + this.useruid).then((res) => {
+						this.friendname = res.data.nickname
+					})
 					this.text = document.getElementById('text');
 					this.content = document.getElementsByTagName('ul')[0];
 					this.img = this.content.getElementsByTagName('img');
@@ -116,10 +120,12 @@
 					this.arrIcon[0] = picsrc;
 					picsrc = "http://129.211.62.153:8080/image/" + this.frienduid + "/head.jpg";
 					this.arrIcon[1] = picsrc;
+					this.load();
 					this.getMessage();
 				},
 				methods: {
 					switchHtml: function() {
+						localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages)
 						window.location.href = './message.html';
 					},
 					send: function() {
@@ -128,26 +134,68 @@
 						} else {
 							axios.post('http://129.211.62.153:8080/msg/single-chat', {
 								type: 1,
+								style: 1,
 								fromId: this.useruid,
 								toId: this.frienduid,
 								content: this.text.value
-							}).then(res => (console.log(res)))
+							}).then(res => {
+								this.time = res.data.substring(0,19)
+								console.log(this.time)
+							})
 							this.content.innerHTML += '<li><img src="' + this.arrIcon[this.num] + '"><span><pre>' + this.text.value +
 								'</pre></span></li>';
 							this.iNow++;
 							this.img[this.iNow].className += 'imgright';
 							this.span[this.iNow].className += 'spanright';
+							this.messages.push({
+								type: 1,
+								send: 1,
+								content: this.text.value,
+								src: "",
+								time: this.time
+							})
 							this.text.value = '';
 							this.content.scrollTop = this.content.scrollHeight;
 						}
 					},
 					getMessage: function() {
-						axios.get('http://129.211.62.153:8080/msg/user/' + this.useruid + '/' + 9).then((res) => {
+						console.log("me:"+this.useruid,"fri:"+this.frienduid);
+						axios.post('http://129.211.62.153:8080/msg/user/' + this.useruid + '/' + this.frienduid).then((res) => {
 							console.log(res.data);
 						})
 					},
 					sendPicture: function() {
 						window.location.assign('./emoji.html')
+					},
+					load: function() {
+						var oldlist = [{
+							type: 1, //1消息，2图片
+							send: 2, //1自己，2对方
+							content: "你已经和我成为好友了，快来聊天吧！",
+							src: "",
+							time: "2020-06-22T14:07:15"
+						}]	
+						if (JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid)) != null) {
+							console.log(localStorage.getItem(this.useruid + "mf" + this.frienduid))
+							this.messages = JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid));
+							this.messages.sort(this.compare('time'))
+							console.log(this.messages)
+						}					
+					},
+					compare(attr) {
+						let that = this;
+						return function(a, b) {
+							let val1 = a[attr];
+							let val2 = b[attr];
+							val1 = this.changeDate(val1)
+							val2 = this.changeDate(val2)
+							return new Date(val2) - new Date(val1);
+						}
+					},
+					changeDate: function(str) {
+						str = str.replace(/-/g, '/')						
+						str = str.replace(/T/, ' ')
+						return str;
 					}
 				}
 			})

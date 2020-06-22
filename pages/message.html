@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
@@ -14,10 +13,13 @@
 			.weui-btn {
 				color: #41abe2;
 			}
+			[v-cloak] {
+			    display: none;
+			}
 		</style>
 	</head>
 	<body>
-		<div id="app">
+		<div id="app" v-cloak>
 			<div class="top">
 				<div class="top_pic">
 					<img v-bind:src="portraitSrc" style="border-radius: 50%; width: 30px; height: 30px;">
@@ -43,8 +45,8 @@
 				</div>
 			</div>
 
-			<div id="dialogs">
-				<div class="js_dialog" v-show="dialog">
+			<div id="dialogs" v-show="dialog">
+				<div class="js_dialog">
 					<div class="weui-mask" @click="changeDialog"></div>
 					<div class="weui-dialog weui-skin_android">
 						<div class="weui-dialog__hd">
@@ -71,14 +73,15 @@
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script type="text/javascript">
-			window.toFriends = function(id) {
-				console.log(id)
-				localStorage.setItem("nf", id);
-				window.location.href = './friend.html';
-			};
-			window.toChatroom = function(id) {
-				localStorage.setItem("nr", id)
-				//window.location.href = './chatroom.html';
+			window.toChat = function(type, id) {
+				console.log(type, id)
+				if (type == 1) {
+					localStorage.setItem("nf", id);
+					window.location.href = './friend.html';
+				} else if (type == 2) {
+					localStorage.setItem("nr", id);
+					window.location.href = './chatroom.html';
+				}
 			};
 			var app = new Vue({
 				el: "#app",
@@ -89,11 +92,11 @@
 					username: '',
 					useruid: '',
 					portraitSrc: '',
-					messagelist: [],
 					middleshow: '',
 					dialog: false,
-					roomname: '',
-					roomid:''
+					chatname: '',
+					chatid: '',
+					massagelist: []
 				},
 				mounted() {
 					this.username = document.cookie.split('=')[1];
@@ -124,7 +127,7 @@
 						this.useruid = localStorage.getItem("uid");
 					}
 					this.middleshow = document.getElementById("middle");
-					setTimeout(this.show, 1000);
+					setTimeout(this.load, 500);
 				},
 				methods: {
 					isBottomShow1: function() {
@@ -140,41 +143,109 @@
 					},
 					changeDialog: function() {
 						this.dialog = !this.dialog;
+						var text = document.getElementById('text');
+						text.value = ''
+					},
+					load: function() {
+						if (localStorage.getItem("mlist") == null) {
+							axios.post('http://129.211.62.153:8080/msg/chatinfo/' + this.useruid).then((res) => {
+								console.log(res);
+								this.massagelist.push({
+									type: "1",
+									otheruid: "",
+									selfuid: this.useruid,
+									newMessageNumber: "",
+									name: "",
+									newestMessage: "",
+									time: ""
+								})
+								localStorage["mlist"] = JSON.stringify(this.massagelist);
+							})
+						} else {
+							this.refresh();
+						}
+						setTimeout(this.show, 500);
+					},
+					refresh: function() {
+						axios.post('http://129.211.62.153:8080/msg/chatinfo/' + this.useruid).then((res) => {
+							console.log(res.data);
+							this.massagelist.push({
+								type: 1,
+								otheruid: 2,
+								selfuid: this.useruid,
+								newMessageNumber: 0,
+								name: "测试",
+								newestMessage: "测试",
+								time: "2020-06-22-14-07-15"
+							})
+							localStorage["mlist"] = JSON.stringify(this.massagelist);
+						})
 					},
 					show: function() {
-						console.log(this.useruid);
-						axios.get('http://129.211.62.153:8080/msg/chatinfo/' + this.useruid).then((res) => {
-							console.log(res.data);
-						})
-						axios.get('http://129.211.62.153:8080/msg/user/2/9').then((res) => {
-							console.log(res.data);
-						})
-						this.middleshow.innerHTML += '<div class="weui-cells" onclick="toFriends(' + 2 + ')">' +
-							'<div class="weui-cell weui-cell_active">' +
-							'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
-							'<img src="../img/chat/chat_show.png" style="width: 50px; display: block;" />' +
-							'<span class="weui-badge" style="position: absolute; top: -0.4em; right: -0.4em;">' + 8 + '</span>' +
-							'</div>' +
-							'<div class="weui-cell__bd">' +
-							'<p>' + 1 + '</p>' +
-							'<p style="font-size: 13px; color: #888;">摘要信息</p>' +
-							'</div>' +
-							'<div class="weui-cell__ft">' + 1.1 + '</div>' +
-							'</div>' +
-							'</div>'
-						localStorage[1]=JSON.stringify({name:'xiecanyong',sex:'man', hobby:'program'})
-						console.log(localStorage.getItem("uid"))
+						var i = 0;
+						var li = JSON.parse(localStorage.getItem("mlist"));
+						li.sort(this.compare('time'))
+						console.log(li[0])
+						for (; i < li.length; i++) {
+							if (li[i].newMessageNumber != 0)
+								this.middleshow.innerHTML +=
+								'<div class="weui-cells" onclick="toChat(' + li[i].type + ',' + li[i].otheruid + ')">' +
+								'<div class="weui-cell weui-cell_active">' +
+								'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+								'<img src="../img/chat/chat_show.png" style="width: 50px; display: block;" />' +
+								'<span class="weui-badge" style="position: absolute; top: -0.4em; right: -0.4em;">' + li[i].newMessageNumber +
+								'</span>' +
+								'</div>' +
+								'<div class="weui-cell__bd">' +
+								'<p>' + li[i].name + '</p>' +
+								'<p style="font-size: 13px; color: #888;">' + li[i].newestMessage + '</p>' +
+								'</div>' +
+								'<div class="weui-cell__ft">' + li[i].time + '</div>' +
+								'</div>' +
+								'</div>'
+							else
+								this.middleshow.innerHTML +=
+								'<div class="weui-cells" onclick="toChat(' + li[i].type + ',' + li[i].otheruid + ')">' +
+								'<div class="weui-cell weui-cell_active">' +
+								'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+								'<img src="../img/chat/chat_show.png" style="width: 50px; display: block;" />' +
+								'</div>' +
+								'<div class="weui-cell__bd">' +
+								'<p>' + li[i].name + '</p>' +
+								'<p style="font-size: 13px; color: #888;">' + li[i].newestMessage + '</p>' +
+								'</div>' +
+								'<div class="weui-cell__ft">' + li[i].time + '</div>' +
+								'</div>' +
+								'</div>'
+						}
 					},
 					createChatroom: function() {
 						var text = document.getElementById('text');
-						this.roomname = text.value;
-						console.log(this.useruid);
-						axios.get('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.roomname).then((res) => {
+						this.chatname = text.value;
+						text.value = '';
+						axios.get('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.chatname).then((res) => {
 							console.log(res);
-							this.roomid = res.data;
-							console.log(this.roomid);
+							this.chatid = res.data;
+							console.log(this.chatid);
 						})
-						toChatroom(this.roomid);
+						// toChat(2, this.chatid);
+					},
+					compare(attr) {
+						let that = this;
+						return function(a, b) {
+							let val1 = a[attr];
+							let val2 = b[attr];
+							val1 = this.changeDate(val1)
+							val2 = this.changeDate(val2)
+							return new Date(val2) - new Date(val1);
+						}
+					},
+					changeDate: function(str) {
+						str = str.replace(/-/, '/')
+						str = str.replace(/-/, '/')
+						str = str.replace(/-/, ' ')
+						str = str.replace(/-/g, ':')
+						return str;
 					}
 				}
 			})
