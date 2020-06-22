@@ -9,6 +9,13 @@
 		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
 		<script type="text/javascript" src="../js/cookie.js"></script>
 		<script type="text/javascript" src="../js/loadPic.js"></script>
+
+		<!--  https://github.com/sockjs/sockjs-client  -->
+		<script src="../js/sockjs-client.js"></script>
+		<!--  https://github.com/jmesnil/stomp-websocket  -->
+		<script src="../js/stomp.js"></script>
+		<script src="../js/stompClient.js"></script>
+
 		<style>
 			[v-cloak] {
 			  display: none;
@@ -39,9 +46,9 @@
         <div class="weui-cells">
             <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
                 <div class="weui-cell__hd">
-					<img src="../img/chat/chat_show.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
-                <div class="weui-cell__bd">
-					<p style="font-size: 1.3rem;">联系人名称</p>
+					<img :src="portraitSrc" alt="../img/chat/chat_show.png" style="width: 100px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd" >
+					<p style="font-size: 1.3rem;"> {{nickname}} </p>
 					<br>
 					<br>
                 </div>
@@ -50,14 +57,14 @@
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p>用户名</p>
+					<p> 用户名： {{uid}} </p>
 				</div>
 				<div class="weui-cell__ft" v-text="username"></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p>签名</p>
+					<p> 签名：{{sign}} </p>
 				</div>
 				<div class="weui-cell__ft" v-text="sign"></div>
 			</a>
@@ -85,7 +92,7 @@
 							<div class="weui-cells weui-cells_form">
 								<div class="weui-cell ">
 									<div class="weui-cell__bd">
-										<textarea class="weui-textarea" placeholder="请填写验证信息" rows="2"></textarea>
+										<textarea class="weui-textarea" v-model="content" placeholder="请填写验证信息" rows="2"></textarea>
 									</div>
 								</div>
 							</div>
@@ -133,10 +140,69 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
-				isFriend:true,									// TODO:这里做个判断
+				username:'',
+				currentUID:'',
+				nickname:'',
+				sex:'',
+				uid:'',
+				age:'',
+				intro:'',
+				email:'',
+				sign:'',
+				portraitSrc:'',
+
+				content:'',
+
+				isFriend:false,									// TODO:这里做个判断
 				Dialog1:false,
 				Dialog2:false,
 				Toast:false,
+			},
+			mounted() {
+				this.username=document.cookie.split('=')[1]
+				console.log(localStorage.getItem("currentUID"))
+				this.currentUID = localStorage.getItem("currentUID")
+				if(localStorage.getItem("currentUID")==null){
+					console.log(1)
+					axios.get('http://129.211.62.153:8080/user/searchByLoginID/'+this.currentUID).then((res)=>{
+						console.log(res)
+						this.nickname=res.data.nickname;
+						this.sex=res.data.sex;
+						this.uid=res.data.uid;
+						this.age=res.data.age;
+						this.sign=res.data.intro;
+						this.email=res.data.email;
+						if(this.sign==null)
+						this.sign=''
+						if(this.email==null)
+						this.email=''
+						localStorage.setItem("username",this.username );
+						localStorage.setItem("nickname",this.nickname );
+						localStorage.setItem("uid",this.uid );
+						localStorage.setItem("sex",this.sex );
+						localStorage.setItem("age",this.age );
+						localStorage.setItem("sign",this.sign );
+						localStorage.setItem("email",this.email );
+						//头像获取
+						var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
+						this.portraitSrc=picsrc
+						loadPortrait(this.uid,picsrc,"Portrait")
+						this.portraitSrc=picsrc;
+						})
+				}
+				else{
+					console.log(2)
+					this.nickname=localStorage.getItem("nickname");
+					this.sex=localStorage.getItem("sex");
+					this.uid=localStorage.getItem("uid");
+					this.age=localStorage.getItem("age");
+					this.sign=localStorage.getItem("sign");
+					this.email=localStorage.getItem("email");
+					var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
+					console.log("path 2")
+					this.portraitSrc=picsrc;
+				}
+
 			},
 			methods:{
 				cancel: function() {
@@ -155,6 +221,8 @@
 					this.Dialog2 = false;
 				},
 				addFriend: function(){
+					this.uid = localStorage.getItem("username");
+					sendMessage(3, this.uid, this.currentUID, this.content);
 					this.Dialog1 = false;
 				},
 				deleteFriend: function(){

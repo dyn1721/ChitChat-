@@ -189,7 +189,6 @@
 										for(;i<this.list.length;i++){
 											this.list[i]='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+this.list[i]+".jpg" 
 										}
-										console.log(this.list)
 										})
 				},
 				methods:{
@@ -224,7 +223,7 @@
 														this.list=res.data
 														var i=0
 														for(;i<this.list.length;i++){
-															this.list[i]='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+this.list[i] 
+															this.list[i]='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+this.list[i]+".jpg"
 														}
 														console.log(this.list)
 														this.Toast=true;

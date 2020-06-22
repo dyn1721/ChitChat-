@@ -54,12 +54,20 @@
 					 color: black;
 					  background: rgba(57, 143, 255, 0.45);  
 			}
+			#topTips2{
+				background-color: var(--weui-BLUE);
+			}
+			#topTips3{
+				background-color: var(--weui-GREEN);
+			}
 		</style>
 
 </head>
 
 <body>
 	<div id="app" >
+		<div class="weui-toptips weui-toptips_warn" v-show="ifLoading" id="topTips2" style="display: block; opacity: 1;">上传中</div>
+		<div class="weui-toptips weui-toptips_warn" v-show="ifSuccess" id="topTips3" style="display: block; opacity: 1;">上传成功</div>
 		 <div class="weui-form">
 			<div class="con4">
 				<canvas id="cvs" width="200" height="200"></canvas> 
@@ -73,6 +81,8 @@
 			var app = new Vue({
 				el: "#app",
 				data: {
+					ifLoading:false,
+					ifSuccess:false,
 					},
 				mounted() {
 				},
@@ -83,7 +93,7 @@
 					},
 					upload:function(){
 						console.log("1")
-						document.getElementById('img').onchange = function(){
+						document.getElementById('img').onchange = ()=>{
 						console.log("2")
 						var img = event.target.files[0];
 						// 判断是否图片
@@ -93,7 +103,7 @@
 						// 判断图片格式
 						var reader = new FileReader();
 						reader.readAsDataURL(img);
-						reader.onload = function(e){ 
+						reader.onload = (e)=>{ 
 							//  上传图片
 							var data;
 							data=e.target.result.replace(/^data:image\/\w+;base64,/, '')
@@ -111,6 +121,10 @@
 												gsFiles.a=e.target.result
 												gsFiles.date = todaysDate;
 												localStorage.setItem(uid,JSON.stringify(gsFiles))
+												this.ifSuccess=true;
+												setTimeout(()=>{
+												this.ifSuccess = false;
+												}, 10000);
 											}) .catch(function (error) {  console.log(error); });
 							//
 							var image = new Image();
