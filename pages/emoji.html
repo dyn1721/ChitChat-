@@ -7,7 +7,7 @@
  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
  <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
  <script type="text/javascript" src="../js/loadPic.js"></script>
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
 <style type="text/css">
 	body {
 		background: url(../img/icon/emoji2.png)  no-repeat;
@@ -49,7 +49,7 @@
 		
 	}
 	.weui-uploader__file{
-		length=20%
+		length:20%;
 	}
 	#upload{
 		float: left;
@@ -99,7 +99,7 @@
 		.picD{
 			width: 5rem;
 			height: 5rem;
-			display：inline-block;
+			display: inline-block;
 			float:left;
 		}
 		.picSetting{
@@ -124,11 +124,20 @@
 			 left:51%;
 			 width: 30%;
 			}
+		#topTips2{
+			background-color: var(--weui-BLUE);
+		}
+		#topTips3{
+			background-color: var(--weui-GREEN);
+		}
 </style>
 </head>
 
 <body>
 	<div id="app" >
+		<div class="weui-toptips weui-toptips_warn" v-show="ifSame" id="topTips" style="display: block; opacity: 1;">请勿上传相同图片</div>
+		<div class="weui-toptips weui-toptips_warn" v-show="ifLoading" id="topTips2" style="display: block; opacity: 1;">上传中</div>
+		<div class="weui-toptips weui-toptips_warn" v-show="ifSuccess" id="topTips3" style="display: block; opacity: 1;">上传成功</div>
 		 <div class="weui-form">
 			 <p id="title">管理你的表情库</p>
 			  <p id="subtitle">表情自动同步服务器</p>
@@ -146,7 +155,14 @@
 				</div>
 		    </ul>
 		</div>
-		<a id="return"  class="weui-btn weui-btn_primary" href="javascript:" onclick="javascript:history.back(-1);">返回</a>
+		<a id="return" @click="returnSetting" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
+		<div id="toast" v-show="Toast">
+			<div class="weui-mask_transparent"></div>
+			<div class="weui-toast">
+				<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+				<p class="weui-toast__content">已删除</p>
+			</div>
+		</div>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 			<script type="text/javascript">
@@ -158,20 +174,28 @@
 					ifSetting:false,
 					ifSettingOn:false,
 					settingSrc:"../img/icon/setting.png",
+					Toast:false,
+					ifSame:false,
+					ifLoading:false,
+					ifSuccess:false,
 					},
 				mounted() {
 					axios.get('http://129.211.62.153:8080/images/'
 									+localStorage.getItem("uid")+"/faces").then((res)=>{
 										console.log("mount!!")
+										console.log(res)
 										this.list=res.data
 										var i=0
 										for(;i<this.list.length;i++){
-											this.list[i]='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+this.list[i] 
+											this.list[i]='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+this.list[i]+".jpg" 
 										}
 										console.log(this.list)
 										})
 				},
 				methods:{
+					returnSetting:function(){
+						window.location.href='./me.html';
+					},
 					manage:function(){
 						this.ifSetting=!this.ifSetting;
 						if(this.ifSettingOn==false){
@@ -197,45 +221,85 @@
 									console.log(res)
 									axios.get('http://129.211.62.153:8080/images/'
 													+localStorage.getItem("uid")+"/faces").then((res)=>{
-														console.log(res.data)
 														this.list=res.data
 														var i=0
 														for(;i<this.list.length;i++){
 															this.list[i]='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+this.list[i] 
 														}
 														console.log(this.list)
+														this.Toast=true;
+														setTimeout(()=>{
+														this.Toast = false;
+														}, 1500);
 														})
 						})
 					},
 					upload:function(){
 						var i="";
+						this.ifSame=true;
+						console.log(2)
 						document.getElementById('img').onchange = ()=>{
-						var img = event.target.files[0];
+						this.ifSame=false;
+						checkif=true
+						console.log(3)
+						var img = event.target.files;
+						console.log(event.target.files)
 						// 判断是否图片
 						if(!img){
 						return ;
 						}
-						// 判断图片格式
+						var data=[]
 						var reader = new FileReader();
-						reader.readAsDataURL(img);
+						reader.readAsDataURL(img[0]);
+						var j=1;
 						reader.onload = (e)=>{ 
+							data.push(e.target.result)
+							console.log(j)
+							if(j < img.length) {
+							           reader.readAsDataURL(img[j++]);
+							           }
+							else{
 							//  上传图片
-							var data;
-							data=e.target.result.replace(/^data:image\/\w+;base64,/, '')
-							axios.post('http://129.211.62.153:8080/upload/image/'
+							var k=0;
+							for(;k<data.length;k++){
+								data[k]=data[k].replace(/^data:image\/\w+;base64,/, '')
+							}
+							console.log(data)
+							axios.post('http://129.211.62.153:8080/upload/images/'
 											+localStorage.getItem("uid")+"/"+"2",{image:data}).then((res)=>{
+												this.ifLoading=true;
 												console.log(0)
 												axios.get('http://129.211.62.153:8080/images/'
 																+localStorage.getItem("uid")+"/faces").then((res)=>{
 																	var temp=res.data
-																	console.log(1,temp)
-																	i='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+temp[temp.length-1]
-																	console.log(i)
-																	this.list.splice(0,0,i)
+																	console.log(this.list)
+																	console.log(res.data)
+																	var now=this.list.length
+																	var to=temp.length
+																	console.log(now,to)
+																	var vector=[]
+																	var i=0
+																	for(;i<to;i++){
+																		var kk='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+temp[i]+".jpg"
+																		vector.push(kk)
+																		console.log(kk)
+																	}
+																	setTimeout(()=>{
+																		
+																		console.log(vector)
+																		this.list=vector
+																		console.log(this.list)
+																		this.ifLoading=false;
+																		this.ifSuccess=true;
+																		setTimeout(()=>{
+																		this.ifSuccess = false;
+																		}, 3000);
+																	},3000)
+																	
 																	})
 											});
 						}
-						console.log(3)
+						}
 						}
 					}
 					
