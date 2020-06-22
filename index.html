@@ -159,6 +159,7 @@
 										this.showtip = true
 										setTimeout(this.switchToLog, 1400);
 										localStorage.setItem("username", this.username);
+										localStorage.setItem("uid", res1.data.uid);
 									} else {
 										this.tip = "网络错误 请重试"
 										this.showtip = true
