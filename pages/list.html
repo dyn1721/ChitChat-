@@ -50,7 +50,8 @@
                     <p>Bot</p>
                 </div>
                 <div class="weui-cell__ft"></div>
-            </a>
+			</a>
+			<h5 style="text-indent: 5%;">测试用好友</h5>
             <a class="weui-cell  weui-cell_access weui-cell_example" @click="switchFriend" href="javascript:">
                 <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
@@ -58,16 +59,28 @@
                 </div>
                 <div class="weui-cell__ft"></div>
 			</a>
+			<h5 style="text-indent: 5%;">加入的聊天室</h5>
 			<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchChatroom" href="javascript:">
                 <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
                     <p>聊天室名称</p>
                 </div>
                 <div class="weui-cell__ft"></div>
-            </a>
+			</a>
+			<h5 style="text-indent: 5%;">我的好友列表</h5>
+			<!--真正的好友列表-->
+			<div v-for="(user, i) in friendList">
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
+					<div class="weui-cell__hd">
+						<img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd">
+						<p> {{user.nickname}} </p>
+					</div>
+					<div class="weui-cell__ft"></div>
+				</a>
+			</div>
+			
 		</div>
-		
-		
 
 		<div class="bottom_bar">
 			<div class="bottom_bar1" v-bind:class="{whiten:ifBottom1}" @click="isBottomShow1">
@@ -98,8 +111,8 @@
 				this.uid = localStorage.getItem("uid");
 				axios.get('http://129.211.62.153:8080/user/getlist/'+this.uid+'/1')
 				.then((res)=>{
-					console.log(res)
-
+					console.log(res);
+					this.friendList = res.data;
 				})
 			},
 
@@ -138,7 +151,12 @@
 				},
 				switchSearchFriends: function() {
 					window.location.href = './searchFriend.html';
-				}
+				},
+				getImg(uid) {
+                    var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
+                    console.log(url);
+                    return url;
+                }
 			}
 		})
 		</script>
