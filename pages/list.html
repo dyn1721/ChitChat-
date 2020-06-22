@@ -51,14 +51,7 @@
                 </div>
                 <div class="weui-cell__ft"></div>
 			</a>
-			<h5 style="text-indent: 5%;">测试用好友</h5>
-            <a class="weui-cell  weui-cell_access weui-cell_example" @click="switchFriend" href="javascript:">
-                <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-                <div class="weui-cell__bd">
-                    <p>联系人名称</p>
-                </div>
-                <div class="weui-cell__ft"></div>
-			</a>
+
 			<h5 style="text-indent: 5%;">加入的聊天室</h5>
 			<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchChatroom" href="javascript:">
                 <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
@@ -67,7 +60,27 @@
                 </div>
                 <div class="weui-cell__ft"></div>
 			</a>
+			<!--真正的聊天室-->
+			<div v-for="(room, i) in roomList">
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
+					<div class="weui-cell__hd">
+						<img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd">
+						<p> {{room.roomname}} </p>
+					</div>
+					<div class="weui-cell__ft"></div>
+				</a>
+			</div>
+			<br>
+
 			<h5 style="text-indent: 5%;">我的好友列表</h5>
+			<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchFriend" href="javascript:">
+                <div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd">
+                    <p>联系人名称</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+			</a>
 			<!--真正的好友列表-->
 			<div v-for="(user, i) in friendList">
 				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
@@ -104,8 +117,9 @@
 				ifBottom1:false,
 				ifBottom2:true,
 				ifBottom3:false,
-				uid:'123',
+				uid:'',
 				friendList:[],
+				roomList:[],
 			},
 			mounted() {
 				this.uid = localStorage.getItem("uid");
@@ -113,6 +127,11 @@
 				.then((res)=>{
 					console.log(res);
 					this.friendList = res.data;
+				})
+				axios.get('http://129.211.62.153:8080/user/getroom/'+this.uid)
+				.then((res)=>{
+					console.log(res);
+					this.roomList = res.data;
 				})
 			},
 
