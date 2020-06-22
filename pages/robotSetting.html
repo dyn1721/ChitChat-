@@ -80,7 +80,7 @@
 			    <div class="weui-cell__ft"></div>
 			</a>
 			<div class="weui-form__opr-area" >
-			  <a id="return" @click="switchReturn" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
+			  <a id="return" onclick="javascript:history.back(-1);" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
 			</div>
 		</div>
 	</div>
@@ -124,9 +124,6 @@
 				methods:{
 					switchRobot:function(){
 						window.location.href='./robot.html';
-					},
-					switchReturn:function(){
-						window.location.href='./me.html';
 					},
 					switchRobutFunc:function(){
 						this.robotOn=!this.robotOn

@@ -60,19 +60,22 @@
 			#topTips3{
 				background-color: var(--weui-GREEN);
 			}
+			[v-cloak] {
+			    display: none;
+			}
 		</style>
 
 </head>
 
 <body>
-	<div id="app" >
+	<div id="app" v-cloak>
 		<div class="weui-toptips weui-toptips_warn" v-show="ifLoading" id="topTips2" style="display: block; opacity: 1;">上传中</div>
 		<div class="weui-toptips weui-toptips_warn" v-show="ifSuccess" id="topTips3" style="display: block; opacity: 1;">上传成功</div>
 		 <div class="weui-form">
 			<div class="con4">
 				<canvas id="cvs" width="200" height="200"></canvas> 
 				<a id="upload" @click="upload" class="weui-btn weui-btn_primary" href="javascript:">上传头像<input type="file"  accept="image/*" capture="camera" class="upload_pic" id="img" /></a>
-				 <a id="return" @click="returnSetting" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
+				 <a id="return" onclick="javascript:history.back(-1);" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
 			</div>
 			</div>
 	</div>
@@ -87,10 +90,6 @@
 				mounted() {
 				},
 				methods:{
-					returnSetting:function(){
-						
-						window.location.href='./setting.html';
-					},
 					upload:function(){
 						console.log("1")
 						document.getElementById('img').onchange = ()=>{
@@ -124,7 +123,7 @@
 												this.ifSuccess=true;
 												setTimeout(()=>{
 												this.ifSuccess = false;
-												}, 5000);
+												}, 3000);
 											}) .catch(function (error) {  console.log(error); });
 							//
 							var image = new Image();

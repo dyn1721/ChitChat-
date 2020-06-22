@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 		<title>mainpage</title>
+		<!-- <script src="./js/sockjs-client.js"></script>
+		<script src="./js/stomp.js"></script> -->
 		<style> @import url("../css/bottom.css"); </style>
 		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css" />
 		<style>
@@ -14,10 +15,13 @@
 			.weui-btn {
 				color: #41abe2;
 			}
+			[v-cloak] {
+			    display: none;
+			}
 		</style>
 	</head>
 	<body>
-		<div id="app">
+		<div id="app" v-cloak>
 			<div class="top">
 				<div class="top_pic">
 					<img v-bind:src="portraitSrc" style="border-radius: 50%; width: 30px; height: 30px;">
@@ -43,8 +47,8 @@
 				</div>
 			</div>
 
-			<div id="dialogs">
-				<div class="js_dialog" v-show="dialog">
+			<div id="dialogs" v-show="dialog">
+				<div class="js_dialog">
 					<div class="weui-mask" @click="changeDialog"></div>
 					<div class="weui-dialog weui-skin_android">
 						<div class="weui-dialog__hd">
@@ -70,15 +74,43 @@
 
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
-		<script type="text/javascript">
-			window.toFriends = function(id) {
-				console.log(id)
-				localStorage.setItem("nf", id);
-				window.location.href = './friend.html';
-			};
-			window.toChatroom = function(id) {
-				localStorage.setItem("nr", id)
-				//window.location.href = './chatroom.html';
+		<script src="../js/sockjs-client.js"></script>
+		<script src="../js/stomp.js"></script>
+		<script>
+			function subscribe() {
+		        // 订阅/uni/chat/{uid}, 也就发送给uid=1的用户的消息
+		        client.subscribe('/uni/chat/'+localStorage.getItem("uid"), onMessage);
+		        // 订阅/broad/chat/{gid}, 也就是在gid=1的群内发送的消息
+		        // client.subscribe('/broad/chat/1', onMessage);
+		        // 订阅/uni/add/{uid}, 也就是添加uid=1的用户为好友的消息
+		        // client.subscribe('/uni/add/1', onMessage);
+		    }
+		    var connectCallback = function () {
+		        console.log('连接成功!');
+		        subscribe();
+		    };
+		    var errorCallback = function () {
+		        console.log('连接失败!');
+		    };
+		    var ws = new SockJS('http://129.211.62.153:8080/ws');
+		    var client = Stomp.over(ws);
+		    // 连接服务器, uid=1, passcode=pass1
+		    client.connect('1', 'pass1', connectCallback, errorCallback);
+		
+		    // 接收到订阅消息后的回调函数
+		    function onMessage(message) {
+		        console.log(message)
+				app.refresh() 
+		    }
+			window.toChat = function(type, id) {
+				console.log(type, id)
+				if (type == 1) {
+					localStorage.setItem("nf", id);
+					window.location.href = './friend.html';
+				} else if (type == 2) {
+					localStorage.setItem("nr", id);
+					window.location.href = './chatroom.html';
+				}
 			};
 			var app = new Vue({
 				el: "#app",
@@ -89,16 +121,15 @@
 					username: '',
 					useruid: '',
 					portraitSrc: '',
-					messagelist: [],
 					middleshow: '',
 					dialog: false,
-					roomname: '',
-					roomid:''
+					chatname: '',
+					chatid: '',
+					massagelist: []
 				},
 				mounted() {
-					this.username = document.cookie.split('=')[1];
-					if (localStorage.getItem("username") == null) {
-						axios.get('http://129.211.62.153:8080/user/searchByLoginID/' + this.username).then((res) => {
+					if (localStorage.getItem("uid") == null) {
+						axios.get('http://129.211.62.153:8080/user/searchByLoginID/' + localStorage.getItem("username")).then((res) => {
 							console.log(res)
 							var sign = res.data.intro;
 							var email = res.data.email;
@@ -106,7 +137,6 @@
 								sign = ''
 							if (email == null)
 								email = ''
-							localStorage.setItem("username", this.username);
 							localStorage.setItem("nickname", res.data.nickname);
 							localStorage.setItem("uid", res.data.uid);
 							this.useruid = res.data.uid;
@@ -124,7 +154,7 @@
 						this.useruid = localStorage.getItem("uid");
 					}
 					this.middleshow = document.getElementById("middle");
-					setTimeout(this.show, 1000);
+					setTimeout(this.load, 500);
 				},
 				methods: {
 					isBottomShow1: function() {
@@ -140,41 +170,166 @@
 					},
 					changeDialog: function() {
 						this.dialog = !this.dialog;
+						var text = document.getElementById('text');
+						text.value = ''
+					},
+					load: function() {
+						if (localStorage.getItem("mlist") == null) {
+							axios.post('http://129.211.62.153:8080/msg/chatinfo/' + this.useruid).then((res) => {
+								console.log(res);
+								var i = 0;
+								for (; i < res.data.length; i++) {
+									this.massagelist.push({
+										type: res.data[i].type,
+										otheruid: res.data[i].id,
+										selfuid: this.useruid,
+										newMessageNumber: res.data[i].unreadNumber,
+										name: res.data[i].name,
+										newestMessage: res.data[i].latestContent,
+										time: res.data[i].latestTime.substring(0, 19)
+									})
+								}
+								localStorage["mlist"] = JSON.stringify(this.massagelist);
+							})
+						} else {
+							this.refresh();
+						}
+						setTimeout(this.show, 500);
+					},
+					refresh: function() {
+						this.massagelist = JSON.parse(localStorage.getItem("mlist"))
+						axios.post('http://129.211.62.153:8080/msg/chatinfo/' + this.useruid).then((res) => {
+							console.log(res.data);
+							var i = 0;
+							var j = 0;
+							for (; i < res.data.length; i++) {
+								for (j = 0; j < this.massagelist.length; j++) {
+									if (res.data[i].id == this.massagelist[j].otheruid && res.data[i].type == this.massagelist[j].type)
+										this.massagelist.splice(j, 1);
+								}
+								this.massagelist.push({
+									type: res.data[i].type,
+									otheruid: res.data[i].id,
+									selfuid: this.useruid,
+									newMessageNumber: res.data[i].unreadNumber,
+									name: res.data[i].name,
+									newestMessage: res.data[i].latestContent,
+									time: res.data[i].latestTime.substring(0, 19)
+								})
+							}
+							localStorage["mlist"] = JSON.stringify(this.massagelist);
+						})
 					},
 					show: function() {
-						console.log(this.useruid);
-						axios.get('http://129.211.62.153:8080/msg/chatinfo/' + this.useruid).then((res) => {
-							console.log(res.data);
-						})
-						axios.get('http://129.211.62.153:8080/msg/user/2/9').then((res) => {
-							console.log(res.data);
-						})
-						this.middleshow.innerHTML += '<div class="weui-cells" onclick="toFriends(' + 2 + ')">' +
-							'<div class="weui-cell weui-cell_active">' +
-							'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
-							'<img src="../img/chat/chat_show.png" style="width: 50px; display: block;" />' +
-							'<span class="weui-badge" style="position: absolute; top: -0.4em; right: -0.4em;">' + 8 + '</span>' +
-							'</div>' +
-							'<div class="weui-cell__bd">' +
-							'<p>' + 1 + '</p>' +
-							'<p style="font-size: 13px; color: #888;">摘要信息</p>' +
-							'</div>' +
-							'<div class="weui-cell__ft">' + 1.1 + '</div>' +
-							'</div>' +
-							'</div>'
-						localStorage[1]=JSON.stringify({name:'xiecanyong',sex:'man', hobby:'program'})
-						console.log(localStorage.getItem("uid"))
+						var i = 0;
+						var li = JSON.parse(localStorage.getItem("mlist"));
+						li.sort(this.compare('time'))
+						console.log(li[0])
+						for (; i < li.length; i++) {
+							li[i].time = this.showTime(li[i].time)
+							if (li[i].type == 1) {
+								if (li[i].newMessageNumber != 0)
+									this.middleshow.innerHTML +=
+									'<div class="weui-cells" onclick="toChat(' + li[i].type + ',' + li[i].otheruid + ')">' +
+									'<div class="weui-cell weui-cell_active">' +
+									'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+									'<img src="http://129.211.62.153:8080/image/' + li[i].otheruid +
+									'/head.jpg" style="width: 50px; display: block;" />' +
+									'<span class="weui-badge" style="position: absolute; top: -0.4em; right: -0.4em;">' + li[i].newMessageNumber +
+									'</span>' +
+									'</div>' +
+									'<div class="weui-cell__bd">' +
+									'<p>' + li[i].name + '</p>' +
+									'<p style="font-size: 13px; color: #888;">' + li[i].newestMessage + '</p>' +
+									'</div>' +
+									'<div class="weui-cell__ft">' + li[i].time + '</div>' +
+									'</div>' +
+									'</div>'
+								else
+									this.middleshow.innerHTML +=
+									'<div class="weui-cells" onclick="toChat(' + li[i].type + ',' + li[i].otheruid + ')">' +
+									'<div class="weui-cell weui-cell_active">' +
+									'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+									'<img src="http://129.211.62.153:8080/image/' + li[i].otheruid +
+									'/head.jpg" style="width: 50px; display: block;" />' +
+									'</div>' +
+									'<div class="weui-cell__bd">' +
+									'<p>' + li[i].name + '</p>' +
+									'<p style="font-size: 13px; color: #888;">' + li[i].newestMessage + '</p>' +
+									'</div>' +
+									'<div class="weui-cell__ft">' + li[i].time + '</div>' +
+									'</div>' +
+									'</div>'
+							} else {
+								if (li[i].newMessageNumber != 0)
+									this.middleshow.innerHTML +=
+									'<div class="weui-cells" onclick="toChat(' + li[i].type + ',' + li[i].otheruid + ')">' +
+									'<div class="weui-cell weui-cell_active">' +
+									'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+									'<img src="../img/chat/chatroom.png" style="width: 50px; display: block;" />' +
+									'<span class="weui-badge" style="position: absolute; top: -0.4em; right: -0.4em;">' + li[i].newMessageNumber +
+									'</span>' +
+									'</div>' +
+									'<div class="weui-cell__bd">' +
+									'<p>' + li[i].name + '</p>' +
+									'<p style="font-size: 13px; color: #888;">' + li[i].newestMessage + '</p>' +
+									'</div>' +
+									'<div class="weui-cell__ft">' + li[i].time + '</div>' +
+									'</div>' +
+									'</div>'
+								else
+									this.middleshow.innerHTML +=
+									'<div class="weui-cells" onclick="toChat(' + li[i].type + ',' + li[i].otheruid + ')">' +
+									'<div class="weui-cell weui-cell_active">' +
+									'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+									'<img src="../img/chat/chatroom.png" style="width: 50px; display: block;" />' +
+									'</div>' +
+									'<div class="weui-cell__bd">' +
+									'<p>' + li[i].name + '</p>' +
+									'<p style="font-size: 13px; color: #888;">' + li[i].newestMessage + '</p>' +
+									'</div>' +
+									'<div class="weui-cell__ft">' + li[i].time + '</div>' +
+									'</div>' +
+									'</div>'
+							}
+						}
 					},
 					createChatroom: function() {
 						var text = document.getElementById('text');
-						this.roomname = text.value;
-						console.log(this.useruid);
-						axios.get('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.roomname).then((res) => {
+						this.chatname = text.value;
+						text.value = '';
+						axios.get('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.chatname).then((res) => {
 							console.log(res);
-							this.roomid = res.data;
-							console.log(this.roomid);
+							this.chatid = res.data;
+							console.log(this.chatid);
 						})
-						toChatroom(this.roomid);
+						// toChat(2, this.chatid);
+					},
+					changeDate: function(str) {
+						str = str.replace(/-/g, '/')
+						str = str.replace(/T/, ' ')
+						return str;
+					},
+					showTime: function(str) {
+						var dd = new Date();
+						var year = dd.getFullYear();
+						var month = dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
+						var day = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
+						var today = year + "-" + month + "-" + day;
+						str = str.replace(/T/, ' ')
+						if (str.includes(today))
+							return str.substring(11,16);
+						else return str.substring(0,10);
+					},
+					compare(attr) {
+						let that = this;
+						return function(a, b) {
+							let val1 = a[attr];
+							let val2 = b[attr];
+							val1 = that.changeDate(val1)
+							val2 = that.changeDate(val2)
+							return new Date(val2) - new Date(val1);
+						}
 					}
 				}
 			})

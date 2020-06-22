@@ -33,18 +33,20 @@
 		 position: relative;
 		 left: -30%;
 	 }
-	 #topTips2{
-	 	background-color: var(--weui-BLUE);
-	 }
+	 
 	 #topTips3{
 	 	background-color: var(--weui-GREEN);
 	 }
 	 .weui-cell.weui-cell_active{
 	 }
+	 [v-cloak] {
+	     display: none;
+	 }
  </style>
 </head>
 <body >
-	<div id="app" >
+	<div id="app" v-cloak>
+		<div class="weui-toptips weui-toptips_warn" v-show="ifSuccess" id="topTips3" style="display: block; opacity: 1;">修改成功</div>
 			<div class="page">
 			  <div class="weui-form">
 			    <div class="weui-form__text-area">
@@ -103,7 +105,7 @@
 			      <a id="return" class="weui-btn weui-btn_primary weui-btn_disabled"  href="javascript:" @click="switchAtr">确定</a>
 			    </div>
 				<div class="weui-form__opr-area">
-				  <a id="return2" class="weui-btn weui-btn_primary weui-btn_disabled"  href="javascript:" @click="returnMe">返回</a>
+				  <a id="return2" class="weui-btn weui-btn_primary weui-btn_disabled"  href="javascript:" onclick="javascript:history.back(-1);">返回</a>
 				</div>
 			  </div>
 			</div>
@@ -123,6 +125,7 @@
 					email:'',
 					sign:'',
 					portraitSrc:'',
+					ifSuccess:false,
 				
 				},
 				mounted() {
@@ -138,17 +141,13 @@
 					//loadPortrait(this.uid,picsrc,"pic")
 				},
 				methods:{
-					switchHtml:function(){
-						window.location.href='./me.html';
-					},
-					//！异步问题
-					returnMe:function(){
-						 setTimeout(this.switchHtml, 200);
-					},
-					
 				 switchAtr:function(){
 						this.changeAtr()
 						console.log("ok")
+						this.ifSuccess=true;
+						setTimeout(()=>{
+						this.ifSuccess = false;
+						}, 3000);
 					},
 					changePor:function(){
 						window.location.href='./settingIcon.html';

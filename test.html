@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <title>STOMP前端DEMO</title>
+    <!--  https://github.com/sockjs/sockjs-client  -->
+    <script src="/js/sockjs-client.js"></script>
+    <!--  https://github.com/jmesnil/stomp-websocket  -->
+    <script src="/js/stomp.js"></script>
+    <script>
+        function subscribe() {
+            // 订阅/uni/chat/{uid}, 也就发送给uid=1的用户的消息
+            client.subscribe('/uni/chat/1', onMessage);
+            // 订阅/broad/chat/{gid}, 也就是在gid=1的群内发送的消息
+            client.subscribe('/broad/chat/1', onMessage);
+            // 订阅/uni/add/{uid}, 也就是添加uid=1的用户为好友的消息
+            client.subscribe('/uni/add/1', onMessage);
+        }
+        // 连接成功回调函数
+        var connectCallback = function () {
+            console.log('连接成功!');
+            // 订阅各种消息
+            subscribe();
+        };
+        // 连接失败回调函数
+        var errorCallback = function () {
+            console.log('连接失败!');
+        };
+
+        // SockJS对象，可以使用http协议而不是必须用ws协议
+        var ws = new SockJS('http://129.211.62.153:8080/ws');
+        // 基于SockJS对象构建STOMP客户端
+        var client = Stomp.over(ws);
+        // 连接服务器, uid=1, passcode=pass1
+        client.connect('1', 'pass1', connectCallback, errorCallback);
+
+        // 接收到订阅消息后的回调函数
+        function onMessage(message) {
+            var show = document.getElementById('show');
+            show.innerText += '收到消息: ' + message + '\n';
+        }
+    </script>
+</head>
+
+<body>
+<div>
+    <label for="type">类型（1：单聊，2：群聊，3：添加好友）</label>
+    <br>
+    <input id="type" type="number" />
+    <br>
+    <label for="toId">接收人uid</label>
+    <br>
+    <input id="toId" type="number" />
+    <br>
+    <label for="content">内容</label>
+    <br>
+    <input id="content" type="text" />
+    <br>
+    <button onclick="sendMessage()">发送</button>
+    <br>
+    <label for="show">展示区</label>
+    <br>
+    <textarea id="show" cols="30" rows="30"></textarea>
+</div>
+<div id="output"></div>
+</body>
+
+</html>

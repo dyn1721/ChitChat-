@@ -112,7 +112,6 @@
 				portraitSrc:''
 			},
 			mounted(){
-				this.username=localStorage.getItem("username")
 				console.log(localStorage.getItem("username"))
 				if(localStorage.getItem("ifLogin")=="0"){
 					console.log(1)
@@ -129,7 +128,6 @@
 						this.sign=''
 						if(this.email==null)
 						this.email=''
-						localStorage.setItem("username",this.username );
 						localStorage.setItem("nickname",this.nickname );
 						localStorage.setItem("uid",this.uid );
 						localStorage.setItem("sex",this.sex );
@@ -146,6 +144,7 @@
 				else{
 					localStorage.setItem("ifLogin","1");
 					console.log(2)
+					this.username=localStorage.getItem("username");
 					this.nickname=localStorage.getItem("nickname");
 					this.sex=localStorage.getItem("sex");
 					this.uid=localStorage.getItem("uid");
