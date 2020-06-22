@@ -17,6 +17,9 @@
 		<script src="../js/stompClient.js"></script>
 
 		<style>
+			[v-cloak] {
+			  display: none;
+			}
 			.weui-cells__title{
 				font-size: 1.35rem;
 			}
@@ -29,10 +32,11 @@
 				position: fixed;
 				right: 5%;
 			}
+			
 		</style>
 	</head>
 	<body>
-	<div id="app">
+	<div id="app" v-cloak>
 		<div class="weui-cells__title">
 			个人资料卡
 			<a href="javascript:" class="button" @click="cancel">取消</a>

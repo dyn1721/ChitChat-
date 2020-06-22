@@ -10,6 +10,9 @@
 		<script type="text/javascript" src="../js/cookie.js"></script>
 		<script type="text/javascript" src="../js/loadPic.js"></script>
 		<style>
+			[v-cloak] {
+			  display: none;
+			}
 			.weui-cells__title{
 				font-size: 1.35rem;
 			}
@@ -25,7 +28,7 @@
 		</style>
 	</head>
 	<body>
-	<div id="app">
+	<div id="app" v-cloak>
 		<div class="weui-cells__title">
 			Chatroom资料卡
 			<a href="javascript:" class="button" @click="cancel">取消</a>
