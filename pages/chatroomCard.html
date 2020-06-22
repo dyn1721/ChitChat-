@@ -140,7 +140,8 @@
 		</div>
 		
 	</div>	
-		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
 		<script type="text/javascript">
 		var app = new Vue({
 			el: "#app",
@@ -172,12 +173,12 @@
 				},
 				deleteFriend: function(){
 					this.Dialog2 = false;
-					window.location.href = './list.html';
 					this.Toast = true;
 					let _this = this;
 					setTimeout(function () {
                 		_this.Toast = false;
-            		}, 1000);
+                    }, 1000);
+                    window.location.href = './list.html';
 				},
                 switchDND:function(){
                     // TODO
