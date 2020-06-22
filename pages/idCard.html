@@ -47,8 +47,8 @@
             <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
                 <div class="weui-cell__hd">
 					<img :src="portraitSrc" alt="../img/chat/chat_show.png" style="width: 100px; margin-right: 16px; display: block;"></div>
-                <div class="weui-cell__bd">
-					<p v-model="nickname" style="font-size: 1.3rem;"> {{nickname}} </p>
+                <div class="weui-cell__bd" >
+					<p style="font-size: 1.3rem;"> {{nickname}} </p>
 					<br>
 					<br>
                 </div>
@@ -57,14 +57,14 @@
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p  v-model="uid"> 用户名： {{uid}} </p>
+					<p> 用户名： {{uid}} </p>
 				</div>
 				<div class="weui-cell__ft" v-text="username"></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p  v-model="sign"> 签名：{{sign}} </p>
+					<p> 签名：{{sign}} </p>
 				</div>
 				<div class="weui-cell__ft" v-text="sign"></div>
 			</a>
@@ -140,6 +140,7 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
+				username:'',
 				currentUID:'',
 				nickname:'',
 				sex:'',
