@@ -18,7 +18,7 @@
 	#title{
 		position: relative;
 		right: -30%;
-		top:5rem;
+		top:4rem;
 		font-family:"century gothic", sans-serif;
 		font-size: 2rem;
 		font-style: italic;
@@ -26,7 +26,7 @@
 	#subtitle{
 		position: relative;
 		right: -46%;
-		top:5rem;
+		top:4rem;
 		font-family:"century gothic", sans-serif;
 		font-size: 1.1rem;
 		font-style: italic;
@@ -44,6 +44,8 @@
 	#gallery{
 		position: absolute;
 		top: 13.25rem;
+		left: 5%;
+		width: 90%;
 		
 	}
 	.weui-uploader__file{
@@ -60,10 +62,68 @@
 	#return{
 			 color: black;
 			  background: rgba(57, 143, 255, 0.45);  
-			  position:absolute;
+			  position:fixed;
 			  bottom: 3.25rem;
 			  left:25%;
 	}
+	.weui-uploader__bd{
+		height: 470px;
+		width: 200px;
+		overflow: hidden;
+		border: 1px solid #ccc;
+		margin: 20px auto;
+		
+	}
+		.weui-uploader__files{
+			height: 100%;
+			overflow-y: auto;
+			overflow-x: hidden;
+		}
+	  
+		.weui-uploader__file{
+			border: 1px solid #ccc;
+			margin: -1px;
+			height: 40px;
+			line-height: 40px;
+			text-align: center;
+			font-size: 12px;
+			width: 200px;
+		}
+		.pic{
+			width: 5rem;
+			height: 5rem;
+		}
+		.weui-uploader__input-box{
+			margin: 0 0 0 0 ;
+		}
+		.picD{
+			width: 5rem;
+			height: 5rem;
+			display：inline-block;
+			float:left;
+		}
+		.picSetting{
+			width: 1.875rem;
+			height: 1.875rem;
+			position:absolute;
+			right: 1.875rem;
+			top:12rem;
+			}
+		.check{
+			position: relative;
+			top:-1.575rem;
+			left: 3.5rem;
+			width: 1.5rem;
+			height: 1.5rem;
+		}
+		#delete{
+			color: black;
+			 background: rgba(57, 143, 255, 0.45);  
+			 position:fixed;
+			 top: 11.85rem;
+			 left:51%;
+			 width: 30%;
+			}
 </style>
 </head>
 
@@ -72,31 +132,18 @@
 		 <div class="weui-form">
 			 <p id="title">管理你的表情库</p>
 			  <p id="subtitle">表情自动同步服务器</p>
+			  <img class="picSetting" @click="manage" :src="settingSrc" />
 		</div>
-		
+		<a id="delete" @click="deletePic"  v-show="ifSetting"  class="weui-btn weui-btn_primary" href="javascript:">删除</a>
 		<div id="gallery" class="weui-uploader__bd">
 		    <ul   class="weui-uploader__files" id="uploaderFiles">
 				<li  style="width: 5rem;height: 5rem;"  class="weui-uploader__input-box">
 				    <input @click="upload" id="img" class="weui-uploader__input" type="file" accept="image/*" multiple/>
 				</li>
-		        <li class="weui-uploader__file" style="width: 5rem;height: 5rem; background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-		        <li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-		        <li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-		        <li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
-				<li class="weui-uploader__file" style="width: 5rem;height: 5rem;background-image: url(../img/icon/emoji2.png);background-size:100%;"></li>
+				<div class="picD"  v-for="(item,i) in list" >
+					<img class="pic"  :src="item" >
+					<p><input class="check" v-model="checkedList" :value="item"  v-show="ifSetting" type="checkbox" /></p>
+				</div>
 		    </ul>
 		</div>
 		<a id="return" @click="returnSetting" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
@@ -106,14 +153,65 @@
 			var app = new Vue({
 				el: "#app",
 				data: {
+					list:[],
+					checkedList:[],
+					ifSetting:false,
+					ifSettingOn:false,
+					settingSrc:"../img/icon/setting.png",
 					},
+				mounted() {
+					axios.get('http://129.211.62.153:8080/images/'
+									+localStorage.getItem("uid")+"/faces").then((res)=>{
+										console.log("mount!!")
+										this.list=res.data
+										var i=0
+										for(;i<this.list.length;i++){
+											this.list[i]='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+this.list[i] 
+										}
+										console.log(this.list)
+										})
+				},
 				methods:{
 					returnSetting:function(){
 						window.location.href='./me.html';
 					},
+					manage:function(){
+						this.ifSetting=!this.ifSetting;
+						if(this.ifSettingOn==false){
+							this.ifSettingOn=true;
+							this.settingSrc="../img/icon/settingOn.png"
+						}
+						else{
+							this.ifSettingOn=false;
+							this.settingSrc="../img/icon/setting.png";
+						}
+					},
+					deletePic:function(){
+						console.log(this.checkedList)
+						var i=0;
+						var temp=[];
+						for(;i<this.checkedList.length;i++){
+							temp.push(this.checkedList[i].split("/1/faces/")[1])
+						}
+						console.log(temp)
+						axios.post('http://129.211.62.153:8080/images/'
+								+localStorage.getItem("uid")+"/faces/delete",{image:temp}).then((res)=>{
+									console.log("delete ok!!")
+									console.log(res)
+									axios.get('http://129.211.62.153:8080/images/'
+													+localStorage.getItem("uid")+"/faces").then((res)=>{
+														this.list=res.data
+														var i=0
+														for(;i<this.list.length;i++){
+															this.list[i]='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+this.list[i] 
+														}
+														console.log(this.list)
+														})
+						})
+					},
 					upload:function(){
-						console.log("1")
-						document.getElementById('img').onchange = function(){
+						var i="";
+						document.getElementById('img').onchange = ()=>{
 						var img = event.target.files[0];
 						// 判断是否图片
 						if(!img){
@@ -122,19 +220,23 @@
 						// 判断图片格式
 						var reader = new FileReader();
 						reader.readAsDataURL(img);
-						reader.onload = function(e){ 
+						reader.onload = (e)=>{ 
 							//  上传图片
+							var data;
+							data=e.target.result.replace(/^data:image\/\w+;base64,/, '')
 							axios.post('http://129.211.62.153:8080/upload/image/'
-											+localStorage.getItem("uid")+"/"+"2",{data:e.target.result}).then((res)=>{
-												console.log("ok!!")
-												console.log(res)
-											})
-							console.log(e)
-							console.log(e.target.result)
-							var image = new Image();
-							image.src = e.target.result;
-							// 绑定load事件处理器，加载完成后执行，避免同步问题
+											+localStorage.getItem("uid")+"/"+"2",{image:data}).then((res)=>{
+												console.log(0)
+												axios.get('http://129.211.62.153:8080/images/'
+																+localStorage.getItem("uid")+"/faces").then((res)=>{
+																	var temp=res.data
+																	console.log(1)
+																	i='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+temp[temp.length-1]
+																	this.list.splice(0,0,i)
+																	})
+											});
 						}
+						console.log(3)
 						}
 					}
 					
