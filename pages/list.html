@@ -87,6 +87,7 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
+				tempUID:'2',
 				ifBottom1:false,
 				ifBottom2:true,
 				ifBottom3:false,
@@ -107,6 +108,7 @@
 					window.location.href='./robot.html';
 				},
 				switchFriend:function(){
+					localStorage.setItem("currentUID", this.tempUID);
 					window.location.href='./idCard.html';
 				},
 				switchChatroom:function(){
