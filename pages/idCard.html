@@ -46,7 +46,7 @@
         <div class="weui-cells">
             <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
                 <div class="weui-cell__hd">
-					<img :src="portraitSrc" alt="../img/chat/chat_show.png" style="width: 100px; margin-right: 16px; display: block;"></div>
+					<img :src="portraitSrc" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd" >
 					<p style="font-size: 1.3rem;"> {{nickname}} </p>
 					<br>
@@ -57,30 +57,30 @@
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p> 用户名： {{uid}} </p>
+					<p> 性别：</p>
 				</div>
-				<div class="weui-cell__ft"></div>
+				<div class="weui-cell__ft" v-text="sex"></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p> 签名：{{sign}} </p>
+					<p> 签名：</p>
 				</div>
-				<div class="weui-cell__ft"></div>
+				<div class="weui-cell__ft" v-text="sign"></div>
 			</a>
 		</div>
 		<br>
 
-
-		<div class="button-sp-area cell" v-if="isFriend == true">
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary">ChitChat</a>
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">删除好友</a>
+		<div v-show="!isMe">
+			<div class="button-sp-area cell" v-if="isFriend == true">
+				<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary">ChitChat</a>
+				<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">删除好友</a>
+			</div>
+	
+			<div class="button-sp-area cell" v-if="isFriend == false">
+				<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="showDialog1">添加好友</a>
+			</div>
 		</div>
-
-		<div class="button-sp-area cell" v-if="isFriend == false">
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="showDialog1">添加好友</a>
-		</div>
-		
 	
 		<div id="dialogs">
 			<!--BEGIN dialog3-->
@@ -153,22 +153,23 @@
 
 				content:'',
 
-				isFriend:false,									// TODO:这里做个判断
+				isMe:'',
+				isFriend:'',
 				Dialog1:false,
 				Dialog2:false,
 				Toast:false,
+				friendList:[],
 			},
 			mounted() {
 				this.username=document.cookie.split('=')[1]
 				console.log(localStorage.getItem("currentUID"))
 				this.currentUID = localStorage.getItem("currentUID")
-				if(localStorage.getItem("currentUID")==null){
+				if(localStorage.getItem("currentUID")!=null){
 					console.log(1)
-					axios.get('http://129.211.62.153:8080/user/searchByID/'+this.currentUID).then((res)=>{
+					axios.get('http://129.211.62.153:8080/user/'+this.currentUID).then((res)=>{
 						console.log(res)
 						this.nickname=res.data.nickname;
 						this.sex=res.data.sex;
-						this.uid=res.data.uid;
 						this.age=res.data.age;
 						this.sign=res.data.intro;
 						this.email=res.data.email;
@@ -176,33 +177,26 @@
 						this.sign=''
 						if(this.email==null)
 						this.email=''
-						localStorage.setItem("username",this.username );
-						localStorage.setItem("nickname",this.nickname );
-						localStorage.setItem("uid",this.uid );
-						localStorage.setItem("sex",this.sex );
-						localStorage.setItem("age",this.age );
-						localStorage.setItem("sign",this.sign );
-						localStorage.setItem("email",this.email );
 						//头像获取
-						var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
-						this.portraitSrc=picsrc
-						loadPortrait(this.uid,picsrc,"Portrait")
+						var picsrc="http://129.211.62.153:8080/image/"+this.currentUID+"/head.jpg";
 						this.portraitSrc=picsrc;
-						})
+					})
 				}
-				else{
-					console.log(2)
-					this.nickname=localStorage.getItem("nickname");
-					this.sex=localStorage.getItem("sex");
-					this.uid=localStorage.getItem("uid");
-					this.age=localStorage.getItem("age");
-					this.sign=localStorage.getItem("sign");
-					this.email=localStorage.getItem("email");
-					var picsrc="http://129.211.62.153:8080/image/"+this.uid+"/head.jpg";
-					console.log("path 2")
-					this.portraitSrc=picsrc;
+				// 判断currentUID是否在好友列表内
+				this.uid = localStorage.getItem("uid");
+				axios.get('http://129.211.62.153:8080/user/getlist/'+this.uid+'/1')
+				.then((res)=>{
+					console.log(res);
+					this.friendList = res.data;
+				})
+				if (this.uid == this.currentUID) {
+					this.$set(this, "isMe", true);
+					console.log("It's ME!!");
+				}else {
+					for (user in this.friendList) {
+						if(user.uid == this.currentUID) this.$set(this, "isFriend", true);;
+					}
 				}
-
 			},
 			methods:{
 				cancel: function() {
@@ -222,13 +216,25 @@
 				},
 				addFriend: function(){
 					this.uid = localStorage.getItem("uid");
-					sendMessage(3, this.uid, this.currentUID, this.content);
-					this.Dialog1 = false;
+					if (this.uid == this.currentUID) {
+						console.log("ERROR::YOU_CANNOT_ADD_YOURSELF");
+					}else {
+						axios.post('http://129.211.62.153:8080/user/friendlist/1/' + this.uid + '/' + this.currentUID)
+						.then((res)=>{
+							console.log(res);
+						})
+						// sendMessage(3, this.uid, this.currentUID, this.content);
+						this.Dialog1 = false;
+					}
 				},
 				deleteFriend: function(){
 					this.Dialog2 = false;
 					this.Toast = true;
 					let _this = this;
+					axios.post('http://129.211.62.153:8080/user/friendlist/2/' + this.uid + '/' + this.currentUID)
+						.then((res)=>{
+							console.log(res);
+					})
 					setTimeout(function () {
                 		_this.Toast = false;
 					}, 1000);
