@@ -39,7 +39,7 @@
 	<div id="app" v-cloak>
 		<div class="weui-cells__title">
 			个人资料卡
-			<a href="javascript:" class="button" @click="cancel">取消</a>
+			<a href="javascript:" class="button" onclick="javascript:history.back(-1)">取消</a>
 		</div>
 		<div class="weui-cells__title">  </div>
 
@@ -199,9 +199,6 @@
 				}
 			},
 			methods:{
-				cancel: function() {
-					window.location.href = './list.html';
-				},
 				showDialog1: function(){
 					this.Dialog1 = true;
 				},
@@ -238,7 +235,7 @@
 					setTimeout(function () {
                 		_this.Toast = false;
 					}, 1000);
-					window.location.href = './list.html';
+					history.back(-1);
 				}
 			}
 		});

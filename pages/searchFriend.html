@@ -33,7 +33,7 @@
 
 		<div class="weui-cells__title">
 			检索朋友
-			<a href="javascript:" class="button" @click="cancel">取消</a>
+			<a href="javascript:" class="button" onclick="javascript:history.back(-1)">取消</a>
 		</div>
 		<div class="weui-cells__title">  </div>
 
@@ -79,9 +79,6 @@
 
 			},
 			methods:{
-				cancel: function() {
-					window.location.href = './list.html';
-				},
                 switchFriend: function(uid) {
                     localStorage.setItem("currentUID", uid);
                     window.location.href = './idCard.html';
