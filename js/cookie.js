@@ -1,4 +1,4 @@
-function delCookie()
+f/*unction delCookie()
 			{
 			 var keys=document.cookie.match(/[^ =;]+(?=\=)/g);
 			    if (keys) {
@@ -24,4 +24,4 @@ function getCookie(cname){
 					if (c.indexOf(name)==0) { return c.substring(name.length,c.length); }
 				}
 				return "";
-			}
+			}*/

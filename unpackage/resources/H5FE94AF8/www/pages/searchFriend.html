@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<title>ChitChat-SearchBuddy</title>
+		<style> @import url("../css/bottom.css"); </style>
+		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+		<script type="text/javascript" src="../js/cookie.js"></script>
+		<script type="text/javascript" src="../js/loadPic.js"></script>
+		<style>
+			.weui-cells__title{
+				font-size: 1.35rem;
+			}
+			#portrait{
+				position: relative;
+				right: -80%;
+			}
+			.button{
+				font-size: 1.2rem;
+				position: fixed;
+				right: 5%;
+			}
+		</style>
+	</head>
+	<body>
+	<div id="app">
+		
+
+		<div class="weui-cells__title">
+			检索朋友
+			<a href="javascript:" class="button" @click="cancel">取消</a>
+		</div>
+		<div class="weui-cells__title">  </div>
+
+        <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
+        <div class="weui-search-bar" id="searchBar" :class="{'weui-search-bar_focusing':searchBarActive}">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" ref="searchInput" v-model="searchInput" @input="searchInput_input" @blur="searchInput_blur" placeholder="搜索" required/>
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear" @click="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText" v-show="searchText_show" @click="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+        </div>
+        <div class="weui-cells searchbar-result" id="searchResult" v-show="searchResult_show">
+            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend">
+                <div class="weui-cell__hd">
+					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd">
+                    <p>联系人名称</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend">
+                <div class="weui-cell__hd">
+					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd">
+                    <p>联系人名称</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend">
+                <div class="weui-cell__hd">
+					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd">
+                    <p>联系人名称</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend">
+                <div class="weui-cell__hd">
+					<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                <div class="weui-cell__bd">
+                    <p>联系人名称</p>
+                </div>
+                <div class="weui-cell__ft"></div>
+            </a>
+        </div>
+	
+	</div>	
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script type="text/javascript">
+		var app = new Vue({
+			el: "#app",
+			data: {
+                searchInput:'',
+                searchResult_show:false,
+                searchText_show:true,
+                searchBarActive:false,
+
+			},
+			methods:{
+				cancel: function() {
+					window.location.href = './list.html';
+				},
+                switchFriend: function() {
+                    window.location.href = './idCard.html';
+                },
+                hideSearchResult: function() {
+                    console.log("HideResult");
+                    this.searchResult_show = false;
+                    this.searchInput = '';
+                },
+                cancelSearch: function() {
+                    console.log("cancelSearch");
+                    this.searchBarActive = false;
+                    this.searchText_show = true;
+                },
+                searchText: function() {
+                    console.log("Text");
+                    this.searchBarActive = true;
+                    this.$nextTick(()=>{
+                        this.$refs.searchInput.focus();
+                    })
+                },
+                searchInput_blur: function() {
+                    console.log("Blur");
+                    if(!this.searchInput.length) this.$options.methods.cancelSearch();
+                },
+                searchInput_input: function() {
+                    console.log("Input");
+                    if(this.searchInput.length) {
+                        this.searchResult_show = true;
+                    } else {
+                        this.searchResult_show = false;
+                    }
+                },
+                searchClear: function() {
+                    console.log("Clear");
+                    this.$options.methods.hideSearchResult();
+                    this.$nextTick(()=>{
+                        this.$refs.searchInput.focus();
+                    })
+                },
+                searchCancel: function() {
+                    console.log("Cancel");
+                    this.$options.methods.cancelSearch();
+                    this.$nextTick(()=>{
+                        this.$refs.searchInput.blur();
+                    })
+                },
+
+			}
+		});
+		</script>
+		
+	
+	</body>
+</html>

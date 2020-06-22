@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script type="text/javascript" src="js/cookie.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/vector.js"></script>
+	</head>
+	<body>
+		<div id="app">
+		<h1>this is mainpage</h1>
+		<p>仿照微信 3大部分 一人一部分？</p>
+		 
+		<button type="button" v-on:click="listHtml">消息 （聊天室 消息列表··）</button>
+		<button>通讯录（好友 加好友··）</button><button>我的（设置那些··）</button>
+		
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script>
+			var app = new Vue({
+				el: "#app",
+				methods: {
+					listHtml:function(){
+						window.location.href='list.html';
+					},
+					
+				}
+				})
+		</script>
+	</body>
+</html>

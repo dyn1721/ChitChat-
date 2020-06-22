@@ -7,7 +7,7 @@
 <title>ChitChat-login</title>
 
 <link rel="stylesheet" type="text/css" href="css/style.css">
-<script type="text/javascript" src="js/cookie.js"></script>
+
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/vector.js"></script>
 <style> @import url("css/log.css"); </style>
@@ -79,9 +79,9 @@
 		  //cookie 保存7天
 		  //delCookie();
 		  console.log("mounted");
-		  var cooki=document.cookie;
-		  console.log(cooki)
-		    if(cooki!=''){
+		  var nickname=localStorage.getItem("username");
+		  console.log( nickname)
+		    if( nickname!=null){
 				this.tip = "已验证 正在登录中"
 				this.showtip = true
 				this.ifrelog = false
@@ -130,7 +130,8 @@
 						} else  {
 							this.tip = "登录成功"
 							this.showtip = true
-							setCookie('username', this.username, 7)
+							localStorage.setItem("username",this.username);
+							localStorage.setItem("ifLogin","0");
 							setTimeout(this.switchHtml, 1400); 
 							}
 						})
@@ -161,7 +162,7 @@
 								this.tip = "注册成功 转入登录界面"
 								this.showtip = true
 								setTimeout(this.switchToLog, 1400); 
-								setCookie('username', this.username, 7);
+								localStorage.setItem("username",this.username);
 							}
 							else{
 								this.tip = "网络错误 请重试"

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="Page-Enter" content="RevealTrans(duration=3,Transitionv=11)">
+ <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+ <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+ <script type="text/javascript" src="../js/loadPic.js"></script>
+ <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+  <script type="text/javascript" src="../js/loadPic.js"></script>
+<style type="text/css">
+			.con4 {
+				background: url(../img/icon/upload.png)  no-repeat;
+				width: 300px;
+				height: auto;
+				overflow: hidden;
+				margin: 20px auto;
+				color: #FFFFFF;
+				position: absolute;
+				bottom: 30%;
+				left: 10%;
+			}
+			.con4 .btn {
+				width: 100%;
+				height: 40px;
+				line-height: 40px;
+				text-align: center;
+				background: #d8b49c;
+				display: block;
+				font-size: 16px;
+				border-radius: 5px;
+				
+			}
+			.upload_pic {
+				display: block;
+				width: 100%;
+				height: 40px;
+				position: absolute;
+				left: 0;
+				top: 0;
+				opacity: 0;
+				border-radius: 5px;
+			}
+			#cvs {
+				border: 1px solid #000;
+				margin: 20px 0 20px 50px;
+			}
+			#upload{
+					 color: black;
+					  background: rgba(57, 143, 255, 0.45);  
+			}
+			#return{
+					 color: black;
+					  background: rgba(57, 143, 255, 0.45);  
+			}
+			#topTips2{
+				background-color: var(--weui-BLUE);
+			}
+			#topTips3{
+				background-color: var(--weui-GREEN);
+			}
+		</style>
+
+</head>
+
+<body>
+	<div id="app" >
+		<div class="weui-toptips weui-toptips_warn" v-show="ifLoading" id="topTips2" style="display: block; opacity: 1;">上传中</div>
+		<div class="weui-toptips weui-toptips_warn" v-show="ifSuccess" id="topTips3" style="display: block; opacity: 1;">上传成功</div>
+		 <div class="weui-form">
+			<div class="con4">
+				<canvas id="cvs" width="200" height="200"></canvas> 
+				<a id="upload" @click="upload" class="weui-btn weui-btn_primary" href="javascript:">上传头像<input type="file"  accept="image/*" capture="camera" class="upload_pic" id="img" /></a>
+				 <a id="return" @click="returnSetting" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
+			</div>
+			</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+			<script type="text/javascript">
+			var app = new Vue({
+				el: "#app",
+				data: {
+					ifLoading:false,
+					ifSuccess:false,
+					},
+				mounted() {
+				},
+				methods:{
+					returnSetting:function(){
+						
+						window.location.href='./setting.html';
+					},
+					upload:function(){
+						console.log("1")
+						document.getElementById('img').onchange = ()=>{
+						console.log("2")
+						var img = event.target.files[0];
+						// 判断是否图片
+						if(!img){
+						return ;
+						}
+						// 判断图片格式
+						var reader = new FileReader();
+						reader.readAsDataURL(img);
+						reader.onload = (e)=>{ 
+							//  上传图片
+							var data;
+							data=e.target.result.replace(/^data:image\/\w+;base64,/, '')
+							console.log(data)
+							axios.post('http://129.211.62.153:8080/upload/image/'
+											+localStorage.getItem("uid")+"/"+"1",{image:data}).then((res)=>{
+												console.log("ok!!")
+												console.log(res)
+												var uid=localStorage.getItem("uid");
+												var picsrc="http://129.211.62.153:8080/image/"+uid+"/head.jpg";
+												var gsFiles ={};
+												gsFilesDate = gsFiles.date;
+												date = new Date();
+												todaysDate = (date.getMonth() + 1).toString() + date.getDate().toString();
+												gsFiles.a=e.target.result
+												gsFiles.date = todaysDate;
+												localStorage.setItem(uid,JSON.stringify(gsFiles))
+												this.ifSuccess=true;
+												setTimeout(()=>{
+												this.ifSuccess = false;
+												}, 5000);
+											}) .catch(function (error) {  console.log(error); });
+							//
+							var image = new Image();
+							image.src = e.target.result;
+							// 绑定load事件处理器，加载完成后执行，避免同步问题
+							image.onload = function() {
+								var canvas = document.getElementById("cvs");
+								var ctx = canvas.getContext("2d");
+								ctx.clearRect(0, 0, canvas.width, canvas.height);
+								ctx.drawImage(image, 0, 0, 200, 200);
+							};
+						}
+						}
+					}
+					
+				}
+				})
+				</script>
+</body>
+</html>
