@@ -10,6 +10,9 @@
 		<script type="text/javascript" src="../js/cookie.js"></script>
 		<script type="text/javascript" src="../js/loadPic.js"></script>
 		<style>
+			[v-cloak] {
+			  display: none;
+			}
 			.weui-cells__title{
 				font-size: 1.35rem;
 			}
@@ -22,10 +25,11 @@
 				position: fixed;
 				right: 5%;
 			}
+			
 		</style>
 	</head>
 	<body>
-	<div id="app">
+	<div id="app" v-cloak>
 		<div class="weui-cells__title">
 			个人资料卡
 			<a href="javascript:" class="button" @click="cancel">取消</a>
@@ -154,11 +158,11 @@
 				},
 				deleteFriend: function(){
 					this.Dialog2 = false;
-					window.location.href = './list.html';
 					this.Toast = true;
 					let _this = this;
-					setTimeout(function () {
-                		_this.Toast = false;
+					setTimeout(function(){
+						_this.Toast = false;
+						window.location.href = './list.html';
             		}, 1000);
 				}
 			}
