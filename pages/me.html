@@ -113,7 +113,6 @@
 				portraitSrc:''
 			},
 			mounted(){
-				this.username=document.cookie.split('=')[1]
 				console.log(localStorage.getItem("username"))
 				if(localStorage.getItem("username")==null){
 					console.log(1)
@@ -171,7 +170,6 @@
 				},
 				logOut:function(){
 					 localStorage.clear();
-					 delCookie();
 					 setTimeout(this.switchHtml, 1000);
 				},
 				isBottomShow1:function(){

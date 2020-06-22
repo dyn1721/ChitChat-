@@ -6,41 +6,6 @@
 		<title>ChitChat-FriendChat</title>
 		<link rel="stylesheet" href="../css/chat.css">
 		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css" />
-		<!-- <script>
-			var ws = new SockJS('http://129.211.62.153:8080/ws');
-			var client = Stomp.over(ws);
-			var connectCallback = function () {
-			    console.log('连接成功!');
-			};
-			var errorCallback = function () {
-			    console.log('连接失败!');
-			};
-			client.connect('5', '111', connectCallback, errorCallback);
-			
-			function sendMessage() {
-			    var toId = localStorage.getItem("nf");
-				var fromId = localStorage.getItem("uid")
-			    var content = document.getElementById('text').value;
-			    var destination = "http://129.211.62.153:8080/";
-			    switch (type) {
-			        case '1':
-			            destination = destination + "single-chat";
-			            break;
-			        case '2':
-			            destination = destination + 'group-chat';
-			            break;
-			        case '3':
-			            destination = destination + 'add-friend';
-			            break;
-			    }
-			    client.send(destination, {}, JSON.stringify({
-			        'type': '1',      // 消息类型
-			        'fromId': fromId,  // 发送人uid
-			        'toId': toId,    // 接收人uid
-			        'content': content  // 发送内容
-			    }));
-			}
-		</script> -->
 		<style>
 			pre{
 				white-space:pre-wrap;
@@ -86,6 +51,35 @@
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+		<script src="../js/sockjs-client.js"></script>
+		<script src="../js/stomp.js"></script>
+		<script>
+			function subscribe() {
+		        // 订阅/uni/chat/{uid}, 也就发送给uid=1的用户的消息
+		        client.subscribe('/uni/chat/'+localStorage.getItem("uid"), onMessage);
+		        // 订阅/broad/chat/{gid}, 也就是在gid=1的群内发送的消息
+		        // client.subscribe('/broad/chat/1', onMessage);
+		        // 订阅/uni/add/{uid}, 也就是添加uid=1的用户为好友的消息
+		        // client.subscribe('/uni/add/1', onMessage);
+		    }
+		    var connectCallback = function () {
+		        console.log('连接成功!');
+		        subscribe();
+		    };
+		    var errorCallback = function () {
+		        console.log('连接失败!');
+		    };
+		    var ws = new SockJS('http://129.211.62.153:8080/ws');
+		    var client = Stomp.over(ws);
+		    // 连接服务器, uid=1, passcode=pass1
+		    client.connect('1', 'pass1', connectCallback, errorCallback);
+		
+		    // 接收到订阅消息后的回调函数
+		    function onMessage(message) {
+		        console.log(message)
+				
+		    }
+		</script>
 		<script type="text/javascript">
 			var app = new Vue({
 				el: "#app",
@@ -96,25 +90,23 @@
 					portraitSrc: '',
 					arrIcon: [],
 					messages: [],
-					num: '',
 					iNow: '',
 					text: '',
 					content: '',
 					img: '',
 					span: '',
-					time:''
+					time: ''
 				},
 				mounted() {
 					this.useruid = localStorage.getItem("uid");
 					this.frienduid = localStorage.getItem("nf");
-					axios.get('http://129.211.62.153:8080/user/' + this.useruid).then((res) => {
+					axios.get('http://129.211.62.153:8080/user/' + this.frienduid).then((res) => {
 						this.friendname = res.data.nickname
 					})
 					this.text = document.getElementById('text');
 					this.content = document.getElementsByTagName('ul')[0];
 					this.img = this.content.getElementsByTagName('img');
 					this.span = this.content.getElementsByTagName('span');
-					this.num = 0;
 					this.iNow = -1;
 					var picsrc = "http://129.211.62.153:8080/image/" + this.useruid + "/head.jpg";
 					this.arrIcon[0] = picsrc;
@@ -126,6 +118,22 @@
 				methods: {
 					switchHtml: function() {
 						localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages)
+						var temp = JSON.parse(localStorage.getItem("mlist"))
+						for (var i = 0; i < temp.length; i++) {
+							if (temp[i].otheruid == this.frienduid)
+								temp.splice(i, 1)
+						}
+						temp.push({
+							type: 1,
+							otheruid: this.frienduid,
+							selfuid: this.useruid,
+							newMessageNumber: 0,
+							name: this.friendname,
+							newestMessage: this.messages[this.messages.length - 1].content,
+							time: this.messages[this.messages.length - 1].time
+						})
+						console.log(this.messages[this.messages.length - 1].time)
+						localStorage["mlist"] = JSON.stringify(temp)
 						window.location.href = './message.html';
 					},
 					send: function() {
@@ -137,12 +145,12 @@
 								style: 1,
 								fromId: this.useruid,
 								toId: this.frienduid,
-								content: this.text.value
+								content: this.text.value,
 							}).then(res => {
-								this.time = res.data.substring(0,19)
-								console.log(this.time)
+								// this.$parent.time = res.data.substring(0, 19)
+								localStorage.setItem("chattime", res.data.substring(0, 19))
 							})
-							this.content.innerHTML += '<li><img src="' + this.arrIcon[this.num] + '"><span><pre>' + this.text.value +
+							this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre>' + this.text.value +
 								'</pre></span></li>';
 							this.iNow++;
 							this.img[this.iNow].className += 'imgright';
@@ -151,49 +159,72 @@
 								type: 1,
 								send: 1,
 								content: this.text.value,
-								src: "",
-								time: this.time
+								time: localStorage.getItem("chattime")
 							})
 							this.text.value = '';
 							this.content.scrollTop = this.content.scrollHeight;
 						}
 					},
 					getMessage: function() {
-						console.log("me:"+this.useruid,"fri:"+this.frienduid);
 						axios.post('http://129.211.62.153:8080/msg/user/' + this.useruid + '/' + this.frienduid).then((res) => {
 							console.log(res.data);
+							if (res.data.length != 0) {
+								var i = 0;
+								for (; i < res.data.length; i++) {
+									this.content.innerHTML += '<li><img src="' + this.arrIcon[1] + '"><span><pre>' + res.data[i].content +
+										'</pre></span></li>';
+									this.iNow++;
+									this.img[this.iNow].className += 'imgleft';
+									this.span[this.iNow].className += 'spanleft';
+									this.messages.push({
+										type: 1,
+										send: 2,
+										content: res.data[i].content,
+										time: res.data[i].sendTime.substring(0, 19)
+									})
+									this.content.scrollTop = this.content.scrollHeight;
+								}
+							}
 						})
+						axios.post('http://129.211.62.153:8080/msg/read/user/' + this.useruid + '/' + this.frienduid).then((res) => {})
 					},
 					sendPicture: function() {
 						window.location.assign('./emoji.html')
 					},
 					load: function() {
-						var oldlist = [{
-							type: 1, //1消息，2图片
-							send: 2, //1自己，2对方
-							content: "你已经和我成为好友了，快来聊天吧！",
-							src: "",
-							time: "2020-06-22T14:07:15"
-						}]	
 						if (JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid)) != null) {
-							console.log(localStorage.getItem(this.useruid + "mf" + this.frienduid))
 							this.messages = JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid));
 							this.messages.sort(this.compare('time'))
 							console.log(this.messages)
-						}					
+							var i = 0;
+							for (; i < this.messages.length; i++) {
+								this.content.innerHTML += '<li><img src="' + this.arrIcon[this.messages[i].send - 1] + '"><span><pre>' +
+									this.messages[i].content +
+									'</pre></span></li>';
+								this.iNow++;
+								if (this.messages[i].send == 1) {
+									this.img[this.iNow].className += 'imgright';
+									this.span[this.iNow].className += 'spanright';
+								} else {
+									this.img[this.iNow].className += 'imgleft';
+									this.span[this.iNow].className += 'spanleft';
+								}
+								this.content.scrollTop = this.content.scrollHeight;
+							}
+						}
 					},
 					compare(attr) {
 						let that = this;
 						return function(a, b) {
 							let val1 = a[attr];
 							let val2 = b[attr];
-							val1 = this.changeDate(val1)
-							val2 = this.changeDate(val2)
-							return new Date(val2) - new Date(val1);
+							val1 = that.changeDate(val1)
+							val2 = that.changeDate(val2)
+							return new Date(val1) - new Date(val2);
 						}
 					},
 					changeDate: function(str) {
-						str = str.replace(/-/g, '/')						
+						str = str.replace(/-/g, '/')
 						str = str.replace(/T/, ' ')
 						return str;
 					}
