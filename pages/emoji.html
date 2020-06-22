@@ -146,7 +146,7 @@
 				</div>
 		    </ul>
 		</div>
-		<a id="return" @click="returnSetting" class="weui-btn weui-btn_primary" href="javascript:">返回</a>
+		<a id="return"  class="weui-btn weui-btn_primary" href="javascript:" onclick="javascript:history.back(-1);">返回</a>
 	</div>
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 			<script type="text/javascript">
@@ -172,9 +172,6 @@
 										})
 				},
 				methods:{
-					returnSetting:function(){
-						window.location.href='./me.html';
-					},
 					manage:function(){
 						this.ifSetting=!this.ifSetting;
 						if(this.ifSettingOn==false){
@@ -200,6 +197,7 @@
 									console.log(res)
 									axios.get('http://129.211.62.153:8080/images/'
 													+localStorage.getItem("uid")+"/faces").then((res)=>{
+														console.log(res.data)
 														this.list=res.data
 														var i=0
 														for(;i<this.list.length;i++){
@@ -230,8 +228,9 @@
 												axios.get('http://129.211.62.153:8080/images/'
 																+localStorage.getItem("uid")+"/faces").then((res)=>{
 																	var temp=res.data
-																	console.log(1)
+																	console.log(1,temp)
 																	i='http://129.211.62.153:8080/image/'+localStorage.getItem("uid")+"/faces/"+temp[temp.length-1]
+																	console.log(i)
 																	this.list.splice(0,0,i)
 																	})
 											});

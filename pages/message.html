@@ -11,6 +11,9 @@
 			.weui-cells {
 				margin: 0 0 0 0;
 			}
+			.weui-btn {
+				color: #41abe2;
+			}
 		</style>
 	</head>
 	<body>
@@ -22,30 +25,15 @@
 				<div class="top_name">
 					<div style="display: table-cell; vertical-align: middle;">消 息</div>
 				</div>
-				<div class="top_more">
+				<div class="top_more" @click="changeDialog">
 					<img src="../img/chat/message_more_w.png" style="width: 40%;">
 				</div>
 			</div>
-			<div class="middle">
-				<div class="weui-cells" @click="">
-					<div class="weui-cell weui-cell_active">
-						<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">
-							<img src="../img/chat/chat_show.png" style="width: 50px; display: block;" />
-							<span class="weui-badge" style="position: absolute; top: -0.4em; right: -0.4em;">8</span>
-						</div>
-						<div class="weui-cell__bd">
-							<p>联系人名称</p>
-							<p style="font-size: 13px; color: #888;">摘要信息</p>
-						</div>
-						<div class="weui-cell__ft">时间</div>
-					</div>
-				</div>
+			<div id="middle" class="middle">
 			</div>
-
 			<div class="bottom_bar">
 				<div class="bottom_bar1" v-bind:class="{whiten:ifBottom1}" @click="isBottomShow1">
 					<img class="bottom_icon" src="../img/icon/message.png">
-
 				</div>
 				<div class="bottom_bar2" v-bind:class="{whiten:ifBottom2}" @click="isBottomShow2">
 					<img class="bottom_icon" src="../img/icon/mailList.png">
@@ -54,10 +42,44 @@
 					<img class="bottom_icon" src="../img/icon/mine.png">
 				</div>
 			</div>
+
+			<div id="dialogs">
+				<div class="js_dialog" v-show="dialog">
+					<div class="weui-mask" @click="changeDialog"></div>
+					<div class="weui-dialog weui-skin_android">
+						<div class="weui-dialog__hd">
+							<div class="weui-dialog__hd__main">
+								<strong class="weui-dialog__title">创建群聊</strong>
+							</div>
+						</div>
+						<div class="weui-cells">
+							<div class="weui-cell weui-cell_active">
+								<div class="weui-cell__bd">
+									<input class="weui-input" id="text" type="text" placeholder="请输入群聊名称" />
+								</div>
+							</div>
+						</div>
+						<div class="weui-dialog__ft">
+							<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="changeDialog">取消</a>
+							<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" @click="createChatroom">确定</a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
+
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script type="text/javascript">
+			window.toFriends = function(id) {
+				console.log(id)
+				localStorage.setItem("nf", id);
+				window.location.href = './friend.html';
+			};
+			window.toChatroom = function(id) {
+				localStorage.setItem("nr", id)
+				//window.location.href = './chatroom.html';
+			};
 			var app = new Vue({
 				el: "#app",
 				data: {
@@ -65,13 +87,16 @@
 					ifBottom2: false,
 					ifBottom3: false,
 					username: '',
+					useruid: '',
 					portraitSrc: '',
 					messagelist: [],
-					
+					middleshow: '',
+					dialog: false,
+					roomname: '',
+					roomid:''
 				},
 				mounted() {
 					this.username = document.cookie.split('=')[1];
-					console.log(this.username + " login")
 					if (localStorage.getItem("username") == null) {
 						axios.get('http://129.211.62.153:8080/user/searchByLoginID/' + this.username).then((res) => {
 							console.log(res)
@@ -79,12 +104,12 @@
 							var email = res.data.email;
 							if (sign == null)
 								sign = ''
-							console.log(sign)
 							if (email == null)
 								email = ''
 							localStorage.setItem("username", this.username);
 							localStorage.setItem("nickname", res.data.nickname);
 							localStorage.setItem("uid", res.data.uid);
+							this.useruid = res.data.uid;
 							localStorage.setItem("sex", res.data.sex);
 							localStorage.setItem("age", res.data.age);
 							localStorage.setItem("sign", sign);
@@ -93,12 +118,13 @@
 							var picsrc = "http://129.211.62.153:8080/image/" + res.data.uid + "/head.jpg";
 							localStorage.setItem("pic", picsrc);
 							this.portraitSrc = picsrc
-							loadPortrait(this.uid, picsrc, "Portrait")
 						})
+					} else {
+						this.portraitSrc = localStorage.getItem("pic");
+						this.useruid = localStorage.getItem("uid");
 					}
-					else {
-						this.portraitSrc = localStorage.getItem("pic")
-					}
+					this.middleshow = document.getElementById("middle");
+					setTimeout(this.show, 1000);
 				},
 				methods: {
 					isBottomShow1: function() {
@@ -112,17 +138,46 @@
 					isBottomShow3: function() {
 						window.location.href = './me.html';
 					},
-					toFriends: function(uid) {
-						localStorage.setItem("nf") = uid;
-						window.location.href = './friend.html';
+					changeDialog: function() {
+						this.dialog = !this.dialog;
 					},
-					toChatroom: function(rid) {
-						localStorage.setItem("nr") = rid;
-						window.location.href = './chatroom.html';
+					show: function() {
+						console.log(this.useruid);
+						axios.get('http://129.211.62.153:8080/msg/chatinfo/' + this.useruid).then((res) => {
+							console.log(res.data);
+						})
+						axios.get('http://129.211.62.153:8080/msg/user/2/9').then((res) => {
+							console.log(res.data);
+						})
+						this.middleshow.innerHTML += '<div class="weui-cells" onclick="toFriends(' + 2 + ')">' +
+							'<div class="weui-cell weui-cell_active">' +
+							'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+							'<img src="../img/chat/chat_show.png" style="width: 50px; display: block;" />' +
+							'<span class="weui-badge" style="position: absolute; top: -0.4em; right: -0.4em;">' + 8 + '</span>' +
+							'</div>' +
+							'<div class="weui-cell__bd">' +
+							'<p>' + 1 + '</p>' +
+							'<p style="font-size: 13px; color: #888;">摘要信息</p>' +
+							'</div>' +
+							'<div class="weui-cell__ft">' + 1.1 + '</div>' +
+							'</div>' +
+							'</div>'
+						localStorage[1]=JSON.stringify({name:'xiecanyong',sex:'man', hobby:'program'})
+						console.log(localStorage.getItem("uid"))
+					},
+					createChatroom: function() {
+						var text = document.getElementById('text');
+						this.roomname = text.value;
+						console.log(this.useruid);
+						axios.get('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.roomname).then((res) => {
+							console.log(res);
+							this.roomid = res.data;
+							console.log(this.roomid);
+						})
+						toChatroom(this.roomid);
 					}
 				}
 			})
 		</script>
-
 	</body>
 </html>

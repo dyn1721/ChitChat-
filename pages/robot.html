@@ -22,7 +22,7 @@
 		<div id="app">
 			<div id="container">
 				<div class="header">
-					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" /> </div>
+					<div class="return" onclick="javascript:history.back(-1);"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" /> </div>
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> 无敌的机器人 </div>
 					</div>
@@ -72,9 +72,6 @@
 					this.arrIcon[1] = "../img/chat/robot.png"
 				},
 				methods: {
-					switchHtml: function() {
-						window.location.href = './me.html';
-					},
 					send: function() {
 						if (this.text.value == '') {
 							// alert('不能发送空消息');
@@ -87,6 +84,7 @@
 							this.text.value = '';
 							this.content.scrollTop = this.content.scrollHeight;
 							axios.get('http://129.211.62.153:8080/bot/'+this.useruid+'/'+this.upcontent).then((res)=>{
+									console.log(res)
 									this.downcontent=res.data;
 									this.content.innerHTML += '<li><img src="' + this.arrIcon[1] + '"><span><pre>' + this.downcontent + '</pre></span></li>';
 									this.iNow++;

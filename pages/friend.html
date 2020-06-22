@@ -6,6 +6,41 @@
 		<title>ChitChat-FriendChat</title>
 		<link rel="stylesheet" href="../css/chat.css">
 		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css" />
+		<!-- <script>
+			var ws = new SockJS('http://129.211.62.153:8080/ws');
+			var client = Stomp.over(ws);
+			var connectCallback = function () {
+			    console.log('连接成功!');
+			};
+			var errorCallback = function () {
+			    console.log('连接失败!');
+			};
+			client.connect('5', '111', connectCallback, errorCallback);
+			
+			function sendMessage() {
+			    var toId = localStorage.getItem("nf");
+				var fromId = localStorage.getItem("uid")
+			    var content = document.getElementById('text').value;
+			    var destination = "http://129.211.62.153:8080/";
+			    switch (type) {
+			        case '1':
+			            destination = destination + "single-chat";
+			            break;
+			        case '2':
+			            destination = destination + 'group-chat';
+			            break;
+			        case '3':
+			            destination = destination + 'add-friend';
+			            break;
+			    }
+			    client.send(destination, {}, JSON.stringify({
+			        'type': '1',      // 消息类型
+			        'fromId': fromId,  // 发送人uid
+			        'toId': toId,    // 接收人uid
+			        'content': content  // 发送内容
+			    }));
+			}
+		</script> -->
 		<style>
 			pre{
 				white-space:pre-wrap;
@@ -20,16 +55,22 @@
 		<div id="app">
 			<div id="container">
 				<div class="header">
-					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" /> </div>
+					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" />
+					</div>
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> {{friendname}} </div>
 					</div>
 					<div class="show" @click=""> <img src="../img/chat/chat_show.png" alt="" style="width: 80%;" /> </div>
 				</div>
 				<ul class="content">
+					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
 				</ul>
 				<div class="footer">
-					<div class="more"> <img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 5px;" /> </div>
+					<div class="more">
+						<a href="./emoji.html" target="_blank">
+							<img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 5px;" />
+						</a>
+					</div>
 					<div class="con-text"> <input id="text" type="text" @keyup.enter="send" placeholder="说点什么吧..." style="width: 95%; height: 65%; font-size: 20px; text-indent: 10px; border-radius: 6px;">
 					</div>
 					<div class="send">
@@ -53,7 +94,7 @@
 					portraitSrc: '',
 					arrIcon: [],
 					messages: [],
-					mess:['','',''],
+					mess: ['', '', ''],
 					num: '',
 					iNow: '',
 					text: '',
@@ -64,16 +105,18 @@
 				mounted() {
 					this.username = localStorage.getItem("username");
 					this.useruid = localStorage.getItem("uid");
+					this.frienduid = localStorage.getItem("nf");
 					this.text = document.getElementById('text');
 					this.content = document.getElementsByTagName('ul')[0];
 					this.img = this.content.getElementsByTagName('img');
 					this.span = this.content.getElementsByTagName('span');
 					this.num = 0;
 					this.iNow = -1;
-					var picsrc="http://129.211.62.153:8080/image/"+this.useruid+"/head.jpg";
+					var picsrc = "http://129.211.62.153:8080/image/" + this.useruid + "/head.jpg";
 					this.arrIcon[0] = picsrc;
-					picsrc="http://129.211.62.153:8080/image/"+this.useruid+"/head.jpg";
-					this.arrIcon[0] = picsrc;
+					picsrc = "http://129.211.62.153:8080/image/" + this.frienduid + "/head.jpg";
+					this.arrIcon[1] = picsrc;
+					this.getMessage();
 				},
 				methods: {
 					switchHtml: function() {
@@ -83,6 +126,12 @@
 						if (this.text.value == '') {
 							// alert('不能发送空消息');
 						} else {
+							axios.post('http://129.211.62.153:8080/msg/single-chat', {
+								type: 1,
+								fromId: this.useruid,
+								toId: this.frienduid,
+								content: this.text.value
+							}).then(res => (console.log(res)))
 							this.content.innerHTML += '<li><img src="' + this.arrIcon[this.num] + '"><span><pre>' + this.text.value +
 								'</pre></span></li>';
 							this.iNow++;
@@ -93,8 +142,13 @@
 						}
 					},
 					getMessage: function() {
-
+						axios.get('http://129.211.62.153:8080/msg/user/' + this.useruid + '/' + 9).then((res) => {
+							console.log(res.data);
+						})
 					},
+					sendPicture: function() {
+						window.location.assign('./emoji.html')
+					}
 				}
 			})
 		</script>
