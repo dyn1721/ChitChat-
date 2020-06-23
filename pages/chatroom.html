@@ -23,25 +23,25 @@
 		<div id="app" v-cloak>
 			<div id="container">
 				<div class="header">
-					<div class="return" @click="switchHtml"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" />
+					<div class="return" @click="switchHtml"> <img src="../img/chat/return.png" alt="" style="width: 50%; height: 40%;" />
 					</div>
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> {{roomname}} </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/chat_show.png" alt="" style="width: 80%;" /> </div>
+					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 40%;position: relative;left:-0.5rem;" /> </div>
 				</div>
 				<ul class="content">
 					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
 				</ul>
 				<div class="footer">
 					<div class="more" @click="sendPicture">
-						<img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 5px;" />
+						<img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 4px;width: 90%;height: 43%;" />
 					</div>
 					<div class="con-text"> <input id="text" type="text" @keyup.enter="send" placeholder="说点什么吧..." style="width: 95%; height: 65%; font-size: 20px; text-indent: 10px; border-radius: 6px;">
 					</div>
 					<div class="send">
-						<div id="send" @click="send" style="width: 80%; height: 65%; background: #ccc; text-align: center; font-size: 20px; border-radius: 6px; display: table;">
-							<div style="display: table-cell; vertical-align: middle;">发送</div>
+						<div id="send" @click="send" style="width: 80%; height: 65%; background: #e3f1f0; text-align: center; font-size: 20px; border-radius: 6px; display: table;position: relative;top:-3%;">
+							<img style="position: relative;top : 0.1875rem;left: -0.1875rem;" src="../img/chat/send.png" />
 						</div>
 					</div>
 				</div>
@@ -53,25 +53,26 @@
 		<script src="../js/stomp.js"></script>
 		<script>
 			function subscribe() {
-		        client.subscribe('/broad/chat/'+localStorage.getItem("nr"), onMessage);
-		    }
-		    var connectCallback = function () {
-		        console.log('连接成功!');
-		        subscribe();
-		    };
-		    var errorCallback = function () {
-		        console.log('连接失败!');
-		    };
-		    var ws = new SockJS('http://129.211.62.153:8080/ws');
-		    var client = Stomp.over(ws);
-		    // 连接服务器, uid=1, passcode=pass1
-		    client.connect(localStorage.getItem("uid")+'', 'pass'+localStorage.getItem("uid"), connectCallback, errorCallback);
-		
-		    // 接收到订阅消息后的回调函数
-		    function onMessage(message) {
-		        console.log(message);
+				client.subscribe('/broad/chat/' + localStorage.getItem("nr"), onMessage);
+			}
+			var connectCallback = function() {
+				console.log('连接成功!');
+				subscribe();
+			};
+			var errorCallback = function() {
+				console.log('连接失败!');
+			};
+			var ws = new SockJS('http://129.211.62.153:8080/ws');
+			var client = Stomp.over(ws);
+			// 连接服务器, uid=1, passcode=pass1
+			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
+				errorCallback);
+
+			// 接收到订阅消息后的回调函数
+			function onMessage(message) {
+				console.log(message);
 				app.getMessage();
-		    }
+			}
 			var app = new Vue({
 				el: "#app",
 				data: {
@@ -105,22 +106,24 @@
 				},
 				methods: {
 					switchHtml: function() {
-						localStorage[this.useruid + "mr" + this.roomuid] = JSON.stringify(this.messages)
-						var temp = JSON.parse(localStorage.getItem("mlist"))
-						for (var i = 0; i < temp.length; i++) {
-							if (temp[i].otheruid == this.roomuid && temp[i].type==2)
-								temp.splice(i, 1)
+						if (this.messages.length != 0) {
+							localStorage[this.useruid + "mr" + this.roomuid] = JSON.stringify(this.messages)
+							var temp = JSON.parse(localStorage.getItem("mlist"))
+							for (var i = 0; i < temp.length; i++) {
+								if (temp[i].otheruid == this.roomuid && temp[i].type == 2)
+									temp.splice(i, 1)
+							}
+							temp.push({
+								type: 2,
+								otheruid: this.roomuid,
+								selfuid: this.useruid,
+								newMessageNumber: 0,
+								name: this.roomname,
+								newestMessage: this.messages[this.messages.length - 1].content,
+								time: this.messages[this.messages.length - 1].time
+							})
+							localStorage["mlist"] = JSON.stringify(temp)
 						}
-						temp.push({
-							type: 2,
-							otheruid: this.roomuid,
-							selfuid: this.useruid,
-							newMessageNumber: 0,
-							name: this.roomname,
-							newestMessage: this.messages[this.messages.length - 1].content,
-							time: this.messages[this.messages.length - 1].time
-						})
-						localStorage["mlist"] = JSON.stringify(temp)
 						window.location.href = './message.html';
 					},
 					send: function() {
@@ -215,6 +218,9 @@
 						str = str.replace(/-/g, '/')
 						str = str.replace(/T/, ' ')
 						return str;
+					},
+					getImg(uid) {
+						return "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
 					}
 				}
 			})

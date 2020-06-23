@@ -53,25 +53,26 @@
 		<script src="../js/stomp.js"></script>
 		<script>
 			function subscribe() {
-		        client.subscribe('/uni/chat/'+localStorage.getItem("uid"), onMessage);
-		    }
-		    var connectCallback = function () {
-		        console.log('连接成功!');
-		        subscribe();
-		    };
-		    var errorCallback = function () {
-		        console.log('连接失败!');
-		    };
-		    var ws = new SockJS('http://129.211.62.153:8080/ws');
-		    var client = Stomp.over(ws);
-		    // 连接服务器, uid=1, passcode=pass1
-		    client.connect(localStorage.getItem("uid")+'', 'pass'+localStorage.getItem("uid"), connectCallback, errorCallback);
-		
-		    // 接收到订阅消息后的回调函数
-		    function onMessage(message) {
-		        console.log(message);
+				client.subscribe('/uni/chat/' + localStorage.getItem("uid"), onMessage);
+			}
+			var connectCallback = function() {
+				console.log('连接成功!');
+				subscribe();
+			};
+			var errorCallback = function() {
+				console.log('连接失败!');
+			};
+			var ws = new SockJS('http://129.211.62.153:8080/ws');
+			var client = Stomp.over(ws);
+			// 连接服务器, uid=1, passcode=pass1
+			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
+				errorCallback);
+
+			// 接收到订阅消息后的回调函数
+			function onMessage(message) {
+				console.log(message);
 				app.getMessage();
-		    }
+			}
 			var app = new Vue({
 				el: "#app",
 				data: {
@@ -108,22 +109,24 @@
 				},
 				methods: {
 					switchHtml: function() {
-						localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages)
-						var temp = JSON.parse(localStorage.getItem("mlist"))
-						for (var i = 0; i < temp.length; i++) {
-							if (temp[i].otheruid == this.frienduid && temp[i].type==1)
-								temp.splice(i, 1)
+						if (this.messages.length != 0) {
+							localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages)
+							var temp = JSON.parse(localStorage.getItem("mlist"))
+							for (var i = 0; i < temp.length; i++) {
+								if (temp[i].otheruid == this.frienduid && temp[i].type == 1)
+									temp.splice(i, 1)
+							}
+							temp.push({
+								type: 1,
+								otheruid: this.frienduid,
+								selfuid: this.useruid,
+								newMessageNumber: 0,
+								name: this.friendname,
+								newestMessage: this.messages[this.messages.length - 1].content,
+								time: this.messages[this.messages.length - 1].time
+							})
+							localStorage["mlist"] = JSON.stringify(temp)
 						}
-						temp.push({
-							type: 1,
-							otheruid: this.frienduid,
-							selfuid: this.useruid,
-							newMessageNumber: 0,
-							name: this.friendname,
-							newestMessage: this.messages[this.messages.length - 1].content,
-							time: this.messages[this.messages.length - 1].time
-						})
-						localStorage["mlist"] = JSON.stringify(temp)
 						window.location.href = './message.html';
 					},
 					send: function() {

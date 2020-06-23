@@ -10,6 +10,9 @@
 		<script type="text/javascript" src="../js/cookie.js"></script>
 		<script type="text/javascript" src="../js/loadPic.js"></script>
 		<style>
+			[v-cloak] {
+			  display: none;
+			}
 			.weui-cells__title{
 				font-size: 1.35rem;
 			}
@@ -25,7 +28,7 @@
 		</style>
 	</head>
 	<body>
-	<div id="app">
+	<div id="app" v-cloak>
 		
 
 		<div class="weui-cells__title">
@@ -109,7 +112,36 @@
 	</div>	
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
-		<script type="text/javascript">
+		<script src="../js/sockjs-client.js"></script>
+		<script src="../js/stomp.js"></script>
+		<script>
+			function subscribe() {
+				client.subscribe('/uni/add/'+localStorage.getItem("uid"), onMessage);
+			}
+			var connectCallback = function() {
+				console.log('连接成功!');
+				client.subscribe('/uni/chat/' + localStorage.getItem("uid"), onMessage);
+			};
+			var errorCallback = function() {
+				console.log('连接失败!');
+			};
+			var ws = new SockJS('http://129.211.62.153:8080/ws');
+			var client = Stomp.over(ws);
+			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
+				errorCallback);
+			function onMessage(message) {
+				app.refresh();
+			}
+			window.toChat = function(type, id) {
+				console.log(type, id)
+				if (type == 1) {
+					localStorage.setItem("nf", id);
+					window.location.href = './friend.html';
+				} else if (type == 2) {
+					if (id != -1) localStorage.setItem("nr", id);
+					window.location.href = './chatroom.html';
+				}
+			};
 		var app = new Vue({
 			el: "#app",
 			data: {
@@ -150,22 +182,14 @@
 				switchRobot:function(){
 					window.location.href='./robot.html';
 				},
-				switchFriend:function(uid){
-					localStorage.setItem("currentUID", uid);
-					window.location.href='./idCard.html';
-				},
-				switchChatroom:function(rid){
-					localStorage.setItem("currentRID", rid);
-					window.location.href='./chatroomCard.html';
-				},
 				switchNewFriend:function(){
 					window.location.href='./newfriend.html';
 				},
-				toFriends: function(uid) {
+				switchFriend: function(uid) {
 					localStorage.setItem("nf") = uid;
 					window.location.href = './friend.html';
 				},
-				toChatroom: function(uid) {
+				switchChatroom: function(uid) {
 					localStorage.setItem("nr") = uid;
 					window.location.href = './chatroom.html';
 				},
