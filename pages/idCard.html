@@ -162,8 +162,8 @@
 			},
 			mounted() {
 				this.username=document.cookie.split('=')[1]
-				console.log(localStorage.getItem("currentUID"))
-				this.currentUID = localStorage.getItem("currentUID")
+				console.log(localStorage.getItem("nr"))
+				this.currentUID = localStorage.getItem("nr")
 				if(localStorage.getItem("currentUID")!=null){
 					console.log(1)
 					axios.get('http://129.211.62.153:8080/user/'+this.currentUID).then((res)=>{
