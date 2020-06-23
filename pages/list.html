@@ -135,16 +135,6 @@
 
 			function onMessage(message) {
 				app.refresh();
-			}
-			window.toChat = function(type, id) {
-				console.log(type, id)
-				if (type == 1) {
-					localStorage.setItem("nf", id);
-					window.location.href = './friend.html';
-				} else if (type == 2) {
-					if (id != -1) localStorage.setItem("nr", id);
-					window.location.href = './chatroom.html';
-				}
 			};
 			var app = new Vue({
 				el: "#app",
@@ -196,12 +186,12 @@
 						window.location.href = './newfriend.html';
 					},
 					switchFriend: function(uid) {
-						localStorage.setItem("nf") = uid;
-						window.location.href = './friend.html';
+						localStorage.setItem("currentUID", uid);
+						window.location.href = './idCard.html';
 					},
-					switchChatroom: function(uid) {
-						localStorage.setItem("nr") = uid;
-						window.location.href = './chatroom.html';
+					switchChatroom: function(rid) {
+						localStorage.setItem("currentRID", rid);
+						window.location.href = './chatroomCard.html';
 					},
 					switchSearchFriends: function() {
 						window.location.href = './searchFriend.html';
