@@ -73,7 +73,7 @@
 
 		<div v-show="!isMe">
 			<div class="button-sp-area cell" v-if="isFriend == true">
-				<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary">ChitChat</a>
+				<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toFriend">ChitChat</a>
 				<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">删除好友</a>
 			</div>
 	
@@ -211,16 +211,21 @@
 				close2: function(){
 					this.Dialog2 = false;
 				},
+				toFriend: function(){
+					localStorage.setItem("nf", this.currentUID);
+					window.location.href = './friend.html';
+				},
 				addFriend: function(){
 					this.uid = localStorage.getItem("uid");
 					if (this.uid == this.currentUID) {
 						console.log("ERROR::YOU_CANNOT_ADD_YOURSELF");
 					}else {
-						axios.post('http://129.211.62.153:8080/user/friendlist/1/' + this.uid + '/' + this.currentUID)
-						.then((res)=>{
-							console.log(res);
-						})
-						// sendMessage(3, this.uid, this.currentUID, this.content);
+						// 这个接口没用了
+						// axios.post('http://129.211.62.153:8080/user/friendlist/3/' + this.uid + '/' + this.currentUID)
+						// .then((res)=>{
+						// 	console.log(res);
+						// })
+						sendMessage(3, this.uid, this.currentUID, this.content);
 						this.Dialog1 = false;
 					}
 				},
@@ -228,7 +233,7 @@
 					this.Dialog2 = false;
 					this.Toast = true;
 					let _this = this;
-					axios.post('http://129.211.62.153:8080/user/friendlist/2/' + this.uid + '/' + this.currentUID)
+					axios.post('http://129.211.62.153:8080/user/blacklist/1/' + this.uid + '/' + this.currentUID)
 						.then((res)=>{
 							console.log(res);
 					})
