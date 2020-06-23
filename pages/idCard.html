@@ -154,7 +154,7 @@
 				content:'',
 
 				isMe:'',
-				isFriend:'',
+				isFriend:false,
 				Dialog1:false,
 				Dialog2:false,
 				Toast:false,
@@ -162,11 +162,9 @@
 			},
 			mounted() {
 				this.username=document.cookie.split('=')[1]
-				console.log(localStorage.getItem("nr"))
-				this.currentUID = localStorage.getItem("nr")
-				if(localStorage.getItem("currentUID")!=null){
-					console.log(1)
-					axios.get('http://129.211.62.153:8080/user/'+this.currentUID).then((res)=>{
+				console.log(localStorage.getItem("currentUID"))
+				this.currentUID = localStorage.getItem("currentUID")
+				axios.get('http://129.211.62.153:8080/user/'+this.currentUID).then((res)=>{
 						console.log(res)
 						this.nickname=res.data.nickname;
 						this.sex=res.data.sex;
@@ -180,8 +178,7 @@
 						//头像获取
 						var picsrc="http://129.211.62.153:8080/image/"+this.currentUID+"/head.jpg";
 						this.portraitSrc=picsrc;
-					})
-				}
+				})
 				// 判断currentUID是否在好友列表内
 				this.uid = localStorage.getItem("uid");
 				axios.get('http://129.211.62.153:8080/user/getlist/'+this.uid+'/1')
@@ -225,7 +222,7 @@
 						// .then((res)=>{
 						// 	console.log(res);
 						// })
-						sendMessage(3, this.uid, this.currentUID, this.content);
+						sendMessage(3, this.uid, this.currentUID, 1, this.content);
 						this.Dialog1 = false;
 					}
 				},

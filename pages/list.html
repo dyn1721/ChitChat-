@@ -177,6 +177,7 @@
 							this.roomList = res.data;
 						})
 				},
+<<<<<<< HEAD
 
 				methods: {
 					isBottomShow1: function() {
@@ -214,6 +215,29 @@
 					}
 				}
 			})
+=======
+				switchNewFriend:function(){
+					window.location.href='./newfriend.html';
+				},
+				switchFriend: function(uid) {
+					localStorage.setItem("currentUID", uid);
+					window.location.href = './idCard.html';
+				},
+				switchChatroom: function(rid) {
+					localStorage.setItem("currentRID", rid);
+					window.location.href = './chatroomCard.html';
+				},
+				switchSearchFriends: function() {
+					window.location.href = './searchFriend.html';
+				},
+				getImg(uid) {
+                    var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
+                    console.log(url);
+                    return url;
+                }
+			}
+		})
+>>>>>>> c3cd00e9180db5b4e4a60cc8ad8cc935ad95a516
 		</script>
 
 	</body>

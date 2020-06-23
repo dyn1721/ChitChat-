@@ -4,11 +4,16 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-		<title>ChitChat-SearchBuddy</title>
+		<title>ChitChat-Invite</title>
 		<style> @import url("../css/bottom.css"); </style>
 		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
 		<script type="text/javascript" src="../js/cookie.js"></script>
-		<script type="text/javascript" src="../js/loadPic.js"></script>
+        <script type="text/javascript" src="../js/loadPic.js"></script>
+        <!--  https://github.com/sockjs/sockjs-client  -->
+		<script src="../js/sockjs-client.js"></script>
+		<!--  https://github.com/jmesnil/stomp-websocket  -->
+		<script src="../js/stomp.js"></script>
+		<script src="../js/stompClient.js"></script>
 		<style>
             [v-cloak] {
 			  display: none;
@@ -32,7 +37,7 @@
 		
 
 		<div class="weui-cells__title">
-			检索朋友
+			邀请加入聊天室
 			<a href="javascript:" class="button" onclick="javascript:history.back(-1)">取消</a>
 		</div>
 		<div class="weui-cells__title">  </div>
@@ -76,6 +81,18 @@
                 </a>
             </div>
         </div>
+
+        <div id="dialogs">
+			<!--BEGIN toast-->
+			<div id="toast" v-show="Toast">
+				<div class="weui-mask_transparent"></div>
+				<div class="weui-toast">
+					<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+					<p class="weui-toast__content">成功邀请</p>
+				</div>
+			</div>
+			<!--end toast-->
+		</div>
         
 	
 	</div>	
@@ -85,18 +102,28 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
+                currentRID:'',
                 searchInput:'',
                 searchResult:[],
                 searchResult_uid:[],
                 searchResult_show:false,
                 searchText_show:true,
                 searchBarActive:false,
+                Toast:false,
 
 			},
 			methods:{
                 switchFriend: function(uid) {
-                    localStorage.setItem("currentUID", uid);
-                    window.location.href = './idCard.html';
+                    // 在这里处理邀请入群
+                    this.currentRID = localStorage.getItem("currentRID");
+                    sendMessage(4, this.uid, uid, 1, this.currentRID);
+                    this.Toast = true;
+                    let _this = this;
+                    setTimeout(function () {
+                		_this.Toast = false;
+					}, 1000);
+
+
                 },
                 hideSearchResult: function() {
                     console.log("HideResult");
