@@ -22,11 +22,11 @@
 		<div id="app">
 			<div id="container">
 				<div class="header">
-					<div class="return" onclick="javascript:history.back(-1);"> <img src="../img/chat/chat_return.png" alt="" style="width: 60%; height: 50%;" /> </div>
+					<div class="return" onclick="javascript:history.back(-1);"> <img src="../img/chat/return.png" alt="" style="width: 50%; height: 40%;" /> </div>
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> 无敌的机器人 </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/chat_show.png" alt="" style="width: 80%;" /> </div>
+					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 40%;position: relative;left:-0.5rem;" /> </div>
 				</div>
 				<ul class="content">
 				</ul>
@@ -35,8 +35,8 @@
 					<div class="con-text"> <input id="text" type="text" @keyup.enter="send" placeholder="说点什么吧..." style="width: 95%; height: 65%; font-size: 20px; text-indent: 10px; border-radius: 6px;">
 					</div>
 					<div class="send">
-						<div id="send" @click="send" style="width: 80%; height: 65%; background: #ccc; text-align: center; font-size: 20px; border-radius: 6px; display: table;">
-							<div style="display: table-cell; vertical-align: middle;">发送</div>
+						<div id="send" @click="send" style="width: 80%; height: 65%; background: #e3f1f0;position: relative; top:-3%;text-align: center; font-size: 20px; border-radius: 6px; display: table;">
+							<img style="position: relative;top : 0.1875rem;left: -0.1875rem;" src="../img/chat/send.png" />
 						</div>
 					</div>
 				</div>
@@ -83,6 +83,7 @@
 							this.upcontent = this.text.value;
 							this.text.value = '';
 							this.content.scrollTop = this.content.scrollHeight;
+							console.log(this.upcontent)
 							axios.get('http://129.211.62.153:8080/bot/'+this.useruid+'/'+this.upcontent).then((res)=>{
 									console.log(res)
 									this.downcontent=res.data;

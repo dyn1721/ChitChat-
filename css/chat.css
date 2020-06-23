@@ -25,7 +25,7 @@ body {
 }
 
 .header {
-	background: #e1e1e1;
+	background: #87d9ff;
 	width: 100%;
 	height: 10%;
 	position: fixed;
@@ -68,7 +68,7 @@ body {
 .footer {
 	width: 100%;
 	height: 10%;
-	background: #666;
+	background: #ffffff;
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -77,7 +77,7 @@ body {
 .more {
 	width: 10%;
 	height: 10%;
-	background: #666;
+	background: #ffffff;
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -88,7 +88,7 @@ body {
 .con-text {
 	width: 70%;
 	height: 10%;
-	background: #666;
+	background: #ffffff;
 	position: fixed;
 	bottom: 0;
 	left: 12%;
@@ -99,7 +99,7 @@ body {
 .send {
 	width: 20%;
 	height: 10%;
-	background: #666;
+	background: #ffffff;
 	position: fixed;
 	bottom: 0;
 	left: 80%;
@@ -120,6 +120,7 @@ img {
 }
 
 .content {
+	background: #f5f5f5;
 	font-size: 20px;
 	width: 100%;
 	height: 78%;
@@ -144,7 +145,7 @@ img {
 }
 
 .content li span {
-	background: #acdaf2;
+	background: #ffffff;
 	padding: 5px;
 	border-radius: 10px;
 	float: left;
@@ -169,5 +170,5 @@ img {
 
 .content li span.spanright {
 	float: right;
-	background: #acdaf2;
+	background: #ffffff;
 }
