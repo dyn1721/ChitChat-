@@ -78,37 +78,31 @@
 		<script src="../js/stomp.js"></script>
 		<script>
 			function subscribe() {
-		        // 订阅/uni/chat/{uid}, 也就发送给uid=1的用户的消息
-		        client.subscribe('/uni/chat/'+localStorage.getItem("uid"), onMessage);
-		        // 订阅/broad/chat/{gid}, 也就是在gid=1的群内发送的消息
-		        // client.subscribe('/broad/chat/1', onMessage);
-		        // 订阅/uni/add/{uid}, 也就是添加uid=1的用户为好友的消息
-		        // client.subscribe('/uni/add/1', onMessage);
-		    }
-		    var connectCallback = function () {
-		        console.log('连接成功!');
-		        subscribe();
-		    };
-		    var errorCallback = function () {
-		        console.log('连接失败!');
-		    };
-		    var ws = new SockJS('http://129.211.62.153:8080/ws');
-		    var client = Stomp.over(ws);
-		    // 连接服务器, uid=1, passcode=pass1
-		    client.connect('1', 'pass1', connectCallback, errorCallback);
-		
-		    // 接收到订阅消息后的回调函数
-		    function onMessage(message) {
-		        console.log(message)
-				app.refresh() 
-		    }
+				// client.subscribe('/broad/chat/1', onMessage);
+				// 订阅/uni/add/{uid}, 也就是添加uid=1的用户为好友的消息
+				// client.subscribe('/uni/add/1', onMessage);
+			}
+			var connectCallback = function() {
+				console.log('连接成功!');
+				client.subscribe('/uni/chat/' + localStorage.getItem("uid"), onMessage);
+			};
+			var errorCallback = function() {
+				console.log('连接失败!');
+			};
+			var ws = new SockJS('http://129.211.62.153:8080/ws');
+			var client = Stomp.over(ws);
+			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
+				errorCallback);
+			function onMessage(message) {
+				app.refresh();
+			}
 			window.toChat = function(type, id) {
 				console.log(type, id)
 				if (type == 1) {
 					localStorage.setItem("nf", id);
 					window.location.href = './friend.html';
 				} else if (type == 2) {
-					localStorage.setItem("nr", id);
+					if (id != -1) localStorage.setItem("nr", id);
 					window.location.href = './chatroom.html';
 				}
 			};
@@ -124,7 +118,6 @@
 					middleshow: '',
 					dialog: false,
 					chatname: '',
-					chatid: '',
 					massagelist: []
 				},
 				mounted() {
@@ -190,11 +183,11 @@
 									})
 								}
 								localStorage["mlist"] = JSON.stringify(this.massagelist);
+								this.show();
 							})
 						} else {
 							this.refresh();
 						}
-						setTimeout(this.show, 500);
 					},
 					refresh: function() {
 						this.massagelist = JSON.parse(localStorage.getItem("mlist"))
@@ -218,9 +211,11 @@
 								})
 							}
 							localStorage["mlist"] = JSON.stringify(this.massagelist);
+							this.show();
 						})
 					},
 					show: function() {
+						this.middleshow.innerHTML = ''
 						var i = 0;
 						var li = JSON.parse(localStorage.getItem("mlist"));
 						li.sort(this.compare('time'))
@@ -298,12 +293,9 @@
 						var text = document.getElementById('text');
 						this.chatname = text.value;
 						text.value = '';
-						axios.get('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.chatname).then((res) => {
-							console.log(res);
-							this.chatid = res.data;
-							console.log(this.chatid);
+						axios.post('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.chatname).then((res) => {
+							toChat(2, res.data)
 						})
-						// toChat(2, this.chatid);
 					},
 					changeDate: function(str) {
 						str = str.replace(/-/g, '/')
@@ -318,8 +310,8 @@
 						var today = year + "-" + month + "-" + day;
 						str = str.replace(/T/, ' ')
 						if (str.includes(today))
-							return str.substring(11,16);
-						else return str.substring(0,10);
+							return str.substring(11, 16);
+						else return str.substring(0, 10);
 					},
 					compare(attr) {
 						let that = this;

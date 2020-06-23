@@ -34,10 +34,8 @@
 					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
 				</ul>
 				<div class="footer">
-					<div class="more">
-						<a href="./emoji.html" target="_blank">
-							<img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 5px;" />
-						</a>
+					<div class="more" @click="sendPicture">
+						<img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 5px;" />
 					</div>
 					<div class="con-text"> <input id="text" type="text" @keyup.enter="send" placeholder="说点什么吧..." style="width: 95%; height: 65%; font-size: 20px; text-indent: 10px; border-radius: 6px;">
 					</div>
@@ -55,12 +53,7 @@
 		<script src="../js/stomp.js"></script>
 		<script>
 			function subscribe() {
-		        // 订阅/uni/chat/{uid}, 也就发送给uid=1的用户的消息
 		        client.subscribe('/uni/chat/'+localStorage.getItem("uid"), onMessage);
-		        // 订阅/broad/chat/{gid}, 也就是在gid=1的群内发送的消息
-		        // client.subscribe('/broad/chat/1', onMessage);
-		        // 订阅/uni/add/{uid}, 也就是添加uid=1的用户为好友的消息
-		        // client.subscribe('/uni/add/1', onMessage);
 		    }
 		    var connectCallback = function () {
 		        console.log('连接成功!');
@@ -72,15 +65,13 @@
 		    var ws = new SockJS('http://129.211.62.153:8080/ws');
 		    var client = Stomp.over(ws);
 		    // 连接服务器, uid=1, passcode=pass1
-		    client.connect('1', 'pass1', connectCallback, errorCallback);
+		    client.connect(localStorage.getItem("uid")+'', 'pass'+localStorage.getItem("uid"), connectCallback, errorCallback);
 		
 		    // 接收到订阅消息后的回调函数
 		    function onMessage(message) {
-		        console.log(message)
-				
+		        console.log(message);
+				app.getMessage();
 		    }
-		</script>
-		<script type="text/javascript">
 			var app = new Vue({
 				el: "#app",
 				data: {
@@ -120,7 +111,7 @@
 						localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages)
 						var temp = JSON.parse(localStorage.getItem("mlist"))
 						for (var i = 0; i < temp.length; i++) {
-							if (temp[i].otheruid == this.frienduid)
+							if (temp[i].otheruid == this.frienduid && temp[i].type==1)
 								temp.splice(i, 1)
 						}
 						temp.push({
@@ -132,7 +123,6 @@
 							newestMessage: this.messages[this.messages.length - 1].content,
 							time: this.messages[this.messages.length - 1].time
 						})
-						console.log(this.messages[this.messages.length - 1].time)
 						localStorage["mlist"] = JSON.stringify(temp)
 						window.location.href = './message.html';
 					},
@@ -189,7 +179,7 @@
 						axios.post('http://129.211.62.153:8080/msg/read/user/' + this.useruid + '/' + this.frienduid).then((res) => {})
 					},
 					sendPicture: function() {
-						window.location.assign('./emoji.html')
+						window.location.href = './emoji.html';
 					},
 					load: function() {
 						if (JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid)) != null) {

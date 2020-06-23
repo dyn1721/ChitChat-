@@ -34,10 +34,8 @@
 					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
 				</ul>
 				<div class="footer">
-					<div class="more">
-						<a href="./emoji.html" target="_blank">
-							<img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 5px;" />
-						</a>
+					<div class="more" @click="sendPicture">
+						<img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 5px;" />
 					</div>
 					<div class="con-text"> <input id="text" type="text" @keyup.enter="send" placeholder="说点什么吧..." style="width: 95%; height: 65%; font-size: 20px; text-indent: 10px; border-radius: 6px;">
 					</div>
@@ -51,7 +49,29 @@
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
-		<script type="text/javascript">
+		<script src="../js/sockjs-client.js"></script>
+		<script src="../js/stomp.js"></script>
+		<script>
+			function subscribe() {
+		        client.subscribe('/broad/chat/'+localStorage.getItem("nr"), onMessage);
+		    }
+		    var connectCallback = function () {
+		        console.log('连接成功!');
+		        subscribe();
+		    };
+		    var errorCallback = function () {
+		        console.log('连接失败!');
+		    };
+		    var ws = new SockJS('http://129.211.62.153:8080/ws');
+		    var client = Stomp.over(ws);
+		    // 连接服务器, uid=1, passcode=pass1
+		    client.connect(localStorage.getItem("uid")+'', 'pass'+localStorage.getItem("uid"), connectCallback, errorCallback);
+		
+		    // 接收到订阅消息后的回调函数
+		    function onMessage(message) {
+		        console.log(message);
+				app.getMessage();
+		    }
 			var app = new Vue({
 				el: "#app",
 				data: {
@@ -61,17 +81,16 @@
 					portraitSrc: '',
 					arrIcon: [],
 					messages: [],
-					num: '',
 					iNow: '',
 					text: '',
 					content: '',
 					img: '',
 					span: '',
+					time: ''
 				},
 				mounted() {
 					this.useruid = localStorage.getItem("uid");
 					this.roomuid = localStorage.getItem("nr");
-					console.log("nr:"+this.roomuid)
 					axios.get('http://129.211.62.153:8080/room/viewroomname/' + this.roomuid).then((res) => {
 						this.roomname = res.data
 					})
@@ -79,15 +98,29 @@
 					this.content = document.getElementsByTagName('ul')[0];
 					this.img = this.content.getElementsByTagName('img');
 					this.span = this.content.getElementsByTagName('span');
-					this.num = 0;
 					this.iNow = -1;
-					var picsrc = "http://129.211.62.153:8080/image/" + this.useruid + "/head.jpg";
-					this.arrIcon[0] = picsrc;
+					this.arrIcon[0] = "http://129.211.62.153:8080/image/" + this.useruid + "/head.jpg";
 					this.load();
 					this.getMessage();
 				},
 				methods: {
 					switchHtml: function() {
+						localStorage[this.useruid + "mr" + this.roomuid] = JSON.stringify(this.messages)
+						var temp = JSON.parse(localStorage.getItem("mlist"))
+						for (var i = 0; i < temp.length; i++) {
+							if (temp[i].otheruid == this.roomuid && temp[i].type==2)
+								temp.splice(i, 1)
+						}
+						temp.push({
+							type: 2,
+							otheruid: this.roomuid,
+							selfuid: this.useruid,
+							newMessageNumber: 0,
+							name: this.roomname,
+							newestMessage: this.messages[this.messages.length - 1].content,
+							time: this.messages[this.messages.length - 1].time
+						})
+						localStorage["mlist"] = JSON.stringify(temp)
 						window.location.href = './message.html';
 					},
 					send: function() {
@@ -95,59 +128,92 @@
 							// alert('不能发送空消息');
 						} else {
 							axios.post('http://129.211.62.153:8080/msg/room-chat', {
-								type: 1,
+								type: 2,
+								style: 1,
 								fromId: this.useruid,
 								toId: this.roomuid,
-								content: this.text.value
-							}).then(res => (console.log(res)))
-							this.content.innerHTML += '<li><img src="' + this.arrIcon[this.num] + '"><span><pre>' + this.text.value +
+								content: this.text.value,
+							}).then(res => {
+								// this.$parent.time = res.data.substring(0, 19)
+								localStorage.setItem("chattime", res.data.substring(0, 19))
+							})
+							// this.content.innerHTML += '<li style="margin-bottom: 5px;"><div style=" float: right;">'+localStorage.getItem("nickname")+'</div></li>'
+							this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre>' + this.text.value +
 								'</pre></span></li>';
 							this.iNow++;
 							this.img[this.iNow].className += 'imgright';
 							this.span[this.iNow].className += 'spanright';
+							this.messages.push({
+								type: 1,
+								send: 0,
+								content: this.text.value,
+								time: localStorage.getItem("chattime")
+							})
 							this.text.value = '';
 							this.content.scrollTop = this.content.scrollHeight;
 						}
 					},
 					getMessage: function() {
-						axios.post('http://129.211.62.153:8080/msg/user/' + this.useruid + '/' + this.roomuid).then((res) => {
+						axios.post('http://129.211.62.153:8080/msg/room/' + this.useruid + '/' + this.roomuid).then((res) => {
 							console.log(res.data);
+							if (res.data.length != 0) {
+								var i = 0;
+								for (; i < res.data.length; i++) {
+									this.content.innerHTML += '<li><img src="' + this.arrIcon[1] + '"><span><pre>' + res.data[i].content +
+										'</pre></span></li>';
+									this.iNow++;
+									this.img[this.iNow].className += 'imgleft';
+									this.span[this.iNow].className += 'spanleft';
+									this.messages.push({
+										type: 1,
+										send: 2,
+										content: res.data[i].content,
+										time: res.data[i].sendTime.substring(0, 19)
+									})
+									this.content.scrollTop = this.content.scrollHeight;
+								}
+							}
 						})
+						axios.post('http://129.211.62.153:8080/msg/read/room/' + this.useruid + '/' + this.roomuid).then((res) => {})
 					},
 					sendPicture: function() {
-						window.location.assign('./emoji.html')
+						window.location.href = './emoji.html';
 					},
 					load: function() {
-						if (JSON.parse(localStorage.getItem("mf1")) != null) {
-							var li = JSON.parse(localStorage.getItem("mf1"));
-							console.log(li)
-							li.sort(this.compare('time'))
-							console.log(li)
+						if (JSON.parse(localStorage.getItem(this.useruid + "mr" + this.roomuid)) != null) {
+							this.messages = JSON.parse(localStorage.getItem(this.useruid + "mr" + this.roomuid));
+							this.messages.sort(this.compare('time'))
+							console.log(this.messages)
+							var i = 0;
+							for (; i < this.messages.length; i++) {
+								this.content.innerHTML += '<li><img src="' + this.arrIcon[this.messages[i].send] + '"><span><pre>' +
+									this.messages[i].content +
+									'</pre></span></li>';
+								this.iNow++;
+								if (this.messages[i].send == 0) {
+									this.img[this.iNow].className += 'imgright';
+									this.span[this.iNow].className += 'spanright';
+								} else {
+									this.img[this.iNow].className += 'imgleft';
+									this.span[this.iNow].className += 'spanleft';
+								}
+								this.content.scrollTop = this.content.scrollHeight;
+							}
 						}
-						var list1 = [{
-							type: 1, //1消息，2图片
-							send: 2, //1自己，2对方
-							content: "你已经和我成为好友了，快来聊天吧！",
-							src: "",
-							time: "2020-06-22-14-07-15"
-						}]
-						localStorage[this.useruid + "mf" + this.roomuid] = JSON.stringify(list1)
 					},
 					compare(attr) {
 						let that = this;
 						return function(a, b) {
 							let val1 = a[attr];
 							let val2 = b[attr];
-							val1 = this.changeDate(val1)
-							val2 = this.changeDate(val2)
-							return new Date(val2) - new Date(val1);
+							val1 = that.changeDate(val1)
+							val2 = that.changeDate(val2)
+							return new Date(val1) - new Date(val2);
 						}
 					},
 					changeDate: function(str) {
-						str = str.replace(/-/, '/')
-						str = str.replace(/-/, '/')
-						str = str.replace(/-/, ' ')
-						str = str.replace(/-/g, ':')
+						str = str.replace(/-/g, '/')
+						str = str.replace(/T/, ' ')
 						return str;
 					}
 				}
