@@ -1,4 +1,4 @@
-f/*unction delCookie()
+/*unction delCookie()
 			{
 			 var keys=document.cookie.match(/[^ =;]+(?=\=)/g);
 			    if (keys) {
