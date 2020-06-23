@@ -30,7 +30,7 @@
 	<body>
 	<div id="app" v-cloak>
 		<div class="weui-cells__title">
-			Chatroom资料卡
+			聊天室资料卡
 			<a href="javascript:" class="button" onclick="javascript:history.back(-1)">取消</a>
 		</div>
 		<div class="weui-cells__title">  </div>
@@ -40,7 +40,7 @@
                 <div class="weui-cell__hd">
 					<img src="../img/chat/chat_show.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
-					<p style="font-size: 1.3rem;">聊天室名称</p>
+					<p style="font-size: 1.3rem;"> {{roomname}} </p>
 					<br>
 					<br>
                 </div>
@@ -51,21 +51,21 @@
 				<div class="weui-cell__bd">
 					<p>聊天室编号</p>
 				</div>
-				<div class="weui-cell__ft" v-text="nickname" ></div>
+				<div class="weui-cell__ft" v-text="currentRID" ></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
 					<p>聊天室成员</p>
 				</div>
-				<div class="weui-cell__ft" v-text="username"></div>
+				<div class="weui-cell__ft"></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;"></div>
 				<div class="weui-cell__bd">
-					<p>聊天室公告</p>
+					<p>聊天室公告：</p>
 				</div>
-				<div class="weui-cell__ft" v-text="sign"></div>
+				<div class="weui-cell__ft" v-text="announcement"></div>
             </a>
             <div class="switch">
                 <div  class="weui-cell weui-cell_active weui-cell_switch">
@@ -146,11 +146,43 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
+                roomname:'',
+                currentRID:'',
+                announcement:'',
+
 				isFriend:true,									// TODO:这里做个判断
 				Dialog1:false,
 				Dialog2:false,
 				Toast:false,
                 check1:'',
+                roomList:[],
+            },
+            mounted() {
+				console.log(localStorage.getItem("currentRID"))
+				this.currentRID = localStorage.getItem("currentRID")
+				if(localStorage.getItem("currentRID")!=null){
+					console.log(1)
+					axios.get('http://129.211.62.153:8080/room/'+this.currentRID).then((res)=>{
+						console.log(res)
+						this.roomname=res.data.roomname;
+						this.announcement=res.data.announcement;
+						if(this.announcement==null)
+						    this.announcement='';
+						//头像获取
+						// var picsrc="http://129.211.62.153:8080/image/"+this.currentUID+"/head.jpg";
+						// this.portraitSrc=picsrc;
+					})
+				}
+				// 判断currentUID是否在好友列表内
+				this.uid = localStorage.getItem("uid");
+				axios.get('http://129.211.62.153:8080/user/getroom/'+this.uid)
+				.then((res)=>{
+					console.log(res);
+					this.roomList = res.data;
+				})
+				for (room in this.roomList) {
+					if(room.rid == this.currentRID) this.$set(this, "isFriend", true);;
+				}
 			},
 			methods:{
 				showDialog1: function(){
@@ -171,11 +203,15 @@
 				deleteFriend: function(){
 					this.Dialog2 = false;
 					this.Toast = true;
-					let _this = this;
+                    let _this = this;
+                    axios.post('http://129.211.62.153:8080/room/deleteuser/' + this.currentRID + '/' + this.uid)
+						.then((res)=>{
+							console.log(res);
+					})
 					setTimeout(function () {
                 		_this.Toast = false;
                     }, 1000);
-                    window.location.href = './list.html';
+                    history.back(-1);
 				},
                 switchDND:function(){
                     // TODO

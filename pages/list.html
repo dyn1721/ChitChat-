@@ -62,7 +62,7 @@
 			</a>
 			<!--真正的聊天室-->
 			<div v-for="(room, i) in roomList">
-				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchChatroom(room.rid)">
 					<div class="weui-cell__hd">
 						<img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
 					<div class="weui-cell__bd">
@@ -150,11 +150,12 @@
 				switchRobot:function(){
 					window.location.href='./robot.html';
 				},
-				switchFriend:function(){
-					localStorage.setItem("currentUID", this.tempUID);
+				switchFriend:function(uid){
+					localStorage.setItem("currentUID", uid);
 					window.location.href='./idCard.html';
 				},
-				switchChatroom:function(){
+				switchChatroom:function(rid){
+					localStorage.setItem("currentRID", rid);
 					window.location.href='./chatroomCard.html';
 				},
 				switchNewFriend:function(){
