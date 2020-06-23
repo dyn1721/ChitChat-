@@ -182,7 +182,7 @@
 						axios.post('http://129.211.62.153:8080/msg/delete', {
 							type: 5,
 							style: 3,
-							fromId: this.nowfuid,
+							fromId: this.nowfuid,//发申请的
 							toId: this.useruid,
 							content: true,
 						}).then(res => {this.refresh()})
