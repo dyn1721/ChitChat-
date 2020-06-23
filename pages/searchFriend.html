@@ -30,7 +30,6 @@
 	<body>
 	<div id="app" v-cloak>
 		
-
 		<div class="weui-cells__title">
 			检索朋友
 			<a href="javascript:" class="button" onclick="javascript:history.back(-1)">取消</a>
@@ -95,7 +94,7 @@
 			},
 			methods:{
                 switchFriend: function(uid) {
-                    localStorage.setItem("currentUID", uid);
+                    localStorage.setItem("nr", uid);
                     window.location.href = './idCard.html';
                 },
                 hideSearchResult: function() {
