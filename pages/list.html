@@ -186,12 +186,12 @@
 					window.location.href='./newfriend.html';
 				},
 				switchFriend: function(uid) {
-					localStorage.setItem("nf") = uid;
-					window.location.href = './friend.html';
+					localStorage.setItem("currentUID", uid);
+					window.location.href = './idCard.html';
 				},
-				switchChatroom: function(uid) {
-					localStorage.setItem("nr") = uid;
-					window.location.href = './chatroom.html';
+				switchChatroom: function(rid) {
+					localStorage.setItem("currentRID", rid);
+					window.location.href = './chatroomCard.html';
 				},
 				switchSearchFriends: function() {
 					window.location.href = './searchFriend.html';

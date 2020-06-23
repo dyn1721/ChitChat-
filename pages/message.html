@@ -24,7 +24,7 @@
 		<div id="app" v-cloak>
 			<div class="top" style="background-color: #87d9ff;">
 				<div class="top_pic">
-					<img v-bind:src="portraitSrc" style="border-radius: 50%; width: 30px; height: 30px;">
+					<img v-bind:src="portraitSrc" style="border-radius: 50%; width: 30px; height: 30px;" @click="toCard">
 				</div>
 				<div class="top_name">
 					<div style="display: table-cell; vertical-align: middle;font-weight: 500; ">消 息</div>
@@ -322,6 +322,10 @@
 							val2 = that.changeDate(val2)
 							return new Date(val2) - new Date(val1);
 						}
+					},
+					toCard: function() {
+						localStorage.setItem("currentUID", this.useruid);
+						window.location.href = './idCard.html';
 					}
 				}
 			})
