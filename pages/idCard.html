@@ -154,7 +154,7 @@
 				content:'',
 
 				isMe:'',
-				isFriend:'',
+				isFriend:true,
 				Dialog1:false,
 				Dialog2:false,
 				Toast:false,
@@ -225,7 +225,7 @@
 						// .then((res)=>{
 						// 	console.log(res);
 						// })
-						sendMessage(3, this.uid, this.currentUID, this.content);
+						sendMessage(3, this.uid, this.currentUID, 1, this.content);
 						this.Dialog1 = false;
 					}
 				},

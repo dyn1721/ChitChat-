@@ -55,7 +55,7 @@
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
-				<div class="weui-cell__bd">
+				<div class="weui-cell__bd" @click="switchInvite">
 					<p>聊天室成员</p>
 				</div>
 				<div class="weui-cell__ft"></div>
@@ -219,7 +219,11 @@
 				},
                 switchDND:function(){
                     // TODO
-                },
+				},
+				switchInvite:function(){
+					localStorage.setItem("currentRID", this.currentRID);
+					window.location.href = './chatroom_invite.html';
+				},
 			}
 		});
 		</script>
