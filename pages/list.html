@@ -41,7 +41,7 @@
 			<div class="weui-cells">
 				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchNewFriend" href="javascript:">
 					<div class="weui-cell__hd" style="position: relative;">
-						<img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;">
+						<img src="../img/chat/plus.png" alt="" style="width: 40px; margin-right: 16px; display: block;">
 						<div v-show="red">
 							<span class="weui-badge" style="position: absolute; top: -0.4em; right: 0.6em;">{{newfnum}}</span>
 						</div>
@@ -51,7 +51,7 @@
 					</div>
 				</a>
 				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchRobot" href="javascript:">
-					<div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__hd"><img src="../img/chat/robot.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
 					<div class="weui-cell__bd">
 						<p>Bot</p>
 					</div>
@@ -60,7 +60,7 @@
 
 				<h5 style="text-indent: 5%;">加入的聊天室</h5>
 				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchChatroom(1)" href="javascript:">
-					<div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__hd"><img src="../img/icon/mine.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
 					<div class="weui-cell__bd">
 						<p>聊天室名称</p>
 					</div>
@@ -81,7 +81,7 @@
 
 				<h5 style="text-indent: 5%;">我的好友列表</h5>
 				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchFriend(1)" href="javascript:">
-					<div class="weui-cell__hd"><img src="../img/chat/chat_show.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__hd"><img src="../img/icon/defaultPortrait.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
 					<div class="weui-cell__bd">
 						<p>联系人名称</p>
 					</div>
@@ -196,11 +196,11 @@
 						window.location.href = './newfriend.html';
 					},
 					switchFriend: function(uid) {
-						localStorage.setItem("nf") = uid;
+						localStorage.setItem("nf",uid);
 						window.location.href = './friend.html';
 					},
 					switchChatroom: function(uid) {
-						localStorage.setItem("nr") = uid;
+						localStorage.setItem("nr",uid);
 						window.location.href = './chatroom.html';
 					},
 					switchSearchFriends: function() {

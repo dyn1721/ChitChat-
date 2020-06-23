@@ -28,7 +28,8 @@
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> {{friendname}} </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" /> </div>
+					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" />
+					</div>
 				</div>
 				<ul class="content">
 					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
@@ -40,7 +41,7 @@
 					<div class="con-text"> <input id="text" type="text" @keyup.enter="send" placeholder="说点什么吧..." style="width: 95%; height: 65%; font-size: 20px; text-indent: 10px; border-radius: 6px;">
 					</div>
 					<div class="send" @click="send">
-						<img src="../img/chat/send.png" lt="" style="position: relative; right: 4px;width: 60%;height: 60%;"/>
+						<img src="../img/chat/send.png" lt="" style="position: relative; right: 4px;width: 60%;height: 60%;" />
 					</div>
 				</div>
 			</div>
@@ -138,22 +139,20 @@
 								toId: this.frienduid,
 								content: this.text.value,
 							}).then(res => {
-								// this.$parent.time = res.data.substring(0, 19)
-								localStorage.setItem("chattime", res.data.substring(0, 19))
+								this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre>' + this.text.value +
+									'</pre></span></li>';
+								this.iNow++;
+								this.img[this.iNow].className += 'imgright';
+								this.span[this.iNow].className += 'spanright';
+								this.messages.push({
+									type: 1,
+									send: 1,
+									content: this.text.value,
+									time: res.data.substring(0, 19)
+								})
+								this.text.value = '';
+								this.content.scrollTop = this.content.scrollHeight;
 							})
-							this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre>' + this.text.value +
-								'</pre></span></li>';
-							this.iNow++;
-							this.img[this.iNow].className += 'imgright';
-							this.span[this.iNow].className += 'spanright';
-							this.messages.push({
-								type: 1,
-								send: 1,
-								content: this.text.value,
-								time: localStorage.getItem("chattime")
-							})
-							this.text.value = '';
-							this.content.scrollTop = this.content.scrollHeight;
 						}
 					},
 					getMessage: function() {

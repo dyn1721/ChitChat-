@@ -135,23 +135,22 @@
 								toId: this.roomuid,
 								content: this.text.value,
 							}).then(res => {
-								// this.$parent.time = res.data.substring(0, 19)
-								localStorage.setItem("chattime", res.data.substring(0, 19))
+								this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre>' + this.text.value +
+									'</pre></span></li>';
+								this.iNow++;
+								this.img[this.iNow].className += 'imgright';
+								this.span[this.iNow].className += 'spanright';
+								this.messages.push({
+									type: 1,
+									send: 1,
+									content: this.text.value,
+									time: res.data.substring(0, 19)
+								})
+								this.text.value = '';
+								this.content.scrollTop = this.content.scrollHeight;
 							})
 							// this.content.innerHTML += '<li style="margin-bottom: 5px;"><div style=" float: right;">'+localStorage.getItem("nickname")+'</div></li>'
-							this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre>' + this.text.value +
-								'</pre></span></li>';
-							this.iNow++;
-							this.img[this.iNow].className += 'imgright';
-							this.span[this.iNow].className += 'spanright';
-							this.messages.push({
-								type: 1,
-								send: 0,
-								content: this.text.value,
-								time: localStorage.getItem("chattime")
-							})
-							this.text.value = '';
-							this.content.scrollTop = this.content.scrollHeight;
+							
 						}
 					},
 					getMessage: function() {
