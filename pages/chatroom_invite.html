@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<title>ChitChat-Invite</title>
+		<style> @import url("../css/bottom.css"); </style>
+		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+		<script type="text/javascript" src="../js/cookie.js"></script>
+        <script type="text/javascript" src="../js/loadPic.js"></script>
+        <!--  https://github.com/sockjs/sockjs-client  -->
+		<script src="../js/sockjs-client.js"></script>
+		<!--  https://github.com/jmesnil/stomp-websocket  -->
+		<script src="../js/stomp.js"></script>
+		<script src="../js/stompClient.js"></script>
+		<style>
+            [v-cloak] {
+			  display: none;
+			}
+			.weui-cells__title{
+				font-size: 1.35rem;
+			}
+			#portrait{
+				position: relative;
+				right: -80%;
+			}
+			.button{
+				font-size: 1.2rem;
+				position: fixed;
+				right: 5%;
+			}
+		</style>
+	</head>
+	<body>
+	<div id="app" v-cloak>
+		
+
+		<div class="weui-cells__title">
+			邀请加入聊天室
+			<a href="javascript:" class="button" onclick="javascript:history.back(-1)">取消</a>
+		</div>
+		<div class="weui-cells__title">  </div>
+
+        <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
+        <div class="weui-search-bar" id="searchBar" :class="{'weui-search-bar_focusing':searchBarActive}">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" ref="searchInput" v-model="searchInput" @input="searchInput_input" @blur="searchInput_blur" placeholder="搜索" required/>
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear" @click="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText" v-show="searchText_show" @click="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+        </div>
+        
+        <div class="weui-cells searchbar-result" id="searchResult" v-show="searchResult_show">
+            <!--这里是按昵称搜索的结果-->
+            <div v-for="(user, i) in searchResult">
+                <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
+                    <div class="weui-cell__hd">
+                        <img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                    <div class="weui-cell__bd">
+                        <p> {{user.nickname}} </p>
+                    </div>
+                    <div class="weui-cell__ft"></div>
+                </a>
+            </div>
+            <!--这里是UID搜索的结果-->
+            <div v-for="(user, i) in searchResult_uid">
+                <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
+                    <div class="weui-cell__hd">
+                        <img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+                    <div class="weui-cell__bd">
+                        <p> {{user.nickname}} </p>
+                    </div>
+                    <div class="weui-cell__ft"></div>
+                </a>
+            </div>
+        </div>
+
+        <div id="dialogs">
+			<!--BEGIN toast-->
+			<div id="toast" v-show="Toast">
+				<div class="weui-mask_transparent"></div>
+				<div class="weui-toast">
+					<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+					<p class="weui-toast__content">成功邀请</p>
+				</div>
+			</div>
+			<!--end toast-->
+		</div>
+        
+	
+	</div>	
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+		<script type="text/javascript">
+		var app = new Vue({
+			el: "#app",
+			data: {
+                currentRID:'',
+                searchInput:'',
+                searchResult:[],
+                searchResult_uid:[],
+                searchResult_show:false,
+                searchText_show:true,
+                searchBarActive:false,
+                Toast:false,
+
+			},
+			methods:{
+                switchFriend: function(uid) {
+                    // 在这里处理邀请入群
+                    this.currentRID = localStorage.getItem("currentRID");
+                    sendMessage(4, this.uid, uid, 1, this.currentRID);
+                    this.Toast = true;
+                    let _this = this;
+                    setTimeout(function () {
+                		_this.Toast = false;
+					}, 1000);
+
+
+                },
+                hideSearchResult: function() {
+                    console.log("HideResult");
+                    this.searchResult_show = false;
+                    this.searchInput = '';
+                },
+                cancelSearch: function() {
+                    console.log("cancelSearch");
+                    this.searchBarActive = false;
+                    this.searchText_show = true;
+                },
+                searchText: function() {
+                    console.log("Text");
+                    this.searchBarActive = true;
+                    this.$nextTick(()=>{
+                        this.$refs.searchInput.focus();
+                    })
+                },
+                searchInput_blur: function() {
+                    console.log("Blur");
+                    if(!this.searchInput.length) this.$options.methods.cancelSearch();
+                },
+                searchInput_input: function() {
+                    console.log("Input");
+                    if(this.searchInput.length) {
+                        // 更新搜索列表
+                        console.log(this.searchInput);
+                        axios.get('http://129.211.62.153:8080/user/search/2/'+this.searchInput)
+                        .then((res)=>{
+                            console.log(res);
+                            this.searchResult = res.data;
+                        })
+                        axios.get('http://129.211.62.153:8080/user/search/1/'+this.searchInput)
+                        .then((res)=>{
+                            console.log(res);
+                            this.searchResult_uid = res.data;
+                        })
+                        this.searchResult_show = true;
+                    } else {
+                        this.searchResult_show = false;
+                    }
+                },
+                searchClear: function() {
+                    console.log("Clear");
+                    this.$options.methods.hideSearchResult();
+                    this.$nextTick(()=>{
+                        this.$refs.searchInput.focus();
+                    })
+                },
+                searchCancel: function() {
+                    console.log("Cancel");
+                    this.$options.methods.cancelSearch();
+                    this.$nextTick(()=>{
+                        this.$refs.searchInput.blur();
+                    })
+                },
+                getImg(uid) {
+                    var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
+                    console.log(url);
+                    return url;
+                }
+
+			}
+		});
+		</script>
+		
+	
+	</body>
+</html>

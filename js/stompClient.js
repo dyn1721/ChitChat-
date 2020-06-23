@@ -27,12 +27,13 @@ function subscribe() {
     // 订阅/uni/add/{uid}, 也就是添加uid=1的用户为好友的消息
     client.subscribe('/uni/add/1', onMessage);
 }
-function sendMessage(type, fromId, toId, content) {
+function sendMessage(type, fromId, toId, style, content) {
     // 为了简化前端编程, 前端发送RequestMessage而不是完整的Message, 参数如下
     // 需要将对象转为JSON字符串发送
     var _type = type;
     var _fromId = fromId;
     var _toId = toId;
+    var _style = style;
     var _content = content;
     var _destination = "/app/";
     switch (_type) {
@@ -60,6 +61,7 @@ function sendMessage(type, fromId, toId, content) {
         'type': _type,          // 消息类型
         'fromId': _fromId,      // 发送人uid
         'toId': _toId,          // 接收人uid
+        'style': _style,        // 图片样式
         'content': _content     // 发送内容
     }));
 }
