@@ -220,7 +220,7 @@
 					refresh: function(){
 						this.massagelist = []
 						axios.post('http://129.211.62.153:8080/msg/addinfo/' + this.useruid).then((res) => {
-							console.log(res);
+							console.log("refresh: " + res);
 							var i = 0;
 							for (; i < res.data.length; i++) {
 								this.massagelist.push({

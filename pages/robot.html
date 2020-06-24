@@ -26,12 +26,12 @@
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> 无敌的机器人 </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" /> </div>
+					<div class="show" @click="toRobotSetting"> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" /> </div>
 				</div>
 				<ul class="content">
 				</ul>
 				<div class="footer">
-					<div class="more" @click="sendPicture">
+					<div class="more">
 						<img src="../img/chat/chat_more.png" alt="" style="position: relative; left: 4px;width: 90%;height: 50%;" />
 					</div>
 					<div class="con-text"> <input id="text" type="text" @keyup.enter="send" placeholder="说点什么吧..." style="width: 95%; height: 65%; font-size: 20px; text-indent: 10px; border-radius: 6px;">
@@ -94,6 +94,9 @@
 									this.content.scrollTop = this.content.scrollHeight;
 								})
 						}
+					},
+					toRobotSetting: function(){
+						window.location.href = "./robotSetting.html";
 					}
 				}
 			})
