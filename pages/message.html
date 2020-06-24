@@ -121,7 +121,8 @@
 					massagelist: []
 				},
 				mounted() {
-					if (localStorage.getItem("uid") == null) {
+					if (localStorage.getItem("uid")) {
+						console.log(1)
 						axios.get('http://129.211.62.153:8080/user/searchByLoginID/' + localStorage.getItem("username")).then((res) => {
 							console.log(res)
 							var sign = res.data.intro;

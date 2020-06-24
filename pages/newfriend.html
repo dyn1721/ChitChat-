@@ -191,13 +191,12 @@
 						this.middleshow.innerHTML = ''
 						this.nowfuidlist = []
 						var i = 0;
-						var li = JSON.parse(localStorage.getItem("nflist"));
-						li.sort(this.compare('time'))
-						console.log(li[0])
-						for (; i < li.length; i++) {
-							this.nowfuidlist.push({uid:li[i].otheruid});
+						this.massagelist = JSON.parse(localStorage.getItem("nflist"));
+						this.massagelist.sort(this.compare('time'))
+						for (; i < this.massagelist.length; i++) {
+							this.nowfuidlist.push({uid:this.massagelist[i].otheruid});
 							this.nowfuid = this.nowfuidlist[i].uid
-							this.time = this.showTime(li[i].time);
+							this.time = this.showTime(this.massagelist[i].time);
 							axios.post('http://129.211.62.153:8080/user/' + this.nowfuid).then((res) => {
 								this.newfname = res.data.nickname;
 								console.log(this.newfname)
