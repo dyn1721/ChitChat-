@@ -154,7 +154,7 @@
 				content:'',
 
 				isMe:'',
-				isFriend:true,
+				isFriend:false,
 				Dialog1:false,
 				Dialog2:false,
 				Toast:false,
@@ -179,21 +179,22 @@
 						var picsrc="http://129.211.62.153:8080/image/"+this.currentUID+"/head.jpg";
 						this.portraitSrc=picsrc;
 				})
-				// 判断currentUID是否在好友列表内
+				// 判断currentUID是否在好友列表内(这个请求比较慢 我们需要等这个完成再去查好友列表)
 				this.uid = localStorage.getItem("uid");
 				axios.get('http://129.211.62.153:8080/user/getlist/'+this.uid+'/1')
 				.then((res)=>{
-					console.log(res);
-					this.friendList = res.data;
-				})
-				if (this.uid == this.currentUID) {
-					this.$set(this, "isMe", true);
-					console.log("It's ME!!");
-				}else {
-					for (user in this.friendList) {
-						if(user.uid == this.currentUID) this.$set(this, "isFriend", true);;
+					console.log(res.data[0].uid);
+					if (this.uid == this.currentUID) {
+						this.$set(this, "isMe", true);
+					}else {
+						console.log("res.data = " + res.data);
+						for (i in res.data) {
+							console.log("res.data[" + i + "].uid = " + res.data[i].uid);
+							if(res.data[i].uid == this.currentUID) this.$set(this, "isFriend", true);
+						}
 					}
-				}
+				})
+				
 			},
 			methods:{
 				showDialog1: function(){

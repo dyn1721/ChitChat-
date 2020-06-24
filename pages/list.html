@@ -80,13 +80,13 @@
 				<br>
 
 				<h5 style="text-indent: 5%;">我的好友列表</h5>
-				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchFriend(1)" href="javascript:">
+				<!-- <a class="weui-cell  weui-cell_access weui-cell_example" @click="switchFriend(1)" href="javascript:">
 					<div class="weui-cell__hd"><img src="../img/icon/defaultPortrait.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
 					<div class="weui-cell__bd">
 						<p>联系人名称</p>
 					</div>
 					<div class="weui-cell__ft"></div>
-				</a>
+				</a> -->
 				<!--真正的好友列表-->
 				<div v-for="(user, i) in friendList">
 					<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
@@ -186,12 +186,12 @@
 						window.location.href = './newfriend.html';
 					},
 					switchFriend: function(uid) {
-						localStorage.setItem("nf",uid);
-						window.location.href = './friend.html';
+						localStorage.setItem("currentUID",uid);
+						window.location.href = './idCard.html';
 					},
-					switchChatroom: function(uid) {
-						localStorage.setItem("nr",uid);
-						window.location.href = './chatroom.html';
+					switchChatroom: function(rid) {
+						localStorage.setItem("currentRID",rid);
+						window.location.href = './chatroomCard.html';
 					},
 					switchSearchFriends: function() {
 						window.location.href = './searchFriend.html';
