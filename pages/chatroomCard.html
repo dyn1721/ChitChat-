@@ -38,7 +38,7 @@
         <div class="weui-cells">
             <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
                 <div class="weui-cell__hd">
-					<img src="../img/chat/chatroom.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
+					<img src="../img/chat/chat_show.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
 					<p style="font-size: 1.3rem;"> {{roomname}} </p>
 					<br>
@@ -51,7 +51,7 @@
 				<div class="weui-cell__bd">
 					<p>聊天室编号</p>
 				</div>
-				<div class="weui-cell__ft" v-text="currentRID" ></div>
+				<div class="weui-cell__ft" v-text="nr" ></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
@@ -158,9 +158,8 @@
                 roomList:[],
             },
             mounted() {
-				console.log(localStorage.getItem("currentRID"))
-				this.currentRID = localStorage.getItem("currentRID")
-				if(localStorage.getItem("currentRID")!=null){
+				this.currentRID = localStorage.getItem("nr")
+				if(localStorage.getItem("nr")!=null){
 					console.log(1)
 					axios.get('http://129.211.62.153:8080/room/'+this.currentRID).then((res)=>{
 						console.log(res)
@@ -178,11 +177,11 @@
 				axios.get('http://129.211.62.153:8080/user/getroom/'+this.uid)
 				.then((res)=>{
 					console.log(res);
-					for (i in res.data) {
-						if(res.data[i].rid == this.currentRID) this.$set(this, "isFriend", true);;
-					}
+					this.roomList = res.data;
 				})
-				
+				for (room in this.roomList) {
+					if(room.rid == this.currentRID) this.$set(this, "isFriend", true);;
+				}
 			},
 			methods:{
 				showDialog1: function(){
@@ -221,7 +220,7 @@
                     // TODO
 				},
 				switchInvite:function(){
-					localStorage.setItem("currentRID", this.currentRID);
+					localStorage.setItem("nr", this.currentRID);
 					window.location.href = './chatroom_invite.html';
 				},
 			}

@@ -126,7 +126,7 @@
 							})
 							localStorage["mlist"] = JSON.stringify(temp)
 						}
-						window.location.href = './message.html';
+                    history.back(-1);
 					},
 					switchHtml2: function() {
 						window.location.href = './idCard.html';

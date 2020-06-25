@@ -115,7 +115,7 @@
 			methods:{
                 switchFriend: function(uid) {
                     // 在这里处理邀请入群
-                    this.currentRID = localStorage.getItem("currentRID");
+                    this.currentRID = localStorage.getItem("nr");
                     sendMessage(4, this.uid, uid, 1, this.currentRID);
                     this.Toast = true;
                     let _this = this;
