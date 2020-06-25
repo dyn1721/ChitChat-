@@ -26,7 +26,7 @@
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> 无敌的机器人 </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" /> </div>
+					<div class="show" @click="toRobotSetting"> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" /> </div>
 				</div>
 				<ul class="content">
 				</ul>
@@ -94,6 +94,9 @@
 									this.content.scrollTop = this.content.scrollHeight;
 								})
 						}
+					},
+					toRobotSetting: function(){
+						window.location.href = "./robotSetting.html";
 					}
 				}
 			})

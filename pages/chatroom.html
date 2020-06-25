@@ -28,7 +28,7 @@
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> {{roomname}} </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" /> </div>
+					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" @click="toCard"/> </div>
 				</div>
 				<ul class="content">
 					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
@@ -186,7 +186,7 @@
 							console.log(this.messages)
 							var i = 0;
 							for (; i < this.messages.length; i++) {
-								this.content.innerHTML += '<li><img src="' + this.arrIcon[this.messages[i].send] + '"><span><pre>' +
+								this.content.innerHTML += '<li><img src="../img/chat/chatroom.png"><span><pre>' +
 									this.messages[i].content +
 									'</pre></span></li>';
 								this.iNow++;
@@ -218,6 +218,10 @@
 					},
 					getImg(uid) {
 						return "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
+					},
+					toCard: function() {
+						localStorage.setItem("currentRID", this.roomuid);
+						window.location.href = './chatroomCard.html';
 					}
 				}
 			})
