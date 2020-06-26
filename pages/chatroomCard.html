@@ -79,7 +79,7 @@
 
 
 		<div class="button-sp-area cell" v-if="isFriend == true">
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toFriend">ChitChat</a>
+			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toChatroom">ChitChat</a>
 			<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">退出聊天室</a>
 		</div>
 
@@ -159,7 +159,7 @@
                 roomList:[],
             },
             mounted() {
-				this.currentRID = localStorage.getItem("currentRID")
+				this.currentRID = localStorage.getItem("nr")
 				axios.get('http://129.211.62.153:8080/room/'+this.currentRID).then((res)=>{
 						console.log(res)
 						this.roomname=res.data.roomname;
@@ -195,7 +195,7 @@
 				close2: function(){
 					this.Dialog2 = false;
                 },
-                toFriend: function(){
+                toChatroom: function(){
 					localStorage.setItem("nr", this.currentRID);
 					window.location.href = './chatroom.html';
 				},
@@ -219,7 +219,7 @@
                     // TODO
 				},
 				switchInvite:function(){
-					localStorage.setItem("currentRID", this.currentRID);
+					localStorage.setItem("nr", this.currentRID);
 					window.location.href = './chatroom_invite.html';
 				},
 			}
