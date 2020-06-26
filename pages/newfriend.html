@@ -63,10 +63,10 @@
 						</div>
 						<div class="weui-half-screen-dialog__bd">
 							<p class="weui-half-screen-dialog__desc">
-								联系人名称：{{newfname}}
+								用户名称：{{newfname}}
 							</p>
 							<p class="weui-half-screen-dialog__tips">
-								{{newftip}}
+								用户签名：{{newftip}}
 							</p>
 						</div>
 						<div class="weui-half-screen-dialog__ft">
@@ -114,7 +114,6 @@
 					massagelist: [],
 					useruid: '',
 					middleshow: '',
-					nowfuidlist: [],
 					nowfuid: '',
 					newfname: '',
 					newftip: '',
@@ -131,6 +130,7 @@
 								type: res.data[i].type,
 								otheruid: res.data[i].fromId,
 								selfuid: this.useruid,
+								content: res.data[i].content,
 								time: res.data[i].sendTime.substring(0, 19)
 							})
 						}
@@ -189,31 +189,25 @@
 					},
 					show: function() {
 						this.middleshow.innerHTML = ''
-						this.nowfuidlist = []
-						var i = 0;
 						this.massagelist = JSON.parse(localStorage.getItem("nflist"));
 						this.massagelist.sort(this.compare('time'))
-						for (; i < this.massagelist.length; i++) {
-							this.nowfuidlist.push({uid:this.massagelist[i].otheruid});
-							this.nowfuid = this.nowfuidlist[i].uid
+						console.log(this.massagelist)
+						for (var i in this.massagelist) {
 							this.time = this.showTime(this.massagelist[i].time);
-							axios.post('http://129.211.62.153:8080/user/' + this.nowfuid).then((res) => {
-								this.newfname = res.data.nickname;
-								console.log(this.newfname)
-								this.middleshow.innerHTML +=
-									'<div class="weui-cells" onclick="showDialog2(' + i + ')">' +
+							this.middleshow.innerHTML +=
+									'<div class="weui-cells" onclick="showDialog2(' + this.massagelist[i].otheruid + ')">' +
 									'<div class="weui-cell weui-cell_active">' +
 									'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
-									'<img src="http://129.211.62.153:8080/image/' + this.nowfuid +
+									'<img src="http://129.211.62.153:8080/image/' + this.massagelist[i].otheruid +
 									'/head.jpg" style="width: 50px; display: block;" />' +
 									'</div>' +
 									'<div class="weui-cell__bd">' +
-									'<p>' + this.newfname + '</p>' +
+									'<p>验证消息：</p>' +
+									'<p style="font-size: 13px; color: #888;">' + this.massagelist[i].content + '</p>' +
 									'</div>' +
 									'<div class="weui-cell__ft">' + this.time + '</div>' +
 									'</div>' +
 									'</div>'
-							})
 						}
 					},
 					refresh: function(){
@@ -238,7 +232,7 @@
 						this.nowfuid = i;
 						axios.post('http://129.211.62.153:8080/user/' + i).then((res) => {
 							console.log(res.data)
-							this.nowfname = res.data.nickname;
+							this.newfname = res.data.nickname;
 							this.newftip = res.data.intro;
 						})
 					},

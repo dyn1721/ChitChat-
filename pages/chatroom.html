@@ -142,7 +142,7 @@
 								this.span[this.iNow].className += 'spanright';
 								this.messages.push({
 									type: 1,
-									send: 1,
+									send: this.useruid,
 									content: this.text.value,
 									time: res.data.substring(0, 19)
 								})
@@ -166,7 +166,7 @@
 									this.span[this.iNow].className += 'spanleft';
 									this.messages.push({
 										type: 1,
-										send: 2,
+										send: res.data[i].uid,
 										content: res.data[i].content,
 										time: res.data[i].sendTime.substring(0, 19)
 									})
@@ -186,11 +186,11 @@
 							console.log(this.messages)
 							var i = 0;
 							for (; i < this.messages.length; i++) {
-								this.content.innerHTML += '<li><img src="../img/chat/chatroom.png"><span><pre>' +
+								this.content.innerHTML += '<li><img src="'+this.getImg(this.messages[i].send)+'"><span><pre>' +
 									this.messages[i].content +
 									'</pre></span></li>';
 								this.iNow++;
-								if (this.messages[i].send == 0) {
+								if (this.messages[i].send == this.useruid) {
 									this.img[this.iNow].className += 'imgright';
 									this.span[this.iNow].className += 'spanright';
 								} else {
@@ -217,6 +217,7 @@
 						return str;
 					},
 					getImg(uid) {
+						if(uid==0) return this.arrIcon[0];
 						return "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
 					},
 					toCard: function() {
