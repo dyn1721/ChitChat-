@@ -35,24 +35,24 @@ function sendMessage(type, fromId, toId, style, content) {
     var _toId = toId;
     var _style = style;
     var _content = content;
-    var _destination = "/app/";
+    var _destination = "/msg/";
     switch (_type) {
-        case '1':
+        case 1:
             _destination = _destination + "single-chat";
             break;
-        case '2':
+        case 2:
             _destination = _destination + 'group-chat';
             break;
-        case '3':
+        case 3:
             _destination = _destination + 'add-friend';
             break;
-        case '4':
-            _destination = _destination + 'add-chatroom';       // 未确认
+        case 4:
+            _destination = _destination + 'add-room';       // 未确认
             break;
-        case '5':
-            _destination = _destination + 'response-friend';
+        case 5:
+            _destination = _destination + 'verify-friend';
             break;
-        case '6':
+        case 6:
             _destination = _destination + 'response-chatroom';
             break;
         

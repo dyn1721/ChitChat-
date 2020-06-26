@@ -102,6 +102,7 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
+                uid:'',
                 currentRID:'',
                 searchInput:'',
                 searchResult:[],
@@ -113,10 +114,11 @@
 
 			},
 			methods:{
-                switchFriend: function(uid) {
+                switchFriend: function(tempUID) {
                     // 在这里处理邀请入群
-                    this.currentRID = localStorage.getItem("nr");
-                    sendMessage(4, this.uid, uid, 1, this.currentRID);
+                    this.currentRID = localStorage.getItem("currentRID");
+                    // sendMessage(4, this.uid, tempUID, 1, this.currentRID);
+                    axios.post('http://129.211.62.153:8080/room/adduser/' + this.currentRID + '/' + tempUID);
                     this.Toast = true;
                     let _this = this;
                     setTimeout(function () {
