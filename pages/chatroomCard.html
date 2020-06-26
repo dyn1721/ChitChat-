@@ -38,7 +38,7 @@
         <div class="weui-cells">
             <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
                 <div class="weui-cell__hd">
-					<img src="../img/chat/chat_show.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
+					<img src="../img/chat/chatroom.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
                 <div class="weui-cell__bd">
 					<p style="font-size: 1.3rem;"> {{roomname}} </p>
 					<br>
@@ -146,6 +146,7 @@
 		var app = new Vue({
 			el: "#app",
 			data: {
+				nr:'',
                 roomname:'',
                 currentRID:'',
                 announcement:'',
@@ -158,10 +159,8 @@
                 roomList:[],
             },
             mounted() {
-				this.currentRID = localStorage.getItem("nr")
-				if(localStorage.getItem("nr")!=null){
-					console.log(1)
-					axios.get('http://129.211.62.153:8080/room/'+this.currentRID).then((res)=>{
+				this.currentRID = localStorage.getItem("currentRID")
+				axios.get('http://129.211.62.153:8080/room/'+this.currentRID).then((res)=>{
 						console.log(res)
 						this.roomname=res.data.roomname;
 						this.announcement=res.data.announcement;
@@ -171,17 +170,17 @@
 						// var picsrc="http://129.211.62.153:8080/image/"+this.currentUID+"/head.jpg";
 						// this.portraitSrc=picsrc;
 					})
-				}
 				// 判断currentUID是否在好友列表内
 				this.uid = localStorage.getItem("uid");
 				axios.get('http://129.211.62.153:8080/user/getroom/'+this.uid)
 				.then((res)=>{
 					console.log(res);
 					this.roomList = res.data;
+					for (room in this.roomList) {
+						if(room.rid == this.currentRID) this.$set(this, "isFriend", true);;
+					}
 				})
-				for (room in this.roomList) {
-					if(room.rid == this.currentRID) this.$set(this, "isFriend", true);;
-				}
+				
 			},
 			methods:{
 				showDialog1: function(){
@@ -220,7 +219,7 @@
                     // TODO
 				},
 				switchInvite:function(){
-					localStorage.setItem("nr", this.currentRID);
+					localStorage.setItem("currentRID", this.currentRID);
 					window.location.href = './chatroom_invite.html';
 				},
 			}
