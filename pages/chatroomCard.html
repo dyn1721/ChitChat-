@@ -79,7 +79,7 @@
 
 
 		<div class="button-sp-area cell" v-if="isFriend == true">
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toFriend">ChitChat</a>
+			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toChatroom">ChitChat</a>
 			<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">退出聊天室</a>
 		</div>
 
@@ -195,7 +195,7 @@
 				close2: function(){
 					this.Dialog2 = false;
                 },
-                toFriend: function(){
+                toChatroom: function(){
 					localStorage.setItem("nr", this.currentRID);
 					window.location.href = './chatroom.html';
 				},
