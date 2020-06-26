@@ -70,7 +70,7 @@
 				<div v-for="(room, i) in roomList">
 					<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchChatroom(room.rid)">
 						<div class="weui-cell__hd">
-							<img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+							<img src="../img/chat/chatroom.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
 						<div class="weui-cell__bd">
 							<p> {{room.roomname}} </p>
 						</div>
@@ -151,6 +151,7 @@
 				},
 				mounted() {
 					this.uid = localStorage.getItem("uid");
+					
 					axios.post('http://129.211.62.153:8080/msg/addinfo/' + this.uid).then((res) => {
 						this.newfnum = res.data.length
 						if (this.newfnum != 0) this.red = true;
