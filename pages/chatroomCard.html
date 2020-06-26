@@ -159,7 +159,7 @@
                 roomList:[],
             },
             mounted() {
-				this.currentRID = localStorage.getItem("currentRID")
+				this.currentRID = localStorage.getItem("nr")
 				axios.get('http://129.211.62.153:8080/room/'+this.currentRID).then((res)=>{
 						console.log(res)
 						this.roomname=res.data.roomname;
@@ -219,7 +219,7 @@
                     // TODO
 				},
 				switchInvite:function(){
-					localStorage.setItem("currentRID", this.currentRID);
+					localStorage.setItem("nr", this.currentRID);
 					window.location.href = './chatroom_invite.html';
 				},
 			}
