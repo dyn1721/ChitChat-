@@ -85,6 +85,7 @@
 			var connectCallback = function() {
 				console.log('连接成功!');
 				client.subscribe('/uni/chat/' + localStorage.getItem("uid"), onMessage);
+				client.subscribe('/broad/chat/7', onMessage);
 			};
 			var errorCallback = function() {
 				console.log('连接失败!');
