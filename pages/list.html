@@ -102,12 +102,9 @@
 		<script src="../js/sockjs-client.js"></script>
 		<script src="../js/stomp.js"></script>
 		<script>
-			function subscribe() {
-				client.subscribe('/uni/add/' + localStorage.getItem("uid"), onMessage);
-			}
 			var connectCallback = function() {
 				console.log('连接成功!');
-				client.subscribe('/uni/chat/' + localStorage.getItem("uid"), onMessage);
+				client.subscribe('/uni/add/' + localStorage.getItem("uid"), onMessage);
 			};
 			var errorCallback = function() {
 				console.log('连接失败!');
@@ -116,7 +113,6 @@
 			var client = Stomp.over(ws);
 			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
 				errorCallback);
-
 			function onMessage(message) {
 				app.refresh();
 			};
@@ -135,20 +131,21 @@
 				},
 				mounted() {
 					this.uid = localStorage.getItem("uid");
-					
 					axios.post('http://129.211.62.153:8080/msg/addinfo/' + this.uid).then((res) => {
-						this.newfnum = res.data.length
+						this.newfnum = 0;
+						for (var i in res.data) {
+							if (res.data[i].type == 3)
+								this.newfnum++;
+						}
 						if (this.newfnum != 0) this.red = true;
 						else this.red = false;
 					})
 					axios.get('http://129.211.62.153:8080/user/getlist/' + this.uid + '/1')
 						.then((res) => {
-							console.log(res);
 							this.friendList = res.data;
 						})
 					axios.get('http://129.211.62.153:8080/user/getroom/' + this.uid)
 						.then((res) => {
-							console.log(res);
 							this.roomList = res.data;
 						})
 				},
@@ -171,11 +168,11 @@
 						window.location.href = './newfriend.html';
 					},
 					switchFriend: function(uid) {
-						localStorage.setItem("nf",uid);
+						localStorage.setItem("nf", uid);
 						window.location.href = './idCard.html';
 					},
 					switchChatroom: function(rid) {
-						localStorage.setItem("nr",rid);
+						localStorage.setItem("nr", rid);
 						window.location.href = './chatroomCard.html';
 					},
 					switchSearchFriends: function() {
@@ -183,7 +180,6 @@
 					},
 					getImg(uid) {
 						var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
-						console.log(url);
 						return url;
 					}
 				},

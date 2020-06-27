@@ -124,8 +124,8 @@ img {
 	font-size: 20px;
 	width: 100%;
 	height: 78%;
-	position: relative;
-	top: 11%;
+	position: fixed;
+	bottom: 11%;
 	overflow: auto;
 	padding: 0px;
 	z-index: 5;

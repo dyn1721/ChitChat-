@@ -108,6 +108,14 @@
 				},
 				methods: {
 					switchHtml: function() {
+						this.preserve();
+						history.back(-1);
+					},
+					switchHtml2: function() {
+						this.preserve();
+						window.location.href = './idCard.html';
+					},
+					preserve: function(){
 						if (this.messages.length != 0) {
 							localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages)
 							var temp = JSON.parse(localStorage.getItem("mlist"))
@@ -126,10 +134,6 @@
 							})
 							localStorage["mlist"] = JSON.stringify(temp)
 						}
-                    history.back(-1);
-					},
-					switchHtml2: function() {
-						window.location.href = './idCard.html';
 					},
 					send: function() {
 						if (this.text.value == '') {
