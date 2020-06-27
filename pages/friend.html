@@ -33,6 +33,7 @@
 				</div>
 				<ul class="content">
 					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
+					<li class="time" style="text-align: center; color: #8a8a8a; font-size: 12px;" v-show="!ifload" @click="loadAll">点击加载全部历史信息</li>
 				</ul>
 				<div class="footer">
 					<div class="more" @click="sendPicture">
@@ -63,15 +64,16 @@
 			};
 			var ws = new SockJS('http://129.211.62.153:8080/ws');
 			var client = Stomp.over(ws);
-			// 连接服务器, uid=1, passcode=pass1
 			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
 				errorCallback);
 
-			// 接收到订阅消息后的回调函数
 			function onMessage(message) {
 				console.log(message);
 				app.getMessage();
 			}
+			window.onpopstate = function (event) {
+				app.switchHtml();
+			};
 			var app = new Vue({
 				el: "#app",
 				data: {
@@ -82,11 +84,13 @@
 					arrIcon: [],
 					messages: [],
 					iNow: '',
+					cNow: '',
 					text: '',
 					content: '',
 					img: '',
 					span: '',
-					time: ''
+					time: '',
+					ifload: false
 				},
 				mounted() {
 					this.useruid = localStorage.getItem("uid");
@@ -99,6 +103,7 @@
 					this.img = this.content.getElementsByTagName('img');
 					this.span = this.content.getElementsByTagName('span');
 					this.iNow = -1;
+					this.cNow = -1;
 					var picsrc = "http://129.211.62.153:8080/image/" + this.useruid + "/head.jpg";
 					this.arrIcon[0] = picsrc;
 					picsrc = "http://129.211.62.153:8080/image/" + this.frienduid + "/head.jpg";
@@ -115,7 +120,7 @@
 						this.preserve();
 						window.location.href = './idCard.html';
 					},
-					preserve: function(){
+					preserve: function() {
 						if (this.messages.length != 0) {
 							localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages)
 							var temp = JSON.parse(localStorage.getItem("mlist"))
@@ -123,15 +128,26 @@
 								if (temp[i].otheruid == this.frienduid && temp[i].type == 1)
 									temp.splice(i, 1)
 							}
-							temp.push({
-								type: 1,
-								otheruid: this.frienduid,
-								selfuid: this.useruid,
-								newMessageNumber: 0,
-								name: this.friendname,
-								newestMessage: this.messages[this.messages.length - 1].content,
-								time: this.messages[this.messages.length - 1].time
-							})
+							if (this.messages[this.messages.length - 1].style == 1)
+								temp.push({
+									type: 1,
+									otheruid: this.frienduid,
+									selfuid: this.useruid,
+									newMessageNumber: 0,
+									name: this.friendname,
+									newestMessage: this.messages[this.messages.length - 1].content,
+									time: this.messages[this.messages.length - 1].time
+								})
+							else
+								temp.push({
+									type: 1,
+									otheruid: this.frienduid,
+									selfuid: this.useruid,
+									newMessageNumber: 0,
+									name: this.friendname,
+									newestMessage: "[图片]",
+									time: this.messages[this.messages.length - 1].time
+								})
 							localStorage["mlist"] = JSON.stringify(temp)
 						}
 					},
@@ -149,10 +165,12 @@
 								this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre>' + this.text.value +
 									'</pre></span></li>';
 								this.iNow++;
+								this.cNow++;
 								this.img[this.iNow].className += 'imgright';
-								this.span[this.iNow].className += 'spanright';
+								this.span[this.cNow].className += 'spanright';
 								this.messages.push({
 									type: 1,
+									style: 1,
 									send: 1,
 									content: this.text.value,
 									time: res.data.substring(0, 19)
@@ -168,13 +186,25 @@
 							if (res.data.length != 0) {
 								var i = 0;
 								for (; i < res.data.length; i++) {
-									this.content.innerHTML += '<li><img src="' + this.arrIcon[1] + '"><span><pre>' + res.data[i].content +
-										'</pre></span></li>';
-									this.iNow++;
-									this.img[this.iNow].className += 'imgleft';
-									this.span[this.iNow].className += 'spanleft';
+									if (res.data[i].style == 1) {
+										this.content.innerHTML += '<li><img src="' + this.arrIcon[1] + '"><span><pre>' + res.data[i].content +
+											'</pre></span></li>';
+										this.iNow++;
+										this.cNow++;
+										this.img[this.iNow].className += 'imgleft';
+										this.span[this.cNow].className += 'spanleft';
+									} else if (res.data[i].style == 2) {
+										this.content.innerHTML += '<li><img src="' + this.arrIcon[1] + '"><span><pre><img src="' + res.data[i].content +
+											'"></pre></span></li>';
+										this.iNow++;
+										this.cNow++;
+										this.img[this.iNow].className += 'imgleft';
+										this.span[this.cNow].className += 'spanleft';
+										this.iNow++;
+									}
 									this.messages.push({
 										type: 1,
+										style: res.data[i].style,
 										send: 2,
 										content: res.data[i].content,
 										time: res.data[i].sendTime.substring(0, 19)
@@ -182,33 +212,112 @@
 									this.content.scrollTop = this.content.scrollHeight;
 								}
 							}
+							axios.post('http://129.211.62.153:8080/msg/read/user/' + this.useruid + '/' + this.frienduid).then((res) => {})
 						})
-						axios.post('http://129.211.62.153:8080/msg/read/user/' + this.useruid + '/' + this.frienduid).then((res) => {})
 					},
 					sendPicture: function() {
+						this.preserve();
 						window.location.href = './emoji.html';
 					},
 					load: function() {
+						if (localStorage.getItem(this.useruid + "mf" + this.frienduid + "loadAll") == 1)
+							this.ifload = true
 						if (JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid)) != null) {
 							this.messages = JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid));
 							this.messages.sort(this.compare('time'))
 							console.log(this.messages)
 							var i = 0;
 							for (; i < this.messages.length; i++) {
-								this.content.innerHTML += '<li><img src="' + this.arrIcon[this.messages[i].send - 1] + '"><span><pre>' +
-									this.messages[i].content +
-									'</pre></span></li>';
-								this.iNow++;
-								if (this.messages[i].send == 1) {
-									this.img[this.iNow].className += 'imgright';
-									this.span[this.iNow].className += 'spanright';
-								} else {
-									this.img[this.iNow].className += 'imgleft';
-									this.span[this.iNow].className += 'spanleft';
+								if (this.messages[i].style == 1) {
+									this.content.innerHTML += '<li><img src="' + this.arrIcon[this.messages[i].send - 1] + '"><span><pre>' +
+										this.messages[i].content +
+										'</pre></span></li>';
+									this.iNow++;
+									this.cNow++;
+									if (this.messages[i].send == 1) {
+										this.img[this.iNow].className += 'imgright';
+										this.span[this.cNow].className += 'spanright';
+									} else {
+										this.img[this.iNow].className += 'imgleft';
+										this.span[this.cNow].className += 'spanleft';
+									}
+								} else if (this.messages[i].style == 2) {
+									this.content.innerHTML += '<li><img src="' + this.arrIcon[this.messages[i].send - 1] +
+										'"><span><pre><img src="' +
+										this.messages[i].content +
+										'"></pre></span></li>';
+									this.iNow++;
+									this.cNow++;
+									if (this.messages[i].send == 1) {
+										this.img[this.iNow].className += 'imgright';
+										this.span[this.cNow].className += 'spanright';
+									} else {
+										this.img[this.iNow].className += 'imgleft';
+										this.span[this.cNow].className += 'spanleft';
+									}
+									this.iNow++;
 								}
 								this.content.scrollTop = this.content.scrollHeight;
 							}
 						}
+						if (localStorage.getItem("ifpic") == 1) {
+							console.log("sendpic")
+							axios.post('http://129.211.62.153:8080/msg/single-chat', {
+								type: 1,
+								style: 2,
+								fromId: this.useruid,
+								toId: this.frienduid,
+								content: localStorage.getItem("npic"),
+							}).then(res => {
+								this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre><img src="' +
+									localStorage.getItem("npic") +
+									'"></pre></span></li>';
+								this.iNow++;
+								this.cNow++;
+								this.img[this.iNow].className += 'imgright';
+								this.span[this.cNow].className += 'spanright';
+								this.iNow++;
+								this.messages.push({
+									type: 1,
+									style: 2,
+									send: 1,
+									content: localStorage.getItem("npic"),
+									time: res.data.substring(0, 19)
+								})
+								this.content.scrollTop = this.content.scrollHeight;
+							})
+							localStorage.setItem("ifpic", 0)
+						}
+					},
+					loadAll: function() {
+						console.log("loadall")
+						this.messages = [];
+						axios.post('http://129.211.62.153:8080/users/' + this.useruid + '/friends/' + this.frienduid + '/messages').then(
+							(res) => {
+								console.log(res.data);
+								var i = 0;
+								for (; i < res.data.length; i++) {
+									if (res.data[i].fromId == this.useruid)
+										this.messages.push({
+											type: 1,
+											style: res.data[i].style,
+											send: 1,
+											content: res.data[i].content,
+											time: res.data[i].sendTime.substring(0, 19)
+										})
+									else
+										this.messages.push({
+											type: 1,
+											style: res.data[i].style,
+											send: 2,
+											content: res.data[i].content,
+											time: res.data[i].sendTime.substring(0, 19)
+										})
+								}
+								localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages);
+								localStorage[this.useruid + "mf" + this.frienduid + "loadAll"] = 1;
+								this.load();
+							})
 					},
 					compare(attr) {
 						let that = this;
