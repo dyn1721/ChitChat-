@@ -295,7 +295,8 @@
 						this.chatname = text.value;
 						text.value = '';
 						axios.post('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.chatname).then((res) => {
-							toChat(2, res.data)
+							axios.post('http://129.211.62.153:8080/room/adduser/' + res.data + '/' + this.useruid).then((res) => {console.log(res)})
+							toChat(2, res.data);
 						})
 					},
 					changeDate: function(str) {
