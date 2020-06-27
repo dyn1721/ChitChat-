@@ -58,14 +58,14 @@
 					<div class="weui-cell__ft"></div>
 				</a>
 
-				<h5 style="text-indent: 5%;">加入的聊天室</h5>
+				<!-- <h5 style="text-indent: 5%;">加入的聊天室</h5>
 				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchChatroom(1)" href="javascript:">
 					<div class="weui-cell__hd"><img src="../img/icon/mine.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
 					<div class="weui-cell__bd">
 						<p>聊天室名称</p>
 					</div>
 					<div class="weui-cell__ft"></div>
-				</a>
+				</a> -->
 				<!--真正的聊天室-->
 				<div v-for="(room, i) in roomList">
 					<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchChatroom(room.rid)">
