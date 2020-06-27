@@ -120,21 +120,6 @@
 				</div>
 				<!--END dialog4-->
 
-				<!--BEGIN dialog4-->
-				<div class="js_dialog" v-show="Dialog3">
-					<div class="weui-mask" @click="close3"></div>
-					<div class="weui-dialog weui-skin_android">
-						<div class="weui-dialog__bd">
-							将此人加入好友列表中
-						</div>
-						<div class="weui-dialog__ft">
-							<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close3">取消</a>
-							<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" style="color:crimson" @click="returnFriend">添加好友</a>
-						</div>
-					</div>
-				</div>
-				<!--END dialog4-->
-
 
 				<!--BEGIN toast-->
 				<div id="toast" v-show="Toast">
@@ -268,28 +253,15 @@
 						this.Dialog2 = false;
 						this.Toast = true;
 						let _this = this;
-						axios.post('http://129.211.62.153:8080/user/blacklist/1/' + this.uid + '/' + this.currentUID)
+						axios.post('http://129.211.62.153:8080/users/' + this.uid + '/friends/' + this.currentUID + '/delete')
 							.then((res) => {
-								console.log(res);
+								console.log("Delete friend res = " + res);
 							})
 						setTimeout(function() {
 							_this.Toast = false;
 						}, 1000);
-						history.back(-1);
+						// history.back(-1);
 					},
-					returnFriend: function() {
-						this.Dialog2 = false;
-						this.Toast = true;
-						let _this = this;
-						axios.post('http://129.211.62.153:8080/user/blacklist/2/' + this.uid + '/' + this.currentUID)
-							.then((res) => {
-								console.log(res);
-							})
-						setTimeout(function() {
-							_this.Toast = false;
-						}, 1000);
-						history.back(-1);
-					}
 				}
 			});
 		</script>
