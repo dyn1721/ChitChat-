@@ -51,12 +51,19 @@
 				<div class="weui-cell__bd">
 					<p>聊天室编号</p>
 				</div>
-				<div class="weui-cell__ft" v-text="nr" ></div>
+				<div class="weui-cell__ft" v-text="currentRID" ></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
-				<div class="weui-cell__bd" @click="switchInvite">
+				<div class="weui-cell__bd">
 					<p>聊天室成员</p>
+				</div>
+				<div class="weui-cell__ft"></div>
+			</a>
+			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+				<div class="weui-cell__hd"><img src="../img/icon/icon.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+				<div class="weui-cell__bd" @click="switchInvite">
+					<p>邀请新成员</p>
 				</div>
 				<div class="weui-cell__ft"></div>
 			</a>

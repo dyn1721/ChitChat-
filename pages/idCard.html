@@ -50,9 +50,23 @@
 				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 					<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
 					<div class="weui-cell__bd">
+						<p> 账号：</p>
+					</div>
+					<div class="weui-cell__ft" v-text="friendname"></div>
+				</a>
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+					<div class="weui-cell__hd"><img src="../img/icon/emoji.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd">
 						<p> 性别：</p>
 					</div>
 					<div class="weui-cell__ft" v-text="sex"></div>
+				</a>
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+					<div class="weui-cell__hd"><img src="../img/icon/emoji2.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd">
+						<p> 年龄：</p>
+					</div>
+					<div class="weui-cell__ft" v-text="age"></div>
 				</a>
 				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 					<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;"></div>
@@ -65,17 +79,17 @@
 			<br>
 
 			<div v-show="!isMe">
-				<div class="button-sp-area cell" v-if="isFriend && !inBlack">
+				<div class="button-sp-area cell" v-if="isFriend">
 					<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toFriend">ChitChat</a>
 					<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">删除好友</a>
 				</div>
 
-				<div class="button-sp-area cell" v-if="isFriend && inBlack">
+				<!-- <div class="button-sp-area cell" v-if="isFriend && inBlack">
 					<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toFriend">ChitChat</a>
 					<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog3">移出黑名单</a>
-				</div>
+				</div> -->
 
-				<div class="button-sp-area cell" v-if="!isFriend && !inBlack">
+				<div class="button-sp-area cell" v-if="!isFriend">
 					<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="showDialog1">添加好友</a>
 				</div>
 			</div>
@@ -141,6 +155,7 @@
 				data: {
 					username: '',
 					currentUID: '',
+					friendname: '',
 					nickname: '',
 					sex: '',
 					uid: '',
@@ -152,10 +167,8 @@
 					content: '',
 					isMe: '',
 					isFriend: false,
-					inBlack: false,
 					Dialog1: false,
 					Dialog2: false,
-					Dialog3: false,
 					Toast: false,
 					friendList: [],
 					blacklist: []
@@ -163,7 +176,8 @@
 				mounted() {
 					this.currentUID = localStorage.getItem("nf")
 					axios.get('http://129.211.62.153:8080/user/' + this.currentUID).then((res) => {
-						console.log(res)
+						console.log(res.data)
+						this.friendname = res.data.loginID;
 						this.nickname = res.data.nickname;
 						this.sex = res.data.sex;
 						this.age = res.data.age;
@@ -192,21 +206,6 @@
 								}
 							}
 						})
-					// 判断currentUID是否在黑名单列表内
-					this.uid = localStorage.getItem("uid");
-					axios.get('http://129.211.62.153:8080/user/getlist/' + this.uid + '/2')
-						.then((res) => {
-							console.log(res);
-							this.blackList = res.data;
-						})
-					if (this.uid == this.currentUID) {
-						this.$set(this, "isMe", true);
-						console.log("It's ME!!");
-					} else {
-						for (user in this.blackList) {
-							if (user.uid == this.currentUID) this.$set(this, "inBlack", true);
-						}
-					}
 				},
 				methods: {
 					showDialog1: function() {
@@ -255,17 +254,15 @@
 						let _this = this;
 						axios.post('http://129.211.62.153:8080/users/' + this.uid + '/friends/' + this.currentUID + '/delete')
 							.then((res) => {
-								console.log("Delete friend res = " + res);
+								console.log("Delete friend res = " + res.data);
 							})
 						setTimeout(function() {
 							_this.Toast = false;
 						}, 1000);
-						// history.back(-1);
+						//history.back(-1);
 					},
 				}
 			});
 		</script>
-
-
 	</body>
 </html>

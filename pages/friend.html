@@ -31,9 +31,10 @@
 					<div class="show" @click="switchHtml2"> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" />
 					</div>
 				</div>
+				<div class="history" v-show="!ifload" @click="loadAll" style="text-align: center; color: #8a8a8a; font-size: 12px; z-index: 100;">点击加载全部历史信息</div>
+				<div class="history" v-show="ifload" style="text-align: center; color: #8a8a8a; font-size: 12px; z-index: 100;">已经加载全部历史信息</div>
 				<ul class="content">
 					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
-					<li class="time" style="text-align: center; color: #8a8a8a; font-size: 12px;" v-show="!ifload" @click="loadAll">点击加载全部历史信息</li>
 				</ul>
 				<div class="footer">
 					<div class="more" @click="sendPicture">
@@ -220,8 +221,9 @@
 						window.location.href = './emoji.html';
 					},
 					load: function() {
-						if (localStorage.getItem(this.useruid + "mf" + this.frienduid + "loadAll") == 1)
+						if (localStorage.getItem(this.useruid + "mf" + this.frienduid + "loadAll") == 1){
 							this.ifload = true
+						}
 						if (JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid)) != null) {
 							this.messages = JSON.parse(localStorage.getItem(this.useruid + "mf" + this.frienduid));
 							this.messages.sort(this.compare('time'))
@@ -292,7 +294,7 @@
 					loadAll: function() {
 						console.log("loadall")
 						this.messages = [];
-						axios.post('http://129.211.62.153:8080/users/' + this.useruid + '/friends/' + this.frienduid + '/messages').then(
+						axios.get('http://129.211.62.153:8080/users/' + this.useruid + '/friends/' + this.frienduid + '/messages').then(
 							(res) => {
 								console.log(res.data);
 								var i = 0;
@@ -316,6 +318,7 @@
 								}
 								localStorage[this.useruid + "mf" + this.frienduid] = JSON.stringify(this.messages);
 								localStorage[this.useruid + "mf" + this.frienduid + "loadAll"] = 1;
+								this.content.innerHTML = '';
 								this.load();
 							})
 					},

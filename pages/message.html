@@ -77,15 +77,10 @@
 		<script src="../js/sockjs-client.js"></script>
 		<script src="../js/stomp.js"></script>
 		<script>
-			function subscribe() {
-				// client.subscribe('/broad/chat/1', onMessage);
-				// 订阅/uni/add/{uid}, 也就是添加uid=1的用户为好友的消息
-				// client.subscribe('/uni/add/1', onMessage);
-			}
 			var connectCallback = function() {
 				console.log('连接成功!');
 				client.subscribe('/uni/chat/' + localStorage.getItem("uid"), onMessage);
-				client.subscribe('/broad/chat/7', onMessage);
+				app.subscribe();
 			};
 			var errorCallback = function() {
 				console.log('连接失败!');
@@ -94,6 +89,7 @@
 			var client = Stomp.over(ws);
 			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
 				errorCallback);
+
 			function onMessage(message) {
 				app.refresh();
 			}
@@ -122,7 +118,7 @@
 					massagelist: []
 				},
 				mounted() {
-					if (localStorage.getItem("uid")==-1) {
+					if (localStorage.getItem("uid") == -1) {
 						console.log(1)
 						axios.get('http://129.211.62.153:8080/user/searchByLoginID/' + localStorage.getItem("username")).then((res) => {
 							console.log(res)
@@ -221,7 +217,7 @@
 						var i = 0;
 						var li = JSON.parse(localStorage.getItem("mlist"));
 						li.sort(this.compare('time'))
-						console.log(li[0])
+						console.log(li)
 						for (; i < li.length; i++) {
 							li[i].time = this.showTime(li[i].time)
 							if (li[i].type == 1) {
@@ -296,12 +292,14 @@
 						this.chatname = text.value;
 						text.value = '';
 						axios.post('http://129.211.62.153:8080/room/add/' + this.useruid + '/' + this.chatname).then((res) => {
-							axios.post('http://129.211.62.153:8080/room/adduser/' + res.data + '/' + this.useruid).then((res) => {console.log(res)})
+							axios.post('http://129.211.62.153:8080/room/adduser/' + res.data + '/' + this.useruid).then((res) => {
+								console.log(res)
+							})
 							toChat(2, res.data);
 						})
 					},
 					changeDate: function(str) {
-						if(str){
+						if (str) {
 							str = str.replace(/-/g, '/');
 							str = str.replace(/T/, ' ');
 						}
@@ -313,14 +311,14 @@
 						var month = dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
 						var day = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
 						var today = year + "-" + month + "-" + day;
-						if(str){
+						if (str) {
 							str = str.replace(/T/, ' ');
 							if (str.includes(today))
 								return str.substring(11, 16);
 							else return str.substring(0, 10);
 						}
 						return null;
-						
+
 					},
 					compare(attr) {
 						let that = this;
@@ -335,6 +333,13 @@
 					toCard: function() {
 						localStorage.setItem("nf", this.useruid);
 						window.location.href = './idCard.html';
+					},
+					subscribe: function() {
+						axios.get('http://129.211.62.153:8080/user/getroom/' + this.useruid)
+							.then((res) => {
+								for (var i in res.data)
+									client.subscribe('/broad/chat/' + res.data[i].rid, onMessage);
+							})
 					}
 				}
 			})
