@@ -55,10 +55,15 @@
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
-				<div class="weui-cell__bd">
+				<div class="weui-cell__bd" @click="switchUsers">
 					<p>聊天室成员</p>
 				</div>
 				<div class="weui-cell__ft"></div>
+			</a>
+			<!-- 在这里显示聊天室成员列表 -->
+			<a class="weui-cell  weui-cell_access weui-cell_example" style="display: flex; flex-wrap: wrap;" href="javascript:">
+				<div v-for="(user, i) in memberList">
+					<img :src='getImg(user)' alt="" style="width: 50px; margin-left: 16px; margin-top: 12px; display: block;" @click="switchCard(user)"></div>
 			</a>
 			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
 				<div class="weui-cell__hd"><img src="../img/icon/icon.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
@@ -158,6 +163,8 @@
                 currentRID:'',
                 announcement:'',
 
+				memberList:[],
+
 				isFriend:false,									// TODO:这里做个判断
 				Dialog1:false,
 				Dialog2:false,
@@ -186,6 +193,11 @@
 					for (i in this.roomList) {
 						if(this.roomList[i].rid == this.currentRID) this.$set(this, "isFriend", true);;
 					}
+				}),
+				axios.get('http://129.211.62.153:8080/room/viewusers/' + this.currentRID)
+				.then((res) => {
+                    console.log(res.data);
+					this.memberList = res.data;
 				})
 				
 			},
@@ -225,9 +237,17 @@
                 switchDND:function(){
                     // TODO
 				},
+				switchCard:function(tempUID){
+					localStorage.setItem("nf", tempUID);
+					window.location.href = './idCard.html';
+				},
 				switchInvite:function(){
 					localStorage.setItem("nr", this.currentRID);
 					window.location.href = './chatroom_invite.html';
+				},
+				switchUsers:function(){
+					// localStorage.setItem("nr", this.currentRID);
+					// window.location.href = './chatroom_users.html';
 				},
 				addToChatroom: function() {
 					axios.post('http://129.211.62.153:8080/room/adduser/' + this.currentRID + '/' + this.uid).then((res) => {console.log(res)})
@@ -239,6 +259,11 @@
 						this.Dialog1 = false;
 					})
 				},
+				getImg(uid) {
+                    var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
+                    console.log(url);
+                    return url;
+                }
 			}
 		});
 		</script>
