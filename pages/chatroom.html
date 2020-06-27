@@ -62,11 +62,8 @@
 			};
 			var ws = new SockJS('http://129.211.62.153:8080/ws');
 			var client = Stomp.over(ws);
-			// 连接服务器, uid=1, passcode=pass1
 			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
 				errorCallback);
-
-			// 接收到订阅消息后的回调函数
 			function onMessage(message) {
 				console.log(message);
 				app.getMessage();
@@ -92,6 +89,7 @@
 					this.roomuid = localStorage.getItem("nr");
 					axios.get('http://129.211.62.153:8080/room/viewroomname/' + this.roomuid).then((res) => {
 						this.roomname = res.data
+						console.log(res)
 					})
 					this.text = document.getElementById('text');
 					this.content = document.getElementsByTagName('ul')[0];
