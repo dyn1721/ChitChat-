@@ -58,15 +58,7 @@
 					<div class="weui-cell__ft"></div>
 				</a>
 
-				<!-- <h5 style="text-indent: 5%;">加入的聊天室</h5>
-				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchChatroom(1)" href="javascript:">
-					<div class="weui-cell__hd"><img src="../img/icon/mine.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-					<div class="weui-cell__bd">
-						<p>聊天室名称</p>
-					</div>
-					<div class="weui-cell__ft"></div>
-				</a> -->
-				<!--真正的聊天室-->
+				<h5 style="text-indent: 5%;">加入的聊天室</h5>
 				<div v-for="(room, i) in roomList">
 					<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchChatroom(room.rid)">
 						<div class="weui-cell__hd">
@@ -80,14 +72,6 @@
 				<br>
 
 				<h5 style="text-indent: 5%;">我的好友列表</h5>
-				<!-- <a class="weui-cell  weui-cell_access weui-cell_example" @click="switchFriend(1)" href="javascript:">
-					<div class="weui-cell__hd"><img src="../img/icon/defaultPortrait.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-					<div class="weui-cell__bd">
-						<p>联系人名称</p>
-					</div>
-					<div class="weui-cell__ft"></div>
-				</a> -->
-				<!--真正的好友列表-->
 				<div v-for="(user, i) in friendList">
 					<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
 						<div class="weui-cell__hd">
