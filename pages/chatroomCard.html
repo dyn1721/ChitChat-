@@ -155,8 +155,8 @@
 				.then((res)=>{
 					console.log(res);
 					this.roomList = res.data;
-					for (room in this.roomList) {
-						if(room.rid == this.currentRID) this.$set(this, "isFriend", true);;
+					for (i in this.roomList) {
+						if(this.roomList[i].rid == this.currentRID) this.$set(this, "isFriend", true);;
 					}
 				})
 				
