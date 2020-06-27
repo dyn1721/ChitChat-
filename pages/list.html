@@ -135,9 +135,12 @@
 				},
 				mounted() {
 					this.uid = localStorage.getItem("uid");
-					
 					axios.post('http://129.211.62.153:8080/msg/addinfo/' + this.uid).then((res) => {
-						this.newfnum = res.data.length
+						this.newfnum = 0;
+						for (var i in res.data) {
+							if (res.data[i].type == 3)
+								this.newfnum++;
+						}
 						if (this.newfnum != 0) this.red = true;
 						else this.red = false;
 					})
@@ -171,11 +174,11 @@
 						window.location.href = './newfriend.html';
 					},
 					switchFriend: function(uid) {
-						localStorage.setItem("nf",uid);
+						localStorage.setItem("nf", uid);
 						window.location.href = './idCard.html';
 					},
 					switchChatroom: function(rid) {
-						localStorage.setItem("nr",rid);
+						localStorage.setItem("nr", rid);
 						window.location.href = './chatroomCard.html';
 					},
 					switchSearchFriends: function() {

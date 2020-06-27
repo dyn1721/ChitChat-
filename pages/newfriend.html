@@ -44,7 +44,13 @@
 			</div>
 			<div class="weui-cells__title"> </div>
 
-			<div id="middle">
+			<h5 style="text-indent: 5%;">新的朋友申请</h5>
+			<div id="middle1">
+			</div>
+			<br />
+			<br />
+			<h5 style="text-indent: 5%;">朋友申请应答</h5>
+			<div id="middle2">
 			</div>
 
 			<div id="dialogs">
@@ -113,7 +119,8 @@
 					Toast2: false,
 					massagelist: [],
 					useruid: '',
-					middleshow: '',
+					middle1show: '',
+					middle2show: '',
 					nowfuid: '',
 					newfname: '',
 					newftip: '',
@@ -121,7 +128,8 @@
 				},
 				mounted() {
 					this.useruid = localStorage.getItem("uid")
-					this.middleshow = document.getElementById("middle");
+					this.middle1show = document.getElementById("middle1");
+					this.middle2show = document.getElementById("middle2");
 					axios.post('http://129.211.62.153:8080/msg/addinfo/' + this.useruid).then((res) => {
 						console.log(res);
 						var i = 0;
@@ -163,7 +171,9 @@
 							fromId: this.nowfuid,
 							toId: this.useruid,
 							content: true,
-						}).then(res => {this.refresh()})
+						}).then(res => {
+							this.refresh()
+						})
 					},
 					disaccept: function() {
 						this.Dialog2 = false;
@@ -182,19 +192,23 @@
 						axios.post('http://129.211.62.153:8080/msg/delete', {
 							type: 5,
 							style: 3,
-							fromId: this.nowfuid,//发申请的
+							fromId: this.nowfuid, //发申请的
 							toId: this.useruid,
 							content: true,
-						}).then(res => {this.refresh()})
+						}).then(res => {
+							this.refresh()
+						})
 					},
 					show: function() {
-						this.middleshow.innerHTML = ''
+						this.middle1show.innerHTML = ''
+						this.middle2show.innerHTML = ''
 						this.massagelist = JSON.parse(localStorage.getItem("nflist"));
 						this.massagelist.sort(this.compare('time'))
 						console.log(this.massagelist)
 						for (var i in this.massagelist) {
-							this.time = this.showTime(this.massagelist[i].time);
-							this.middleshow.innerHTML +=
+							if (this.massagelist[i].type == 3) {
+								this.time = this.showTime(this.massagelist[i].time);
+								this.middle1show.innerHTML +=
 									'<div class="weui-cells" onclick="showDialog2(' + this.massagelist[i].otheruid + ')">' +
 									'<div class="weui-cell weui-cell_active">' +
 									'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
@@ -208,9 +222,42 @@
 									'<div class="weui-cell__ft">' + this.time + '</div>' +
 									'</div>' +
 									'</div>'
+							} else if (this.massagelist[i].type == 5) {
+								this.time = this.showTime(this.massagelist[i].time);
+								if (this.massagelist[i].content == "true")
+									this.middle2show.innerHTML +=
+									'<div class="weui-cells">' +
+									'<div class="weui-cell weui-cell_active">' +
+									'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+									'<img src="http://129.211.62.153:8080/image/' + this.massagelist[i].otheruid +
+									'/head.jpg" style="width: 50px; display: block;" />' +
+									'</div>' +
+									'<div class="weui-cell__bd">' +
+									'<p>验证消息：</p>' +
+									'<p style="font-size: 13px; color: #888;">已同意</p>' +
+									'</div>' +
+									'<div class="weui-cell__ft">' + this.time + '</div>' +
+									'</div>' +
+									'</div>'
+								else if (this.massagelist[i].content == "false")
+									this.middle2show.innerHTML +=
+									'<div class="weui-cells">' +
+									'<div class="weui-cell weui-cell_active">' +
+									'<div class="weui-cell__hd" style="position: relative; margin-right: 10px;">' +
+									'<img src="http://129.211.62.153:8080/image/' + this.massagelist[i].otheruid +
+									'/head.jpg" style="width: 50px; display: block;" />' +
+									'</div>' +
+									'<div class="weui-cell__bd">' +
+									'<p>验证消息：</p>' +
+									'<p style="font-size: 13px; color: #888;">已拒绝</p>' +
+									'</div>' +
+									'<div class="weui-cell__ft">' + this.time + '</div>' +
+									'</div>' +
+									'</div>'
+							}
 						}
 					},
-					refresh: function(){
+					refresh: function() {
 						this.massagelist = []
 						axios.post('http://129.211.62.153:8080/msg/addinfo/' + this.useruid).then((res) => {
 							console.log("refresh: " + res);

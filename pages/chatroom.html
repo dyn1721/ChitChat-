@@ -28,7 +28,7 @@
 					<div class="roomname">
 						<div style="display: table-cell; vertical-align: middle; overflow: hidden;"> {{roomname}} </div>
 					</div>
-					<div class="show" @click=""> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" @click="toCard"/> </div>
+					<div class="show" @click="switchHtml2"> <img src="../img/chat/more.png" alt="" style="width: 60%;height: 50%;position: relative;left:-0.5rem;" @click="toCard"/> </div>
 				</div>
 				<ul class="content">
 					<!-- <div class="time" style="text-align: center; color: #666666;">1:23</div> -->
@@ -104,6 +104,14 @@
 				},
 				methods: {
 					switchHtml: function() {
+						this.preserve();
+						history.back(-1);
+					},
+					switchHtml2: function() {
+						this.preserve();
+						window.location.href = './chatroomCard.html';
+					},
+					preserve: function(){
 						if (this.messages.length != 0) {
 							localStorage[this.useruid + "mr" + this.roomuid] = JSON.stringify(this.messages)
 							var temp = JSON.parse(localStorage.getItem("mlist"))
@@ -122,7 +130,6 @@
 							})
 							localStorage["mlist"] = JSON.stringify(temp)
 						}
-                    history.back(-1);
 					},
 					send: function() {
 						if (this.text.value == '') {
