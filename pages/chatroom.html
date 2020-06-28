@@ -72,7 +72,7 @@
 				console.log(message);
 				app.getMessage();
 			}
-			window.onpopstate = function (event) {
+			window.onpopstate = function(event) {
 				app.switchHtml();
 			};
 			var app = new Vue({
@@ -161,21 +161,21 @@
 								toId: this.roomuid,
 								content: this.text.value,
 							}).then(res => {
-								this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre>' + this.text.value +
-									'</pre></span></li>';
-								this.iNow++;
-								this.cNow++;
-								this.img[this.iNow].className += 'imgright';
-								this.span[this.cNow].className += 'spanright';
-								this.messages.push({
-									type: 2,
-									style: 1,
-									send: this.useruid,
-									content: this.text.value,
-									time: res.data.substring(0, 19)
-								})
+								// this.content.innerHTML += '<li><img src="' + this.getImg(0) + '"><span><pre>' + this.text.value +
+								// 	'</pre></span></li>';
+								// this.iNow++;
+								// this.cNow++;
+								// this.img[this.iNow].className += 'imgright';
+								// this.span[this.cNow].className += 'spanright';
+								// this.messages.push({
+								// 	type: 2,
+								// 	style: 1,
+								// 	send: this.useruid,
+								// 	content: this.text.value,
+								// 	time: res.data.substring(0, 19)
+								// })
 								this.text.value = '';
-								this.content.scrollTop = this.content.scrollHeight;
+								// this.content.scrollTop = this.content.scrollHeight;
 							})
 							// this.content.innerHTML += '<li style="margin-bottom: 5px;"><div style=" float: right;">'+localStorage.getItem("nickname")+'</div></li>'
 
@@ -187,33 +187,56 @@
 							if (res.data.length != 0) {
 								var i = 0;
 								for (; i < res.data.length; i++) {
-									if (res.data[i].style == 1) {
-										this.content.innerHTML += '<li><img src="' + this.arrIcon[1] + '"><span><pre>' + res.data[i].content +
-											'</pre></span></li>';
-										this.iNow++;
-										this.cNow++;
-										this.img[this.iNow].className += 'imgleft';
-										this.span[this.cNow].className += 'spanleft';
-									} else if (res.data[i].style == 2) {
-										this.content.innerHTML += '<li><img src="' + this.arrIcon[1] + '"><span><pre><img src="' + res.data[i].content +
-											'"></pre></span></li>';
-										this.iNow++;
-										this.cNow++;
-										this.img[this.iNow].className += 'imgleft';
-										this.span[this.cNow].className += 'spanleft';
-										this.iNow++;
+									if (res.data[i].fromId == this.useruid) {
+										if (res.data[i].style == 1) {
+											this.content.innerHTML += '<li><img src="' + this.getImg(res.data[i].fromId) + '"><span><pre>' + res.data[
+													i].content +
+												'</pre></span></li>';
+											this.iNow++;
+											this.cNow++;
+											this.img[this.iNow].className += 'imgright';
+											this.span[this.cNow].className += 'spanright';
+										} else if (res.data[i].style == 2) {
+											this.content.innerHTML += '<li><img src="' + this.getImg(res.data[i].fromId) +
+												'"><span><pre><img src="' + res.data[i].content +
+												'"></pre></span></li>';
+											this.iNow++;
+											this.cNow++;
+											this.img[this.iNow].className += 'imgright';
+											this.span[this.cNow].className += 'spanright';
+											this.iNow++;
+										}
+									} else {
+										if (res.data[i].style == 1) {
+											this.content.innerHTML += '<li><img src="' + this.getImg(res.data[i].fromId) + '"><span><pre>' + res.data[
+													i].content +
+												'</pre></span></li>';
+											this.iNow++;
+											this.cNow++;
+											this.img[this.iNow].className += 'imgleft';
+											this.span[this.cNow].className += 'spanleft';
+										} else if (res.data[i].style == 2) {
+											this.content.innerHTML += '<li><img src="' + this.getImg(res.data[i].fromId) +
+												'"><span><pre><img src="' + res.data[i].content +
+												'"></pre></span></li>';
+											this.iNow++;
+											this.cNow++;
+											this.img[this.iNow].className += 'imgleft';
+											this.span[this.cNow].className += 'spanleft';
+											this.iNow++;
+										}
 									}
 									this.messages.push({
 										type: 2,
 										style: res.data[i].style,
-										send: res.data[i].uid,
+										send: res.data[i].fromId,
 										content: res.data[i].content,
 										time: res.data[i].sendTime.substring(0, 19)
 									})
 									this.content.scrollTop = this.content.scrollHeight;
 								}
 							}
-							//axios.post('http://129.211.62.153:8080/msg/read/room/' + this.useruid + '/' + this.roomuid).then((res) => {})
+							axios.post('http://129.211.62.153:8080/msg/read/room/' + this.useruid + '/' + this.roomuid).then((res) => {})
 						})
 					},
 					sendPicture: function() {
@@ -268,21 +291,21 @@
 									toId: this.roomuid,
 									content: localStorage.getItem("npic"),
 								}).then(res => {
-									this.content.innerHTML += '<li><img src="' + this.arrIcon[0] + '"><span><pre><img src="' +
-										localStorage.getItem("npic") +
-										'"></pre></span></li>';
-									this.iNow++;
-									this.cNow++;
-									this.img[this.iNow].className += 'imgright';
-									this.span[this.cNow].className += 'spanright';
-									this.iNow++;
-									this.messages.push({
-										type: 2,
-										style: 2,
-										send: this.useruid,
-										content: localStorage.getItem("npic"),
-										time: res.data.substring(0, 19)
-									})
+									// this.content.innerHTML += '<li><img src="' + this.getImg(0) + '"><span><pre><img src="' +
+									// 	localStorage.getItem("npic") +
+									// 	'"></pre></span></li>';
+									// this.iNow++;
+									// this.cNow++;
+									// this.img[this.iNow].className += 'imgright';
+									// this.span[this.cNow].className += 'spanright';
+									// this.iNow++;
+									// this.messages.push({
+									// 	type: 2,
+									// 	style: 2,
+									// 	send: this.useruid,
+									// 	content: localStorage.getItem("npic"),
+									// 	time: res.data.substring(0, 19)
+									// })
 									this.content.scrollTop = this.content.scrollHeight;
 								})
 								localStorage.setItem("ifpic", 0)
@@ -296,13 +319,13 @@
 								console.log(res.data);
 								var i = 0;
 								for (; i < res.data.length; i++) {
-										this.messages.push({
-											type: 2,
-											style: res.data[i].style,
-											send: res.data[i].fromId,
-											content: res.data[i].content,
-											time: res.data[i].sendTime.substring(0, 19)
-										})
+									this.messages.push({
+										type: 2,
+										style: res.data[i].style,
+										send: res.data[i].fromId,
+										content: res.data[i].content,
+										time: res.data[i].sendTime.substring(0, 19)
+									})
 								}
 								localStorage[this.useruid + "mr" + this.roomuid] = JSON.stringify(this.messages);
 								localStorage[this.useruid + "mr" + this.roomuid + "loadAll"] = 1;
