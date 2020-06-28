@@ -136,7 +136,14 @@
 
 
 				<!--BEGIN toast-->
-				<div id="toast" v-show="Toast">
+				<div id="toast1" v-show="Toast1">
+					<div class="weui-mask_transparent"></div>
+					<div class="weui-toast">
+						<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+						<p class="weui-toast__content">已发送</p>
+					</div>
+				</div>
+				<div id="toast2" v-show="Toast2">
 					<div class="weui-mask_transparent"></div>
 					<div class="weui-toast">
 						<i class="weui-icon-success-no-circle weui-icon_toast"></i>
@@ -169,7 +176,8 @@
 					isFriend: false,
 					Dialog1: false,
 					Dialog2: false,
-					Toast: false,
+					Toast1: false,
+					Toast2: false,
 					friendList: [],
 					blacklist: []
 				},
@@ -192,7 +200,7 @@
 					})
 					// 判断currentUID是否在好友列表内
 					this.uid = localStorage.getItem("uid");
-					axios.get('http://129.211.62.153:8080/user/getlist/' + this.uid + '/1')
+					axios.get('http://129.211.62.153:8080/users/' + this.uid + '/friends')
 						.then((res) => {
 							console.log(res);
 							this.friendList = res.data;
@@ -200,8 +208,8 @@
 								this.$set(this, "isMe", true);
 								console.log("It's ME!!");
 							} else {
-								var i=0;
-								for (;i<this.friendList.length;i++) {
+								var i = 0;
+								for (; i < this.friendList.length; i++) {
 									if (this.friendList[i].uid == this.currentUID) this.$set(this, "isFriend", true);
 								}
 							}
@@ -236,30 +244,32 @@
 							console.log("ERROR::YOU_CANNOT_ADD_YOURSELF");
 						} else {
 							axios.post('http://129.211.62.153:8080/msg/add-friend', {
-									type: 3,
-									style: 3,
-									fromId: this.uid,
-									toId: this.currentUID,
-									content: this.content
-								})
-								.then((res) => {
-									console.log(res)
-								})
+								type: 3,
+								style: 3,
+								fromId: this.uid,
+								toId: this.currentUID,
+								content: this.content
+							}).then((res) => {})
 							this.Dialog1 = false;
+							this.Toast1 = true;
+							let _this = this;
+							setTimeout(function() {
+								_this.Toast1 = false;
+							}, 1000);
 						}
 					},
 					deleteFriend: function() {
 						this.Dialog2 = false;
-						this.Toast = true;
+						this.Toast2 = true;
 						let _this = this;
 						axios.post('http://129.211.62.153:8080/users/' + this.uid + '/friends/' + this.currentUID + '/delete')
 							.then((res) => {
 								console.log("Delete friend res = " + res.data);
 							})
 						setTimeout(function() {
-							_this.Toast = false;
+							_this.Toast2 = false;
 						}, 1000);
-						//history.back(-1);
+						history.back(-1);
 					},
 				}
 			});

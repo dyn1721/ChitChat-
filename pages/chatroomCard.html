@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
-	
+
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 		<title>ChitChat-ChatroomCard</title>
 		<style> @import url("../css/bottom.css"); </style>
-		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css"/>
+		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css" />
 		<script type="text/javascript" src="../js/cookie.js"></script>
 		<script type="text/javascript" src="../js/loadPic.js"></script>
 		<style>
@@ -28,246 +28,243 @@
 		</style>
 	</head>
 	<body>
-	<div id="app" v-cloak>
-		<div class="weui-cells__title">
-			聊天室资料卡
-			<a href="javascript:" class="button" onclick="javascript:history.back(-1)">取消</a>
-		</div>
-		<div class="weui-cells__title">  </div>
+		<div id="app" v-cloak>
+			<div class="weui-cells__title">
+				聊天室资料卡
+				<a href="javascript:" class="button" onclick="javascript:history.back(-1)">取消</a>
+			</div>
+			<div class="weui-cells__title"> </div>
 
-        <div class="weui-cells">
-            <a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
-                <div class="weui-cell__hd">
-					<img src="../img/chat/chatroom.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
-                <div class="weui-cell__bd">
-					<p style="font-size: 1.3rem;"> {{roomname}} </p>
-					<br>
-					<br>
-                </div>
-                <div class="weui-cell__ft"></div>
-			</a>
-			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
-				<div class="weui-cell__hd"><img src="../img/icon/nickname.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
-				<div class="weui-cell__bd">
-					<p>聊天室编号</p>
+			<div class="weui-cells">
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+					<div class="weui-cell__hd">
+						<img src="../img/chat/chatroom.png" alt="" style="width: 100px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd">
+						<p style="font-size: 1.3rem;"> {{roomname}} </p>
+						<br>
+						<br>
+					</div>
+					<div class="weui-cell__ft"></div>
+				</a>
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+					<div class="weui-cell__hd"><img src="../img/icon/nickname.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd">
+						<p>聊天室编号</p>
+					</div>
+					<div class="weui-cell__ft" v-text="currentRID"></div>
+				</a>
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+					<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd" @click="switchUsers">
+						<p>聊天室成员</p>
+					</div>
+					<div class="weui-cell__ft"></div>
+				</a>
+				<!-- 在这里显示聊天室成员列表 -->
+				<a class="weui-cell  weui-cell_access weui-cell_example" style="display: flex; flex-wrap: wrap;" href="javascript:">
+					<div v-for="(user, i) in memberList">
+						<img :src='getImg(user)' alt="" style="width: 50px; margin-left: 16px; margin-top: 12px; display: block;" @click="switchCard(user)"></div>
+				</a>
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
+					<div class="weui-cell__hd"><img src="../img/icon/icon.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd" @click="switchInvite">
+						<p>邀请新成员</p>
+					</div>
+					<div class="weui-cell__ft"></div>
+				</a>
+				<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="showDialog1">
+					<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;"></div>
+					<div class="weui-cell__bd">
+						<p>聊天室公告：</p>
+					</div>
+					<div class="weui-cell__ft" v-text="announcement"></div>
+				</a>
+				<div class="switch">
+					<div class="weui-cell weui-cell_active weui-cell_switch">
+						<div class="weui-cell__bd">开启聊天室消息免打扰</div>
+						<div class="weui-cell__ft">
+							<input id="switch1" class="weui-switch" @click="switchDND" v-bind:checked="check1" type="checkbox" /></div>
+					</div>
 				</div>
-				<div class="weui-cell__ft" v-text="currentRID" ></div>
-			</a>
-			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
-				<div class="weui-cell__hd"><img src="../img/icon/id.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
-				<div class="weui-cell__bd" @click="switchUsers">
-					<p>聊天室成员</p>
-				</div>
-				<div class="weui-cell__ft"></div>
-			</a>
-			<!-- 在这里显示聊天室成员列表 -->
-			<a class="weui-cell  weui-cell_access weui-cell_example" style="display: flex; flex-wrap: wrap;" href="javascript:">
-				<div v-for="(user, i) in memberList">
-					<img :src='getImg(user)' alt="" style="width: 50px; margin-left: 16px; margin-top: 12px; display: block;" @click="switchCard(user)"></div>
-			</a>
-			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:">
-				<div class="weui-cell__hd"><img src="../img/icon/icon.png" alt="" style="width: 20px; margin-right: 16px; display: block;"></div>
-				<div class="weui-cell__bd" @click="switchInvite">
-					<p>邀请新成员</p>
-				</div>
-				<div class="weui-cell__ft"></div>
-			</a>
-			<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="showDialog1">
-				<div class="weui-cell__hd"><img src="../img/icon/sign.png" style="width: 20px; margin-right: 16px; display: block;" ></div>
-				<div class="weui-cell__bd">
-					<p>聊天室公告：</p>
-				</div>
-				<div class="weui-cell__ft" v-text="announcement" ></div>
-            </a>
-            <div class="switch">
-                <div  class="weui-cell weui-cell_active weui-cell_switch">
-                    <div class="weui-cell__bd">开启聊天室消息免打扰</div>
-                    <div class="weui-cell__ft">
-                    <input id="switch1" class="weui-switch" @click="switchDND" v-bind:checked="check1" type="checkbox" /></div>
-                </div>
-            </div>
-		</div>
-		<br>
+			</div>
+			<br>
 
 
-		<div class="button-sp-area cell" v-if="isFriend == true">
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toChatroom">ChitChat</a>
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">退出聊天室</a>
-		</div>
+			<div class="button-sp-area cell" v-if="isFriend == true">
+				<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="toChatroom">ChitChat</a>
+				<a href="javascript:" class="weui-btn_cell weui-btn_cell-warn" @click="showDialog2">退出聊天室</a>
+			</div>
 
-		<div class="button-sp-area cell" v-if="isFriend == false">
-			<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="addToChatroom">加入聊天室</a>
-		</div>
-		
-	
-		<div id="dialogs">
-			<!--BEGIN dialog3-->
-			<div class="js_dialog" v-show="Dialog1">
-				<div class="weui-mask" @click="close1"></div>
-				<div class="weui-dialog weui-skin_android">
-					<div class="weui-cell ">
-						<div class="weui-cells__group weui-cells__group_form">
-							<div class="weui-cells weui-cells_form">
-								<div class="weui-cell ">
-									<div class="weui-cell__bd">
-										<textarea class="weui-textarea" v-model="announcement" placeholder="请填写新的公告" rows="2"></textarea>
+			<div class="button-sp-area cell" v-if="isFriend == false">
+				<a href="javascript:" class="weui-btn_cell weui-btn_cell-primary" @click="addToChatroom">加入聊天室</a>
+			</div>
+
+
+			<div id="dialogs">
+				<!--BEGIN dialog3-->
+				<div class="js_dialog" v-show="Dialog1">
+					<div class="weui-mask" @click="close1"></div>
+					<div class="weui-dialog weui-skin_android">
+						<div class="weui-cell ">
+							<div class="weui-cells__group weui-cells__group_form">
+								<div class="weui-cells weui-cells_form">
+									<div class="weui-cell ">
+										<div class="weui-cell__bd">
+											<textarea class="weui-textarea" v-model="announcement" placeholder="请填写新的公告" rows="2"></textarea>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="weui-dialog__ft">
-						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close1">取消</a>
-						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" @click="chAnnounc">修改公告</a>
+						<div class="weui-dialog__ft">
+							<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close1">取消</a>
+							<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" @click="chAnnounc">修改公告</a>
+						</div>
 					</div>
 				</div>
-			</div>
-			<!--END dialog3-->
+				<!--END dialog3-->
 
-			<!--BEGIN dialog4-->
-			<div class="js_dialog" v-show="Dialog2">
-				<div class="weui-mask" @click="close2"></div>
-				<div class="weui-dialog weui-skin_android">
-					<div class="weui-dialog__bd">
-						将从好友列表中永远移除此聊天室
-					</div>
-					<div class="weui-dialog__ft">
-						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close2">取消</a>
-						<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" style="color:crimson" @click="deleteFriend">退出聊天室</a>
+				<!--BEGIN dialog4-->
+				<div class="js_dialog" v-show="Dialog2">
+					<div class="weui-mask" @click="close2"></div>
+					<div class="weui-dialog weui-skin_android">
+						<div class="weui-dialog__bd">
+							将从好友列表中永远移除此聊天室
+						</div>
+						<div class="weui-dialog__ft">
+							<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_default" @click="close2">取消</a>
+							<a href="javascript:" class="weui-dialog__btn weui-dialog__btn_warning" style="color:crimson" @click="deleteFriend">退出聊天室</a>
+						</div>
 					</div>
 				</div>
-			</div>
-			<!--END dialog4-->
+				<!--END dialog4-->
 
-			<!--BEGIN toast-->
-			<div id="toast" v-show="Toast">
-				<div class="weui-mask_transparent"></div>
-				<div class="weui-toast">
-					<i class="weui-icon-success-no-circle weui-icon_toast"></i>
-					<p class="weui-toast__content">已删除</p>
+				<!--BEGIN toast-->
+				<div id="toast" v-show="Toast">
+					<div class="weui-mask_transparent"></div>
+					<div class="weui-toast">
+						<i class="weui-icon-success-no-circle weui-icon_toast"></i>
+						<p class="weui-toast__content">已删除</p>
+					</div>
 				</div>
+				<!--end toast-->
 			</div>
-			<!--end toast-->
+
 		</div>
-		
-	</div>	
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
 		<script type="text/javascript">
-		var app = new Vue({
-			el: "#app",
-			data: {
-				nr:'',
-				uid:'',
-                roomname:'',
-                currentRID:'',
-                announcement:'',
-
-				memberList:[],
-
-				isFriend:false,									// TODO:这里做个判断
-				Dialog1:false,
-				Dialog2:false,
-				Toast:false,
-                check1:'',
-                roomList:[],
-            },
-            mounted() {
-				this.currentRID = localStorage.getItem("nr")
-				axios.get('http://129.211.62.153:8080/room/'+this.currentRID).then((res)=>{
+			var app = new Vue({
+				el: "#app",
+				data: {
+					nr: '',
+					uid: '',
+					roomname: '',
+					currentRID: '',
+					announcement: '',
+					memberList: [],
+					isFriend: false, // TODO:这里做个判断
+					Dialog1: false,
+					Dialog2: false,
+					Toast: false,
+					check1: '',
+					roomList: [],
+				},
+				mounted() {
+					this.currentRID = localStorage.getItem("nr")
+					axios.get('http://129.211.62.153:8080/room/' + this.currentRID).then((res) => {
 						console.log(res)
-						this.roomname=res.data.roomname;
-						this.announcement=res.data.announcement[0];
-						if(this.announcement==null)
-						    this.announcement='';
-						//头像获取
-						// var picsrc="http://129.211.62.153:8080/image/"+this.currentUID+"/head.jpg";
-						// this.portraitSrc=picsrc;
+						this.roomname = res.data.roomname;
+						this.announcement = res.data.announcement[0];
+						if (this.announcement == null)
+							this.announcement = '';
 					})
-				// 判断currentUID是否在好友列表内
-				this.uid = localStorage.getItem("uid");
-				axios.get('http://129.211.62.153:8080/user/getroom/'+this.uid)
-				.then((res)=>{
-					console.log(res);
-					this.roomList = res.data;
-					for (i in this.roomList) {
-						if(this.roomList[i].rid == this.currentRID) this.$set(this, "isFriend", true);;
-					}
-				}),
-				axios.get('http://129.211.62.153:8080/room/viewusers/' + this.currentRID)
-				.then((res) => {
-                    console.log(res.data);
-					this.memberList = res.data;
-				})
-				
-			},
-			methods:{
-				showDialog1: function(){
-					this.Dialog1 = true;
-				},
-				showDialog2: function(){
-					this.Dialog2 = true;
-				},
-				close1: function(){
-					this.Dialog1 = false;
-				},
-				close2: function(){
-					this.Dialog2 = false;
-                },
-                toChatroom: function(){
-					localStorage.setItem("nr", this.currentRID);
-					window.location.href = './chatroom.html';
-				},
-				addFriend: function(){
-					this.Dialog1 = false;
-				},
-				deleteFriend: function(){
-					this.Dialog2 = false;
-					this.Toast = true;
-                    let _this = this;
-                    axios.post('http://129.211.62.153:8080/users/' + this.uid + '/rooms/' + this.currentRID + '/delete')
-						.then((res)=>{
+					// 判断currentUID是否在好友列表内
+					this.uid = localStorage.getItem("uid");
+					axios.get('http://129.211.62.153:8080/user/getroom/' + this.uid)
+						.then((res) => {
 							console.log(res);
-					})
-					setTimeout(function () {
-                		_this.Toast = false;
-                    }, 1000);
-                    history.back(-1);
+							this.roomList = res.data;
+							for (i in this.roomList) {
+								if (this.roomList[i].rid == this.currentRID) this.$set(this, "isFriend", true);;
+							}
+						}),
+						axios.get('http://129.211.62.153:8080/room/viewusers/' + this.currentRID)
+						.then((res) => {
+							for (var i = 0; i < res.data.length; i++) {
+								if (this.memberList.indexOf(res.data[i]) == -1) {
+									this.memberList.push(res.data[i]);
+								}
+							}
+						})
+
 				},
-                switchDND:function(){
-                    // TODO
-				},
-				switchCard:function(tempUID){
-					localStorage.setItem("nf", tempUID);
-					window.location.href = './idCard.html';
-				},
-				switchInvite:function(){
-					localStorage.setItem("nr", this.currentRID);
-					window.location.href = './chatroom_invite.html';
-				},
-				switchUsers:function(){
-					// localStorage.setItem("nr", this.currentRID);
-					// window.location.href = './chatroom_users.html';
-				},
-				addToChatroom: function() {
-					axios.post('http://129.211.62.153:8080/room/adduser/' + this.currentRID + '/' + this.uid).then((res) => {console.log(res)})
-				},
-				chAnnounc:function() {
-					axios.post('http://129.211.62.153:8080/room/addannouncement/' + this.currentRID + '/' + this.announcement)
-					.then((res) => {
-						console.log(res);
+				methods: {
+					showDialog1: function() {
+						this.Dialog1 = true;
+					},
+					showDialog2: function() {
+						this.Dialog2 = true;
+					},
+					close1: function() {
 						this.Dialog1 = false;
-					})
-				},
-				getImg(uid) {
-                    var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
-                    console.log(url);
-                    return url;
-                }
-			}
-		});
+					},
+					close2: function() {
+						this.Dialog2 = false;
+					},
+					toChatroom: function() {
+						localStorage.setItem("nr", this.currentRID);
+						window.location.href = './chatroom.html';
+					},
+					addFriend: function() {
+						this.Dialog1 = false;
+					},
+					deleteFriend: function() {
+						this.Dialog2 = false;
+						this.Toast = true;
+						let _this = this;
+						axios.post('http://129.211.62.153:8080/users/' + this.uid + '/rooms/' + this.currentRID + '/delete')
+							.then((res) => {})
+						setTimeout(function() {
+							_this.Toast = false;
+						}, 1000);
+						history.back(-1);
+					},
+					switchDND: function() {
+						// TODO
+					},
+					switchCard: function(tempUID) {
+						localStorage.setItem("nf", tempUID);
+						window.location.href = './idCard.html';
+					},
+					switchInvite: function() {
+						localStorage.setItem("nr", this.currentRID);
+						window.location.href = './chatroom_invite.html';
+					},
+					switchUsers: function() {
+						// localStorage.setItem("nr", this.currentRID);
+						// window.location.href = './chatroom_users.html';
+					},
+					addToChatroom: function() {
+						axios.post('http://129.211.62.153:8080/room/adduser/' + this.currentRID + '/' + this.uid).then((res) => {
+							console.log(res)
+						})
+					},
+					chAnnounc: function() {
+						axios.post('http://129.211.62.153:8080/room/addannouncement/' + this.currentRID + '/' + this.announcement)
+							.then((res) => {
+								console.log(res);
+								this.Dialog1 = false;
+							})
+					},
+					getImg(uid) {
+						var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
+						return url;
+					}
+				}
+			});
 		</script>
-		
-	
+
+
 	</body>
 </html>

@@ -160,6 +160,13 @@
 							toId: this.nowfuid,
 							content: true,
 						}).then(res => {})
+						axios.post('http://129.211.62.153:8080/msg/single-chat', {
+							type: 1,
+							style: 1,
+							fromId: this.useruid,
+							toId: this.nowfuid,
+							content: "我已经和你成为好友了，快一起聊天吧！",
+						}).then(res => {})
 						this.Toast = true;
 						let _this = this;
 						setTimeout(function() {

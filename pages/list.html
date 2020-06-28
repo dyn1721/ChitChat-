@@ -5,10 +5,10 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
 		<title>ChitChat-BuddyList</title>
-		<style> @import url("../css/bottom.css"); </style>
+		<style>
+			@import url("../css/bottom.css");
+		</style>
 		<link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/2.3.0/weui.min.css" />
-		<script type="text/javascript" src="../js/cookie.js"></script>
-		<script type="text/javascript" src="../js/loadPic.js"></script>
 		<style>
 			[v-cloak] {
 				display: none;
@@ -32,57 +32,64 @@
 	</head>
 	<body>
 		<div id="app" v-cloak>
-			<div class="weui-cells__title">
-				通讯录
-				<a href="javascript:" class="button" @click="switchSearchFriends">+</a>
+			<div class="top" style="background-color: #ffffff;">
+				<div class="top_pic">
+					<img v-bind:src="portraitSrc" style="border-radius: 50%; width: 30px; height: 30px;" @click="toCard">
+				</div>
+				<div class="top_name">
+					<div style="display: table-cell; vertical-align: middle;font-weight: 500; ">通讯录</div>
+				</div>
+				<div class="top_more" @click="switchSearchFriends">
+					<img src="../img/chat/chat_more.png" style="width: 45%;position: relative;left:-0.6875rem;">
+				</div>
 			</div>
-			<div class="weui-cells__title"> </div>
 
-			<div class="weui-cells">
-				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchNewFriend" href="javascript:">
-					<div class="weui-cell__hd" style="position: relative;">
-						<img src="../img/chat/plus.png" alt="" style="width: 40px; margin-right: 16px; display: block;">
-						<div v-show="red">
-							<span class="weui-badge" style="position: absolute; top: -0.4em; right: 0.6em;">{{newfnum}}</span>
+			<div id="middle" class="middle">
+				<div class="weui-cells">
+					<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchNewFriend" href="javascript:">
+						<div class="weui-cell__hd" style="position: relative;">
+							<img src="../img/chat/plus.png" alt="" style="width: 40px; margin-right: 16px; display: block;">
+							<div v-show="red">
+								<span class="weui-badge" style="position: absolute; top: -0.4em; right: 0.6em;">{{newfnum}}</span>
+							</div>
 						</div>
-					</div>
-					<div class="weui-cell__bd">
-						<p>新的朋友</p>
-					</div>
-				</a>
-				<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchRobot" href="javascript:">
-					<div class="weui-cell__hd"><img src="../img/chat/robot.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-					<div class="weui-cell__bd">
-						<p>Bot</p>
-					</div>
-					<div class="weui-cell__ft"></div>
-				</a>
-
-				<h5 style="text-indent: 5%;">加入的聊天室</h5>
-				<div v-for="(room, i) in roomList">
-					<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchChatroom(room.rid)">
-						<div class="weui-cell__hd">
-							<img src="../img/chat/chatroom.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
 						<div class="weui-cell__bd">
-							<p> {{room.roomname}} </p>
+							<p>新的朋友</p>
+						</div>
+					</a>
+					<a class="weui-cell  weui-cell_access weui-cell_example" @click="switchRobot" href="javascript:">
+						<div class="weui-cell__hd"><img src="../img/chat/robot.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+						<div class="weui-cell__bd">
+							<p>Bot</p>
 						</div>
 						<div class="weui-cell__ft"></div>
 					</a>
-				</div>
-				<br>
 
-				<h5 style="text-indent: 5%;">我的好友列表</h5>
-				<div v-for="(user, i) in friendList">
-					<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
-						<div class="weui-cell__hd">
-							<img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
-						<div class="weui-cell__bd">
-							<p> {{user.nickname}} </p>
-						</div>
-						<div class="weui-cell__ft"></div>
-					</a>
-				</div>
+					<h5 style="text-indent: 5%;">加入的聊天室</h5>
+					<div id="roomlist" v-for="(room, i) in roomList">
+						<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchChatroom(room.rid)">
+							<div class="weui-cell__hd">
+								<img src="../img/chat/chatroom.png" alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+							<div class="weui-cell__bd">
+								<p> {{room.roomname}} </p>
+							</div>
+							<div class="weui-cell__ft"></div>
+						</a>
+					</div>
+					<br>
 
+					<h5 style="text-indent: 5%;">我的好友列表</h5>
+					<div id="friendlist" v-for="(user, i) in friendList">
+						<a class="weui-cell  weui-cell_access weui-cell_example" href="javascript:" @click="switchFriend(user.uid)">
+							<div class="weui-cell__hd">
+								<img :src='getImg(user.uid)' alt="" style="width: 40px; margin-right: 16px; display: block;"></div>
+							<div class="weui-cell__bd">
+								<p> {{user.nickname}} </p>
+							</div>
+							<div class="weui-cell__ft"></div>
+						</a>
+					</div>
+				</div>
 			</div>
 
 			<div class="bottom_bar">
@@ -113,6 +120,7 @@
 			var client = Stomp.over(ws);
 			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
 				errorCallback);
+
 			function onMessage(message) {
 				app.refresh();
 			};
@@ -124,13 +132,21 @@
 					ifBottom2: true,
 					ifBottom3: false,
 					uid: '',
+					portraitSrc: '',
 					friendList: [],
 					roomList: [],
+					fl:'',
+					rl:'',
 					red: false,
 					newfnum: ''
 				},
 				mounted() {
 					this.uid = localStorage.getItem("uid");
+					this.portraitSrc = localStorage.getItem("pic");
+					this.fl = document.getElementById('friendlist');
+					this.rl = document.getElementById('roomlist');
+					// this.fl.innerHTML = '';
+					// this.rl.innerHTML = '';
 					axios.post('http://129.211.62.153:8080/msg/addinfo/' + this.uid).then((res) => {
 						this.newfnum = 0;
 						for (var i in res.data) {
@@ -140,11 +156,11 @@
 						if (this.newfnum != 0) this.red = true;
 						else this.red = false;
 					})
-					axios.get('http://129.211.62.153:8080/user/getlist/' + this.uid + '/1')
+					axios.get('http://129.211.62.153:8080/users/' + this.uid + '/friends')
 						.then((res) => {
 							this.friendList = res.data;
 						})
-					axios.get('http://129.211.62.153:8080/user/getroom/' + this.uid)
+					axios.get('http://129.211.62.153:8080/users/' + this.uid + '/rooms')
 						.then((res) => {
 							this.roomList = res.data;
 						})
@@ -177,6 +193,10 @@
 					},
 					switchSearchFriends: function() {
 						window.location.href = './searchFriend.html';
+					},
+					toCard: function() {
+						localStorage.setItem("nf", this.uid);
+						window.location.href = './idCard.html';
 					},
 					getImg(uid) {
 						var url = "http://129.211.62.153:8080/image/" + uid + "/head.jpg";
