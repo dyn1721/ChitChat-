@@ -233,6 +233,10 @@
 					switchDND: function() {
 						// TODO
 					},
+					switchUsers: function() {
+						// localStorage.setItem("nr", this.currentRID);
+						// window.location.href = './chatroom_users.html';
+					},
 					switchCard: function(tempUID) {
 						localStorage.setItem("nf", tempUID);
 						window.location.href = './idCard.html';
@@ -241,17 +245,15 @@
 						localStorage.setItem("nr", this.currentRID);
 						window.location.href = './chatroom_invite.html';
 					},
-					switchUsers: function() {
-						// localStorage.setItem("nr", this.currentRID);
-						// window.location.href = './chatroom_users.html';
-					},
 					addToChatroom: function() {
-						axios.post('http://129.211.62.153:8080/room/adduser/' + this.currentRID + '/' + this.uid).then((res) => {
+						axios.post('http://129.211.62.153:8080/room/adduser/' 
+							+ this.currentRID + '/' + this.uid).then((res) => {
 							console.log(res)
 						})
 					},
 					chAnnounc: function() {
-						axios.post('http://129.211.62.153:8080/room/addannouncement/' + this.currentRID + '/' + this.announcement)
+						axios.post('http://129.211.62.153:8080/room/addannouncement/' 
+							+ this.currentRID + '/' + this.announcement)
 							.then((res) => {
 								console.log(res);
 								this.Dialog1 = false;
@@ -264,7 +266,5 @@
 				}
 			});
 		</script>
-
-
 	</body>
 </html>

@@ -210,7 +210,8 @@
 							} else {
 								var i = 0;
 								for (; i < this.friendList.length; i++) {
-									if (this.friendList[i].uid == this.currentUID) this.$set(this, "isFriend", true);
+									if (this.friendList[i].uid == this.currentUID) 
+										this.$set(this, "isFriend", true);
 								}
 							}
 						})
@@ -262,7 +263,8 @@
 						this.Dialog2 = false;
 						this.Toast2 = true;
 						let _this = this;
-						axios.post('http://129.211.62.153:8080/users/' + this.uid + '/friends/' + this.currentUID + '/delete')
+						axios.post('http://129.211.62.153:8080/users/' + this.uid 
+							+ '/friends/' + this.currentUID + '/delete')
 							.then((res) => {
 								console.log("Delete friend res = " + res.data);
 							})

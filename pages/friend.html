@@ -65,9 +65,8 @@
 			};
 			var ws = new SockJS('http://129.211.62.153:8080/ws');
 			var client = Stomp.over(ws);
-			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
-				errorCallback);
-
+			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"),
+				connectCallback, errorCallback);
 			function onMessage(message) {
 				console.log(message);
 				app.getMessage();

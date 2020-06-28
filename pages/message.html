@@ -87,8 +87,8 @@
 			};
 			var ws = new SockJS('http://129.211.62.153:8080/ws');
 			var client = Stomp.over(ws);
-			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"), connectCallback,
-				errorCallback);
+			client.connect(localStorage.getItem("uid") + '', 'pass' + localStorage.getItem("uid"),
+				connectCallback, errorCallback);
 
 			function onMessage(message) {
 				app.refresh();
@@ -120,7 +120,8 @@
 				mounted() {
 					if (localStorage.getItem("uid") == -1) {
 						console.log(1)
-						axios.get('http://129.211.62.153:8080/user/searchByLoginID/' + localStorage.getItem("username")).then((res) => {
+						axios.get('http://129.211.62.153:8080/user/searchByLoginID/' + localStorage.getItem("username"))
+						.then((res) => {
 							console.log(res)
 							var sign = res.data.intro;
 							var email = res.data.email;
